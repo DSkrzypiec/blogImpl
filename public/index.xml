@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Home on DS Blog</title>
+    <link>https://dskrzypiec.github.io/blog/</link>
+    <description>Recent content in Home on DS Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Aug 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://dskrzypiec.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>First Post</title>
+      <link>https://dskrzypiec.github.io/blog/firstpost/</link>
+      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.github.io/blog/firstpost/</guid>
+      <description>Intro Here will be some description and introduction about some topic on quantiles.
+Headings # Heading 1 ## Heading 2 ### Heading 3 #### Heading 4 ##### Heading 5 ###### Heading 6  Heading 1 Heading 2 Heading 3 Heading 4 Heading 5 Heading 6 Text *This text will be italic* _This will also be italic_ **This text will be bold** __This will also be bold__ _You **can** combine them_  This text will be italic</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://dskrzypiec.github.io/blog/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.github.io/blog/about/</guid>
+      <description>About me and my blog Some info</description>
+    </item>
+    
+  </channel>
+</rss>

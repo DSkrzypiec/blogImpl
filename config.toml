@@ -1,0 +1,41 @@
+baseURL = "https://dskrzypiec.github.io/blog"
+languageCode = "en-us"
+title = "DSkrzypiec Blog"
+theme = "cupper-hugo-theme"
+googleAnalytics = ""
+canonifyURLs = true
+
+[taxonomies]
+  tag = "tags"
+
+[permalinks]
+  post = "/:filename/"
+
+[imaging]
+  quality = 99
+
+[params]
+  description = ""
+  homeMetaContent = ""
+  footer = "Made with [Hugo](https://gohugo.io/). Themed by [Cupper](https://github.com/zwbetz-gh/cupper-hugo-theme)"
+  dateFormat = "Jan 2, 2006"
+  codePenUser = "Damian"
+  katex = true
+
+[menu]
+  [[menu.nav]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.nav]]
+    name = "Blog"
+    url = "/post/"
+    weight = 2
+  [[menu.nav]]
+    name = "Tags"
+    url = "/tags/"
+    weight = 3
+  [[menu.nav]]
+    name = "About"
+    url = "/about/"
+    weight = 4
