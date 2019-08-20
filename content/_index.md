@@ -6,7 +6,7 @@ title: "Home"
 Here are few most recent articles:
 
 {{% ticks %}}
-* First Post {{< ref "/post/FirstPost.md" >}}
-* Here will be next one...
+* [Coming soon] Title...
+* [What quantile really is?]({{< ref "/post/Quantiles.md" >}})
 {{% /ticks %}}
 
