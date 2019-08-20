@@ -7,6 +7,6 @@ Here are few most recent articles:
 
 {{% ticks %}}
 * [Coming soon] Title...
-* [What quantile really is?]({{< ref "/post/Quantiles.md" >}})
+* [What quantile really is?]({{< ref "/post/Quantiles/index.md" >}})
 {{% /ticks %}}
 
