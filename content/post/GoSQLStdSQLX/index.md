@@ -118,11 +118,80 @@ benchmarks.
 
 
 ## Benchmark methodology
-Description of benchmark methodology.
+My first attemp to perform this benchmark was by using standard `go test -bench`
+benchmark. It was somehow ok but it gave me only average time of reading. There 
+was also difference if I would benchmark standard approach first then `sqlx` or
+vice versa.
+
+We have to keep in mind that our benchmark depends on database and its current
+state. To perform faithful benchmark I've proposed the following algorithm:
+
+1. Choose first method (standard vs `sqlx`) of reading at random (with equal
+   distribution)
+2. Perform first method reading
+3. Perform second method reading
+4. Save statistics
+5. Wait for few seconds
+6. Repeat from 1.
+
+So this algorithm performs reading using both methods (sometimes in different 
+order) in a chunk, then waits. In my opinion this approach assures that both
+single reading are performed on database with its similar state. In results I've
+also skipped first five measurements treating it as a warm-up.
+
+In [Appendix](#appendix) there is description of enviorement I've used to
+performe the following results.
+
 
 ## Benchmark results
 Here will be benchmark results in tables and charts.
 
+> Results for 2 columns
+
+|      #Rows| Avg sql time [s]| Avg sqlx time [s]| Diff perc|
+|-----------|---------|----------|------|
+|      1 000|   0.0046|  0.0049| 6.80%|
+|     10 000|   0.0228|  0.0237| 3.89%|
+|    100 000|   0.1992|  0.2021| 1.42%|
+|  1 000 000|   1.5478|  1.5529| 0.33%|
+| 10 000 000|  25.7208| 27.1226| 5.17%|
+
+> Results for 10 columns
+
+|      #Rows| Avg sql time [s]| Avg sqlx time [s]| Diff perc|
+|-----------|--------------|------------|---------|
+|      1 000|  0.0096|  0.0100| 3.52%|
+|     10 000|  0.0557|  0.0587| 5.15%|
+|    100 000|  0.4968|  0.5099| 2.56%|
+|  1 000 000|  6.2670|  6.4906| 3.44%|
+| 10 000 000| 75.9548| 79.2614| 4.17%|
+
+
+{{< figure
+img="BenchmarkResults2columns.jpg" 
+caption="Quantile plot for salaries sample to present how interpolation looks like in this case." 
+command="Resize" 
+options="800x" >}}
+
+
+{{< figure
+img="BenchmarkResults10columns.jpg" 
+caption="Quantile plot for salaries sample to present how interpolation looks like in this case." 
+command="Resize" 
+options="700x" >}}
+
 ## Summary
 Here will be summary.
 
+## Appendix
+
+{{% ticks %}}
+* [Link to benchmark source codes](https://github.com/DSkrzypiec/blogSourceCodes/tree/master/20190823_GoSqlSqlx)
+* OS - `Microsoft Windows 10 Home 10.0 Build 18362`
+* Processor - `Intel Core i5-7200U, 2.50Ghz 2.71Ghz`
+* Hard disk - `LITE-ON CB1-SD256 (SDD)`
+* Database - `PostreSQL 10.10, compiled by Visual C++ build 1800, 64-bit`
+* go version - `go1.13beta1 windows/amd64`
+* go database driver package - `github.com/lib/pq`
+
+{{% /ticks %}}
