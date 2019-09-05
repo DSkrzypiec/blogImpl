@@ -1,8 +1,8 @@
 ---
-date: "2019-08-29"
-tags: ["go", "database"]
+date: "2019-09-05"
+tags: ["benchmark", "database", "go"]
 title: "Go database/sql vs jmoiron/sqlx reading benchmark"
-draft: true
+draft: false
 markup: "mmark"
 ---
 
@@ -56,9 +56,9 @@ This implementation of reading `Points` is independent of specific database. It
 is based only on `database/sql` package and doesn't depends on specific database 
 driver.
 
-There is nothing wrong with this approach but it could be tedious in case when
-you have to read dozens or even hundreds of queries from the database. Then you 
-create (usually) one file per reading containing definition of the type for
+There is nothing wrong with this approach but it could be a bit tedious in case when
+you have to read dozens or even hundreds of queries from the database. In this
+case one usually creates one file per reading containing definition of the type for
 query result, definition for query and reading function. Is there any more compact
 solution? It would be great if something similar to
 [`json.Unmarshal`](https://golang.org/pkg/encoding/json/#Unmarshal), which can
@@ -118,7 +118,7 @@ benchmarks.
 
 
 ## Benchmark methodology
-My first attemp to perform this benchmark was by using standard `go test -bench`
+My first attempt to perform this benchmark was by using standard `go test -bench`
 benchmark. It was somehow ok but it gave me only average time of reading. There 
 was also difference if I would benchmark standard approach first then `sqlx` or
 vice versa.
@@ -139,12 +139,32 @@ order) in a chunk, then waits. In my opinion this approach assures that both
 single reading are performed on database with its similar state. In results I've
 also skipped first five measurements treating it as a warm-up.
 
-In [Appendix](#appendix) there is description of enviorement I've used to
-performe the following results.
+This algorithm was applied for query which returns `1k, 10k, 100k, 1mil and
+10mil` `Points`, 95 times for each case. For further comparison this procedure
+was also applied to extended `Point`s with ten fields (4 x `int`, 3 x `string`,
+3 x `float64`) instead of two.
+
+In [Appendix](#appendix) there is description of environment I've used to
+perform the following results.
 
 
 ## Benchmark results
-Here will be benchmark results in tables and charts.
+Raw benchmark results are composed of two files 
+[BenchResults.txt](https://github.com/DSkrzypiec/blogSourceCodes/blob/master/20190823_GoSqlSqlx/Results/BenchResults.txt)
+and
+[BenchResults_TenCols.txt](https://github.com/DSkrzypiec/blogSourceCodes/blob/master/20190823_GoSqlSqlx/Results/BenchResults_TenCols.txt)
+for two column case and ten column case respectively. Time in those files is
+presented in nanoseconds. To reasonably compare overhead of `sqlx` reading 
+over standard one we should focus on percentage difference (`Diff perc`) 
+defined as
+
+$$
+\frac{time(sqlx) - time(std)}{time(sqlx)}
+$$
+
+The following two tables presents average (from 95 measurements) reading time
+for `database/sql` and `sqlx` package expressed in seconds and theirs percentage
+difference.
 
 > Results for 2 columns
 
@@ -167,21 +187,53 @@ Here will be benchmark results in tables and charts.
 | 10 000 000| 75.9548| 79.2614| 4.17%|
 
 
+Figures _Figure 1_ and _Figure 2_ displays distribution of percentage 
+difference for each number of rows with distinction whenever standard
+`database/sql` reading was first or second in benchmark algorithm. As you can
+see there is significant difference between case when standard reading was first
+and the case where it was executed second. When standard reading was executed
+first then usually `sqlx` reading was faster! It is caused probably by database
+caching rather then unusual behavior of go code. Because of this in mentioned
+benchmark algorithm order of execution was sampled with equal distribution to
+got averaged unbiased results.
+
+Another interesting thing is that with number of rows percentage difference goes
+closer to 0 and variance decreases.
+
 {{< figure
 img="BenchmarkResults2columns.jpg" 
-caption="Quantile plot for salaries sample to present how interpolation looks like in this case." 
+caption="Boxplot of percentage difference in reading time by number of rows - case for two columns Points." 
 command="Resize" 
 options="800x" >}}
 
 
 {{< figure
 img="BenchmarkResults10columns.jpg" 
-caption="Quantile plot for salaries sample to present how interpolation looks like in this case." 
+caption="Boxplot of percentage difference in reading time by number of rows - case for ten columns Points." 
 command="Resize" 
 options="700x" >}}
 
+Using standard `go test -bench` benchmark we can see that `sqlx.Select` also
+does more number of allocations. For reading `10 000` of rows benchmark
+statistics are displayed below:
+
+{{< cmd >}}
+go test -bench=. -benchtime=30s -benchmem
+{{< /cmd >}}
+
+
+{{< figure
+img="goTestBench.jpg" 
+caption="Result of go test bench command for 10k rows reading." 
+command="Original" 
+options="500x" >}}
+
+
 ## Summary
-Here will be summary.
+Based on benchmark results we can answer question about overhead - it's **roughly 
+5%** overhead of database reading using `sqlx` over standard `database/sql` package. 
+Performing the same benchmark in another environment might give slightly different 
+result but I think it shouldn't differ significantly and stays around 5%.
 
 ## Appendix
 
