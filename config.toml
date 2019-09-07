@@ -1,4 +1,4 @@
-baseURL = "https://dskrzypiec.github.io/blog"
+baseURL = "https://dskrzypiec.dev"
 languageCode = "en-us"
 title = "DSkrzypiec Blog"
 theme = "cupper-hugo-theme"
