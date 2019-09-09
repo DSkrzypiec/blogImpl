@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>go on DSkrzypiec Blog</title>
-    <link>https://dskrzypiec.dev/tags/go/</link>
-    <description>Recent content in go on DSkrzypiec Blog</description>
+    <title>benchmark on DSkrzypiec Blog</title>
+    <link>https://dskrzypiec.dev/tags/benchmark/</link>
+    <description>Recent content in benchmark on DSkrzypiec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 05 Sep 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://dskrzypiec.dev/tags/go/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dskrzypiec.dev/tags/benchmark/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,16 +19,6 @@
       <guid>https://dskrzypiec.dev/gosqlstdsqlx/</guid>
       <description>Intro While building most of projects or apps it is very common to read from a database. In go standard way to do that is by using database/sql standard library. To illustrate how it can be done let&#39;s load from database a bunch of Points which are slice of Points defined as follows
  type Point struct { X int Y float64 } type Points []Point  Next listening contains definition of function ReadPoints which for existing *sql.</description>
-    </item>
-    
-    <item>
-      <title>What the quantile really is?</title>
-      <link>https://dskrzypiec.dev/quantiles/</link>
-      <pubDate>Fri, 23 Aug 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://dskrzypiec.dev/quantiles/</guid>
-      <description>Intro For few years when I was practicing data science I&#39;ve used quantiles a lot. I knew what it is and when one should use it. I knew mathematical definition and intuition around quantiles but if someone would ask me to implement it from scratch I wouldn&#39;t know how to do it right away.
-So what is a quantile? It&#39;s a one of most commonly used descriptive statistic. It gives us aggregated information about sample&#39;s distribution.</description>
     </item>
     
   </channel>

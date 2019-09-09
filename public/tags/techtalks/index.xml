@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>techTalks on DSkrzypiec Blog</title>
+    <link>https://dskrzypiec.dev/tags/techtalks/</link>
+    <description>Recent content in techTalks on DSkrzypiec Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 09 Sep 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://dskrzypiec.dev/tags/techtalks/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>My favorite tech talks</title>
+      <link>https://dskrzypiec.dev/favtechtalks/</link>
+      <pubDate>Mon, 09 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.dev/favtechtalks/</guid>
+      <description>Intro I want to share with you a list of my favorite tech talks. I can honestly say this is my hobby. Watching tech talks on YouTube. Here I&#39;ve prepared list of eleven my most liked presentations. For each of them I try to describe why those are special to me and why their are worth watching. Order of titles is not particularly important.
+I wanted to keep this list pretty short (around 10) therefore it&#39;s not complete.</description>
+    </item>
+    
+  </channel>
+</rss>

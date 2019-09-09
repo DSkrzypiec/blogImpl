@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on DS Blog</title>
-    <link>https://dskrzypiec.github.io/blog/tags/</link>
-    <description>Recent content in Tags on DS Blog</description>
+    <title>Tags on DSkrzypiec Blog</title>
+    <link>https://dskrzypiec.dev/tags/</link>
+    <description>Recent content in Tags on DSkrzypiec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 04 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Sep 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://dskrzypiec.github.io/blog/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dskrzypiec.dev/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>R</title>
-      <link>https://dskrzypiec.github.io/blog/tags/r/</link>
-      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      <title>techTalks</title>
+      <link>https://dskrzypiec.dev/tags/techtalks/</link>
+      <pubDate>Mon, 09 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://dskrzypiec.github.io/blog/tags/r/</guid>
+      <guid>https://dskrzypiec.dev/tags/techtalks/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>benchmark</title>
+      <link>https://dskrzypiec.dev/tags/benchmark/</link>
+      <pubDate>Thu, 05 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.dev/tags/benchmark/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>database</title>
+      <link>https://dskrzypiec.dev/tags/database/</link>
+      <pubDate>Thu, 05 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.dev/tags/database/</guid>
       <description></description>
     </item>
     
     <item>
       <title>go</title>
-      <link>https://dskrzypiec.github.io/blog/tags/go/</link>
-      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      <link>https://dskrzypiec.dev/tags/go/</link>
+      <pubDate>Thu, 05 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://dskrzypiec.github.io/blog/tags/go/</guid>
+      <guid>https://dskrzypiec.dev/tags/go/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>stat</title>
-      <link>https://dskrzypiec.github.io/blog/tags/stat/</link>
-      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      <title>stats</title>
+      <link>https://dskrzypiec.dev/tags/stats/</link>
+      <pubDate>Fri, 23 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://dskrzypiec.github.io/blog/tags/stat/</guid>
+      <guid>https://dskrzypiec.dev/tags/stats/</guid>
       <description></description>
     </item>
     

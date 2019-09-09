@@ -6,23 +6,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
   <meta name="generator" content="Hugo 0.57.0-DEV" />
-  <link rel="canonical" href="https://dskrzypiec.github.io/blog/firstpost/">
+  <link rel="canonical" href="https://dskrzypiec.dev/quantiles/">
 
   
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://dskrzypiec.dev/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://dskrzypiec.dev/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://dskrzypiec.dev/favicon-16x16.png">
+  <link rel="manifest" href="https://dskrzypiec.dev/site.webmanifest">
+  <link rel="mask-icon" href="https://dskrzypiec.dev/safari-pinned-tab.svg" color="#000000">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
 
-  <link rel="stylesheet" href="https://dskrzypiec.github.io/blog/css/prism.css" media="none" onload="this.media='all';">
+  <link rel="stylesheet" href="https://dskrzypiec.dev/css/prism.css" media="none" onload="this.media='all';">
 
   
   
-  <link rel="stylesheet" type="text/css" href="https://dskrzypiec.github.io/blog/css/styles.css">
+  <link rel="stylesheet" type="text/css" href="https://dskrzypiec.dev/css/styles.css">
 
   <style id="inverter" media="none">
     html { filter: invert(100%) }
@@ -32,7 +32,7 @@
 
   
   
-  <title>First Post | DS Blog</title>
+  <title>What the quantile really is? | DSkrzypiec Blog</title>
 </head>
 
   <body>
@@ -130,8 +130,8 @@
       <header class="intro-and-nav" role="banner">
   <div>
     <div class="intro">
-      <a class="logo" href="/" aria-label="DS Blog home page">
-        <img src="https://dskrzypiec.github.io/blog/images/logo.svg" alt="">
+      <a class="logo" href="https://dskrzypiec.dev/" aria-label="DSkrzypiec Blog home page">
+        <img src="https://dskrzypiec.dev/images/logo.svg" alt="">
       </a>
       <p class="library-desc">
         
@@ -153,7 +153,7 @@
       
       
       
-      <a href="/blog/" >
+      <a href="https://dskrzypiec.dev/" >
         <svg class="bookmark-icon" aria-hidden="true" focusable="false" viewBox="0 0 40 50">
           <use xlink:href="#bookmark"></use>
         </svg>
@@ -166,7 +166,7 @@
       
       
       
-      <a href="/blog/post/" aria-current="page">
+      <a href="https://dskrzypiec.dev/post/" aria-current="page">
         <svg class="bookmark-icon" aria-hidden="true" focusable="false" viewBox="0 0 40 50">
           <use xlink:href="#bookmark"></use>
         </svg>
@@ -179,7 +179,7 @@
       
       
       
-      <a href="/blog/tags/" >
+      <a href="https://dskrzypiec.dev/tags/" >
         <svg class="bookmark-icon" aria-hidden="true" focusable="false" viewBox="0 0 40 50">
           <use xlink:href="#bookmark"></use>
         </svg>
@@ -192,7 +192,7 @@
       
       
       
-      <a href="/blog/about/" >
+      <a href="https://dskrzypiec.dev/about/" >
         <svg class="bookmark-icon" aria-hidden="true" focusable="false" viewBox="0 0 40 50">
           <use xlink:href="#bookmark"></use>
         </svg>
@@ -212,13 +212,13 @@
       <svg class="bookmark-icon" aria-hidden="true" viewBox="0 0 40 50" focusable="false">
         <use xlink:href="#bookmark"></use>
       </svg>
-      First Post
+      What the quantile really is?
     </h1>
 
     <div class="date">
       
       
-      <strong aria-hidden="true">Publish date: </strong>Aug 4, 2019
+      <strong aria-hidden="true">Publish date: </strong>Aug 23, 2019
       
         
       
@@ -234,7 +234,7 @@
                 <use xlink:href="#tag"></use>
               </svg>
               
-              <a href="https://dskrzypiec.github.io/blog/tags/stat/">stat</a>
+              <a href="https://dskrzypiec.dev/tags/stats/">stats</a>
             </li>
           
             <li>
@@ -242,15 +242,7 @@
                 <use xlink:href="#tag"></use>
               </svg>
               
-              <a href="https://dskrzypiec.github.io/blog/tags/r/">R</a>
-            </li>
-          
-            <li>
-              <svg class="tag-icon" aria-hidden="true" viewBox="0 0 177.16535 177.16535" focusable="false">
-                <use xlink:href="#tag"></use>
-              </svg>
-              
-              <a href="https://dskrzypiec.github.io/blog/tags/go/">go</a>
+              <a href="https://dskrzypiec.dev/tags/go/">go</a>
             </li>
           
         </ul>
@@ -269,8 +261,8 @@
           
           
           
-          <a href="#headings">
-            Headings
+          <a href="#intro">
+            Intro
           </a>
         </li>
       
@@ -279,8 +271,8 @@
           
           
           
-          <a href="#heading-2">
-            Heading 2
+          <a href="#a-bit-of-maths">
+            A bit of maths
           </a>
         </li>
       
@@ -289,8 +281,8 @@
           
           
           
-          <a href="#text">
-            Text
+          <a href="#how-its-calculated">
+            How it&#39;s calculated?
           </a>
         </li>
       
@@ -299,8 +291,18 @@
           
           
           
-          <a href="#lists">
-            Lists
+          <a href="#go-implementation">
+            Go implementation
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#summary">
+            Summary
           </a>
         </li>
       
@@ -310,63 +312,169 @@
 
     
 
+    <h2 id="intro">Intro</h2>
+
+<p>For few years when I was practicing data science I've used
+quantiles a lot. I knew what it is and when one should use it. I knew mathematical
+definition and intuition around quantiles but if someone would ask me to
+implement it from scratch I wouldn't know how to do it right away.</p>
+
+<p>So what is a quantile? It's a one of most commonly used descriptive
+<a href="https://en.wikipedia.org/wiki/Statistic">statistic</a>. It gives us aggregated
+information about sample's distribution. For example let's say we have data sample
+representing salary of employees of some company. Quantile can gives us answer
+on question &quot;How much should I be paid to earn more then 90% of employees?&quot;.
+Let's assume we have a sample</p>
+
+<p><span  class="math">\[ S = \lbrace 140, 80, 70, 200, 100 \rbrace \]</span></p>
+
+<p>How would you answer the question for this sample? Probably by sorting salaries</p>
+
+<p><span  class="math">\[ 70, 80, 100, 140, 200 \]</span></p>
+
+<p>and the answer would be somewhere between <span  class="math">\(140\)</span> and <span  class="math">\(200\)</span>. But where?</p>
+
+<h2 id="a-bit-of-maths">A bit of maths</h2>
+
+<p>Formally if <span  class="math">\(X\)</span> is random variable with distribution <span  class="math">\(P\)</span> and <span  class="math">\(p \in \lbrack
+0, 1 \rbrack\)</span>, then <strong>p-quantile</strong> is value <span  class="math">\(x_p\)</span> of X which satisfy the
+following two inequalities</p>
+
+<p><span  class="math">\[
+P(X \le x_p) \ge p \\
+P(X \ge x_p) \ge 1 - p
+\]</span></p>
+
+<p>But in real-world (statistics) we often don't know the real form of CDF of given
+sample. More interesting question is &quot;how quantile is calculated?&quot;. At first it
+might not be obvious how one can implement quantile calculation just by looking
+at those formulas.</p>
+
+<h2 id="how-its-calculated">How it's calculated?</h2>
+
+<p>Statistics gives us an <em>estimator</em> for calculating quantile. This
+estimator also use <a href="https://en.wikipedia.org/wiki/Order_statistic">order statistics</a>
+of a sample. General form of p-quantile estimator <span  class="math">\(\hat{Q}(p)\)</span> which is used
+in statistical software is as follows</p>
+
+<p><span  class="math">\[
+\hat{Q}(p) = (1 - \gamma(p))X_{(j)} + \gamma(p) X_{(j+1)}
+\]</span></p>
+
+<p>where <span  class="math">\(X_{(j)}\)</span> is j-th order statistics of sample <span  class="math">\(x\)</span>, <span  class="math">\(0 \le \gamma(p) \le
+1\)</span> and</p>
+
+<p><span  class="math">\[
+\frac{j - m}{n} \le p \le \frac{j - m - 1}{n}
+\]</span></p>
+
+<p>where <span  class="math">\(n\)</span> is sample size.</p>
+
+<aside aria-label="note" class="note">
+  <div>
+    <svg class="sign" aria-hidden="true" viewBox="0 0 41.667306 41.66729" focusable="false">
+      <use xlink:href="#info"></use>
+    </svg>
     
+So this estimator is exactly the same as our intuition from the beginning. It
+is somewhere between j-th and (j+1)-th ordered elements. 
 
-<h1 id="intro">Intro</h1>
+  </div>
+</aside>
 
-<p>Here will be some description and introduction about some topic on quantiles.</p>
+<p><strong>But where exactly?</strong> As it turns out there is not a good answer. Obviously we
+need some kind of interpolation with property <span  class="math">\(Q(p) \ge Q(q)\)</span> if <span  class="math">\(p \ge q\)</span>.
+This interpolation is mainly needed for small samples. If in our case sample had
+size of <span  class="math">\(100\)</span> then <span  class="math">\(0.90\)</span> quantile would be 90-th sorted element of the
+sample but in our five elements sample we cannot give specific answer without
+interpolation.
+In paper <a href="https://www.amherst.edu/media/view/129116/original/Sample+Quantiles.pdf"><em>Sample Quantiles in Statistical
+Packages</em></a>
+by Rob T. Hyndman and Yanan Fan there is summary of nine methods of interpolation
+defined in various statistical software.</p>
 
-<h2 id="headings">Headings</h2>
+<p>Here we focus only on one specific method - default method from <strong>R</strong>
+programming language, from function <code>quantile</code> - <code>type = 7</code>. In this case
+<span  class="math">\(j = \lfloor p(n - 1) + 1 \rfloor\)</span> and function <span  class="math">\(\gamma(p)\)</span> is of the form</p>
 
-<pre><code># Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
+<p><span  class="math">\[
+\gamma(p) = p(n - 1) + 1 - \lfloor p(n - 1) + 1 \rfloor
+\]</span></p>
+
+<p>Now we can calculate 0.90-quantile of our five-element salaries sample - <span  class="math">\(n = 5\)</span> and
+<span  class="math">\(p = 0.9\)</span>. As we thought the answer lay somewhere between <span  class="math">\(140\)</span> and <span  class="math">\(200\)</span>
+now it is confirmed by above formulas - <span  class="math">\(j = \lfloor 0.9 \cdot 4 + 1 \rfloor =
+\lfloor 4.6 \rfloor = 4\)</span>. Furthermore <span  class="math">\( \gamma(0.9) = 4.6 - 4 = 0.6\)</span>. Finally
+we can compute</p>
+
+<p><span  class="math">\[
+\hat{Q}(0.9) = (1 - \gamma(0.9))X_{(4)} + \gamma(0.9)X_{(5)} = \\ 
+(1-0.6) \cdot 140 + 0.6 \cdot 200 = 176.0
+\]</span></p>
+
+<p>So using default R method for calculating quantile we should expected final
+result as <span  class="math">\(176\)</span>.</p>
+
+<pre><code class="language-R">quantile(x = c(70, 80, 100, 140, 200), probs = 0.90)
 </code></pre>
 
-<h1 id="heading-1">Heading 1</h1>
+<p>Figure <code>1</code> presents how function <span  class="math">\(\gamma(p)\)</span> interpolates between sample points.
+One can observe that interpolation is linear between nodes. It seems like
+reasonable method of interpolation.</p>
 
-<h2 id="heading-2">Heading 2</h2>
 
-<h3 id="heading-3">Heading 3</h3>
 
-<h4 id="heading-4">Heading 4</h4>
 
-<h5 id="heading-5">Heading 5</h5>
 
-<h6 id="heading-6">Heading 6</h6>
 
-<h2 id="text">Text</h2>
 
-<pre><code>*This text will be italic*
-_This will also be italic_
 
-**This text will be bold**
-__This will also be bold__
 
-_You **can** combine them_
-</code></pre>
 
-<p><em>This text will be italic</em></p>
+  
 
-<p><em>This will also be italic</em></p>
 
-<p><strong>This text will be bold</strong></p>
+<figure role="group" aria-describedby="caption-09d3d8436355f7910f1c0e45fa5e252d">
+  <a href="https://dskrzypiec.dev/quantiles/SalaryQuantilePlot.jpg" class="img-link">
+    <img src="https://dskrzypiec.dev/quantiles/SalaryQuantilePlot_hu0fa22e0c3f018dee247f251e4075b3ac_267648_700x0_resize_q99_box.jpg">
+  </a>
+  <figcaption id="caption-09d3d8436355f7910f1c0e45fa5e252d">
+    Quantile plot for salaries sample to present how interpolation looks like in this case.
+  </figcaption>
+</figure>
 
-<p><strong>This will also be bold</strong></p>
 
-<p><em>You <strong>can</strong> combine them</em></p>
+<h2 id="go-implementation">Go implementation</h2>
 
-<h2 id="lists">Lists</h2>
+<p>Origin of this post came from little task I gave to myself - implementing in go
+bootstrap test for mean equality from paper <em>An Introduction To The Bootstrap</em>
+by Bradley Efron and Robert Tibshirani - revolutionary paper in modern
+statistics. For this implementation I've needed quantile. There is
+<a href="https://github.com/gonum/gonum"><code>gonum</code></a> library in go for mathematical and
+statistical functionalities where one can find implemented quantile function.
+At that point I asked myself a question &quot;what the quantile really is?&quot;. I'm
+aware it's better to use already existing implementation but it was nice
+exercise, especially for someone with statistics or data science background.</p>
 
-<pre><code class="language-R">f &lt;- function(...) {
-    for (l in list(...)) {
-        print(l)
-    }
-}
-</code></pre>
+<p>So I've recreated quantile calculation in go with the same type of interpolation that
+is used as default type in R. It can be found
+<a href="https://github.com/DSkrzypiec/statTest/blob/master/stat/Quantile.go">here</a>.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>In my opinion quantile is one of most frequently used statistic from set of
+descriptive statistics. A sequence of quantiles of a sample gives us quality
+information about its distribution. I hope now, at the end of this post, you
+have an idea how this statistic is calculated in details. In particular it is worth to
+remember that calculated quantile value may doesn't exists in the sample. Also
+in sample with outlier (e.g. <span  class="math">\(\lbrace 0.5, 1.25, 5.32, 3.54, 1321.50 \rbrace\)</span>)
+p-quantiles for p close to <span  class="math">\(1.0\)</span> would be artificial value. It's calculated as
+interpolation between one sample point and the outlier. In case when value of
+calculated quantile is &quot;weird&quot; now you know why.</p>
+
+<p>If your software uses some external library to calculates quantiles make sure
+to know which type of interpolation this implementation is using. In some corner
+cases it might be helpful.</p>
 
   </main>
   <div id="disqus-container">
@@ -389,8 +497,8 @@ _You **can** combine them_
         </div>
       </div>
     </div>
-    <script src="https://dskrzypiec.github.io/blog/js/prism.js"></script>
-<script src="https://dskrzypiec.github.io/blog/js/dom-scripts.js"></script>
+    <script src="https://dskrzypiec.dev/js/prism.js"></script>
+<script src="https://dskrzypiec.dev/js/dom-scripts.js"></script>
 
     
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css" integrity="sha384-dbVIfZGuN1Yq7/1Ocstc1lUEm+AT+/rCkibIcC/OmWo5f0EA48Vf8CytHzGrSwbQ" crossorigin="anonymous">

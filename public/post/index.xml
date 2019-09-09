@@ -1,24 +1,44 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on DS Blog</title>
-    <link>https://dskrzypiec.github.io/blog/post/</link>
-    <description>Recent content in Posts on DS Blog</description>
+    <title>Posts on DSkrzypiec Blog</title>
+    <link>https://dskrzypiec.dev/post/</link>
+    <description>Recent content in Posts on DSkrzypiec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 04 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Sep 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://dskrzypiec.github.io/blog/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dskrzypiec.dev/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>First Post</title>
-      <link>https://dskrzypiec.github.io/blog/firstpost/</link>
-      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      <title>My favorite tech talks</title>
+      <link>https://dskrzypiec.dev/favtechtalks/</link>
+      <pubDate>Mon, 09 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://dskrzypiec.github.io/blog/firstpost/</guid>
-      <description>Intro Here will be some description and introduction about some topic on quantiles.
-Headings # Heading 1 ## Heading 2 ### Heading 3 #### Heading 4 ##### Heading 5 ###### Heading 6  Heading 1 Heading 2 Heading 3 Heading 4 Heading 5 Heading 6 Text *This text will be italic* _This will also be italic_ **This text will be bold** __This will also be bold__ _You **can** combine them_  This text will be italic</description>
+      <guid>https://dskrzypiec.dev/favtechtalks/</guid>
+      <description>Intro I want to share with you a list of my favorite tech talks. I can honestly say this is my hobby. Watching tech talks on YouTube. Here I&#39;ve prepared list of eleven my most liked presentations. For each of them I try to describe why those are special to me and why their are worth watching. Order of titles is not particularly important.
+I wanted to keep this list pretty short (around 10) therefore it&#39;s not complete.</description>
+    </item>
+    
+    <item>
+      <title>Go database/sql vs jmoiron/sqlx reading benchmark</title>
+      <link>https://dskrzypiec.dev/gosqlstdsqlx/</link>
+      <pubDate>Thu, 05 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.dev/gosqlstdsqlx/</guid>
+      <description>Intro While building most of projects or apps it is very common to read from a database. In go standard way to do that is by using database/sql standard library. To illustrate how it can be done let&#39;s load from database a bunch of Points which are slice of Points defined as follows
+ type Point struct { X int Y float64 } type Points []Point  Next listening contains definition of function ReadPoints which for existing *sql.</description>
+    </item>
+    
+    <item>
+      <title>What the quantile really is?</title>
+      <link>https://dskrzypiec.dev/quantiles/</link>
+      <pubDate>Fri, 23 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.dev/quantiles/</guid>
+      <description>Intro For few years when I was practicing data science I&#39;ve used quantiles a lot. I knew what it is and when one should use it. I knew mathematical definition and intuition around quantiles but if someone would ask me to implement it from scratch I wouldn&#39;t know how to do it right away.
+So what is a quantile? It&#39;s a one of most commonly used descriptive statistic. It gives us aggregated information about sample&#39;s distribution.</description>
     </item>
     
   </channel>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>stats on DSkrzypiec Blog</title>
+    <link>https://dskrzypiec.dev/tags/stats/</link>
+    <description>Recent content in stats on DSkrzypiec Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 23 Aug 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://dskrzypiec.dev/tags/stats/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>What the quantile really is?</title>
+      <link>https://dskrzypiec.dev/quantiles/</link>
+      <pubDate>Fri, 23 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.dev/quantiles/</guid>
+      <description>Intro For few years when I was practicing data science I&#39;ve used quantiles a lot. I knew what it is and when one should use it. I knew mathematical definition and intuition around quantiles but if someone would ask me to implement it from scratch I wouldn&#39;t know how to do it right away.
+So what is a quantile? It&#39;s a one of most commonly used descriptive statistic. It gives us aggregated information about sample&#39;s distribution.</description>
+    </item>
+    
+  </channel>
+</rss>

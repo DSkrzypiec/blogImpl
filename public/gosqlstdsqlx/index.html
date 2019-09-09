@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
   <meta name="generator" content="Hugo 0.57.0-DEV" />
-  <link rel="canonical" href="https://dskrzypiec.dev/tags/">
+  <link rel="canonical" href="https://dskrzypiec.dev/gosqlstdsqlx/">
 
   
 
@@ -32,7 +32,7 @@
 
   
   
-  <title>Tags | DSkrzypiec Blog</title>
+  <title>Go database/sql vs jmoiron/sqlx reading benchmark | DSkrzypiec Blog</title>
 </head>
 
   <body>
@@ -166,7 +166,7 @@
       
       
       
-      <a href="https://dskrzypiec.dev/post/" >
+      <a href="https://dskrzypiec.dev/post/" aria-current="page">
         <svg class="bookmark-icon" aria-hidden="true" focusable="false" viewBox="0 0 40 50">
           <use xlink:href="#bookmark"></use>
         </svg>
@@ -179,7 +179,7 @@
       
       
       
-      <a href="https://dskrzypiec.dev/tags/" aria-current="page">
+      <a href="https://dskrzypiec.dev/tags/" >
         <svg class="bookmark-icon" aria-hidden="true" focusable="false" viewBox="0 0 40 50">
           <use xlink:href="#bookmark"></use>
         </svg>
@@ -208,87 +208,511 @@
         <div>
           
   <main id="main">
-    <h1>Tags</h1>
-    <ul class="patterns-list">
+    <h1>
+      <svg class="bookmark-icon" aria-hidden="true" viewBox="0 0 40 50" focusable="false">
+        <use xlink:href="#bookmark"></use>
+      </svg>
+      Go database/sql vs jmoiron/sqlx reading benchmark
+    </h1>
+
+    <div class="date">
       
       
+      <strong aria-hidden="true">Publish date: </strong>Sep 5, 2019
+      
         
-        
-        
-        <li>
-          <h2>
-            <a href="https://dskrzypiec.dev/tags/go/">
+      
+    </div>
+
+    
+      <div class="tags">
+        <strong aria-hidden="true">Tags: </strong>
+        <ul aria-label="tags">
+          
+            <li>
               <svg class="tag-icon" aria-hidden="true" viewBox="0 0 177.16535 177.16535" focusable="false">
                 <use xlink:href="#tag"></use>
               </svg>
-              (2) go
-            </a>
-          </h2>
-        </li>
-        
-      
-        
-        
-        
-        <li>
-          <h2>
-            <a href="https://dskrzypiec.dev/tags/benchmark/">
+              
+              <a href="https://dskrzypiec.dev/tags/benchmark/">benchmark</a>
+            </li>
+          
+            <li>
               <svg class="tag-icon" aria-hidden="true" viewBox="0 0 177.16535 177.16535" focusable="false">
                 <use xlink:href="#tag"></use>
               </svg>
-              (1) benchmark
-            </a>
-          </h2>
-        </li>
-        
-      
-        
-        
-        
-        <li>
-          <h2>
-            <a href="https://dskrzypiec.dev/tags/database/">
+              
+              <a href="https://dskrzypiec.dev/tags/database/">database</a>
+            </li>
+          
+            <li>
               <svg class="tag-icon" aria-hidden="true" viewBox="0 0 177.16535 177.16535" focusable="false">
                 <use xlink:href="#tag"></use>
               </svg>
-              (1) database
-            </a>
-          </h2>
-        </li>
-        
+              
+              <a href="https://dskrzypiec.dev/tags/go/">go</a>
+            </li>
+          
+        </ul>
+      </div>
+    
+    
+    
       
-        
-        
-        
+
+  <nav class="toc" aria-labelledby="toc-heading">
+    <h2 id="toc-heading">Table of contents</h2>
+    <ol>
+      
         <li>
-          <h2>
-            <a href="https://dskrzypiec.dev/tags/stats/">
-              <svg class="tag-icon" aria-hidden="true" viewBox="0 0 177.16535 177.16535" focusable="false">
-                <use xlink:href="#tag"></use>
-              </svg>
-              (1) stats
-            </a>
-          </h2>
+          
+          
+          
+          
+          <a href="#intro">
+            Intro
+          </a>
         </li>
-        
       
-        
-        
-        
         <li>
-          <h2>
-            <a href="https://dskrzypiec.dev/tags/techtalks/">
-              <svg class="tag-icon" aria-hidden="true" viewBox="0 0 177.16535 177.16535" focusable="false">
-                <use xlink:href="#tag"></use>
-              </svg>
-              (1) techtalks
-            </a>
-          </h2>
+          
+          
+          
+          
+          <a href="#jmoironsqlx-package">
+            jmoiron/sqlx package
+          </a>
         </li>
-        
       
-    </ul>
+        <li>
+          
+          
+          
+          
+          <a href="#benchmark-methodology">
+            Benchmark methodology
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#benchmark-results">
+            Benchmark results
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#summary">
+            Summary
+          </a>
+        </li>
+      
+        <li>
+          
+          
+          
+          
+          <a href="#appendix">
+            Appendix
+          </a>
+        </li>
+      
+    </ol>
+  </nav>
+
+
+    
+
+    <h2 id="intro">Intro</h2>
+
+<p>While building most of projects or apps it is very common to read from a
+database. In go standard way to do that is by using
+<a href="https://golang.org/pkg/database/sql/">database/sql</a> standard library.
+To illustrate how it can be done let's load from database a bunch of
+<code>Points</code> which are slice of <code>Point</code>s defined as follows</p>
+
+<div class="code-annotated "><code>
+type Point struct {
+    X int
+    Y float64
+}
+
+type Points []Point
+</code></div>
+
+<p>Next listening contains definition of function <code>ReadPoints</code> which for existing
+<a href="https://golang.org/pkg/database/sql/#DB"><code>*sql.DB</code></a> database connection reads
+<code>Points</code>. It tries to execute SQL query passed as string from function (not
+listed) <code>PointsQuery</code>. Then slice for results is created and in <code>for</code> loop
+there is reading row-per-row and writing points into <code>points</code> slice.</p>
+
+<div class="code-annotated "><code>
+func ReadPoints(dbConn *sql.DB) Points {
+    rows, qErr := dbConn.Query(PointsQuery())
+    if qErr != nil {
+        fmt.Println(&#34;Couldn&#39;t execute the query&#34;)
+    }
+    defer rows.Close()
+
+    points := make(Points, 0, 10000)
+    var (
+        x int
+        y float64
+    )
+
+    for rows.Next() {
+        rows.Scan(&amp;x, &amp;y)
+        points = append(points, Point{x, y})
+    }
+    return points
+}
+</code></div>
+
+<p>This implementation of reading <code>Points</code> is independent of specific database. It
+is based only on <code>database/sql</code> package and doesn't depends on specific database
+driver.</p>
+
+<p>There is nothing wrong with this approach but it could be a bit tedious in case when
+you have to read dozens or even hundreds of queries from the database. In this
+case one usually creates one file per reading containing definition of the type for
+query result, definition for query and reading function. Is there any more compact
+solution? It would be great if something similar to
+<a href="https://golang.org/pkg/encoding/json/#Unmarshal"><code>json.Unmarshal</code></a>, which can
+use struct's tags to read and writes JSONs, exists. Fortunately there is
+<a href="https://github.com/jmoiron/sqlx"><code>jmoiron/sqlx</code> package</a>.</p>
+
+<h2 id="jmoironsqlx-package"><code>jmoiron/sqlx</code> package</h2>
+
+<p>Package <code>sqlx</code> is open-source and MIT-licensed go package created to extend
+functionalities from standard <code>database/sql</code> package.</p>
+
+<blockquote class="blockquote">
+  <p>
+    sqlx is a library which provides a set of extensions on go&rsquo;s standard
+<code>database/sql</code> library. The sqlx versions of <code>sql.DB</code>, <code>sql.TX</code>, <code>sql.Stmt</code>, et al. all
+leave the underlying interfaces untouched, so that their interfaces are a
+superset on the standard ones. This makes it relatively painless to integrate
+existing codebases using <code>database/sql</code> with sqlx.
+    
+      <br>
+      <span class="author">&mdash; sqlx README</span>
+    
+  </p>
+</blockquote>
+
+<p>Regarding reading from database we are especially interested in
+<a href="https://godoc.org/github.com/jmoiron/sqlx#DB.Select"><code>sqlx.Select</code></a>
+function. To perform reading <code>Points</code> using this function we have to add
+<a href="https://stackoverflow.com/questions/10858787/what-are-the-uses-for-tags-in-go">tags</a>
+in <code>Point</code> (assuming query contains column names &quot;pointX&quot; and &quot;pointY&quot;) structure
+as follows</p>
+
+<div class="code-annotated "><code>
+type Point struct {
+    X int     `db:&#34;pointX&#34;`
+    Y float64 `db:&#34;pointY&#34;`
+}
+</code></div>
+
+<p>Now we can implement alternative (compact) version of function <code>ReadPoints</code>
+using package <code>sqlx</code>. This version creates new slice of points, passes it into
+<code>sqlx.Select</code> function together with the query to read points from database.</p>
+
+<div class="code-annotated "><code>
+func ReadPointsSQLX(dbConn *sqlx.DB) Points {
+    points := make(Points, 0, 10000)
+
+    err := sqlx.Select(&amp;points, PointsQuery())
+    if err != nil {
+        fmt.Println(&#34;Error while reading Points.&#34;)
+    }
+
+    return points
+}
+</code></div>
+
+<p>Obviously <code>sqlx.Select</code> uses <a href="https://golang.org/pkg/reflect/">reflection</a>
+to deal with its input data (passes as <code>interface{}</code>). Therefore my question is
+<strong>How much do we pay for runtime overhead</strong> using package <code>sqlx</code> instead of
+standard approach? I want to answer this question by performing series of
+benchmarks.</p>
+
+<h2 id="benchmark-methodology">Benchmark methodology</h2>
+
+<p>My first attempt to perform this benchmark was by using standard <code>go test -bench</code>
+benchmark. It was somehow ok but it gave me only average time of reading. There
+was also difference if I would benchmark standard approach first then <code>sqlx</code> or
+vice versa.</p>
+
+<p>We have to keep in mind that our benchmark depends on database and its current
+state. To perform faithful benchmark I've proposed the following algorithm:</p>
+
+<ol>
+<li>Choose first method (standard vs <code>sqlx</code>) of reading at random (with equal
+distribution)</li>
+<li>Perform first method reading</li>
+<li>Perform second method reading</li>
+<li>Save statistics</li>
+<li>Wait for few seconds</li>
+<li>Repeat from 1.</li>
+</ol>
+
+<p>So this algorithm performs reading using both methods (sometimes in different
+order) in a chunk, then waits. In my opinion this approach assures that both
+single reading are performed on database with its similar state. In results I've
+also skipped first five measurements treating it as a warm-up.</p>
+
+<p>This algorithm was applied for query which returns <code>1k, 10k, 100k, 1mil and
+10mil</code> <code>Points</code>, 95 times for each case. For further comparison this procedure
+was also applied to extended <code>Point</code>s with ten fields (4 x <code>int</code>, 3 x <code>string</code>,
+3 x <code>float64</code>) instead of two.</p>
+
+<p>In <a href="#appendix">Appendix</a> there is description of environment I've used to
+perform the following results.</p>
+
+<h2 id="benchmark-results">Benchmark results</h2>
+
+<p>Raw benchmark results are composed of two files
+<a href="https://github.com/DSkrzypiec/blogSourceCodes/blob/master/20190823_GoSqlSqlx/Results/BenchResults.txt">BenchResults.txt</a>
+and
+<a href="https://github.com/DSkrzypiec/blogSourceCodes/blob/master/20190823_GoSqlSqlx/Results/BenchResults_TenCols.txt">BenchResults_TenCols.txt</a>
+for two column case and ten column case respectively. Time in those files is
+presented in nanoseconds. To reasonably compare overhead of <code>sqlx</code> reading
+over standard one we should focus on percentage difference (<code>Diff perc</code>)
+defined as</p>
+
+<p><span  class="math">\[
+\frac{time(sqlx) - time(std)}{time(sqlx)}
+\]</span></p>
+
+<p>The following two tables presents average (from 95 measurements) reading time
+for <code>database/sql</code> and <code>sqlx</code> package expressed in seconds and theirs percentage
+difference.</p>
+
+<blockquote>
+<p>Results for 2 columns</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+<th>#Rows</th>
+<th>Avg sql time [s]</th>
+<th>Avg sqlx time [s]</th>
+<th>Diff perc</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1 000</td>
+<td>0.0046</td>
+<td>0.0049</td>
+<td>6.80%</td>
+</tr>
+
+<tr>
+<td>10 000</td>
+<td>0.0228</td>
+<td>0.0237</td>
+<td>3.89%</td>
+</tr>
+
+<tr>
+<td>100 000</td>
+<td>0.1992</td>
+<td>0.2021</td>
+<td>1.42%</td>
+</tr>
+
+<tr>
+<td>1 000 000</td>
+<td>1.5478</td>
+<td>1.5529</td>
+<td>0.33%</td>
+</tr>
+
+<tr>
+<td>10 000 000</td>
+<td>25.7208</td>
+<td>27.1226</td>
+<td>5.17%</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+<p>Results for 10 columns</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+<th>#Rows</th>
+<th>Avg sql time [s]</th>
+<th>Avg sqlx time [s]</th>
+<th>Diff perc</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1 000</td>
+<td>0.0096</td>
+<td>0.0100</td>
+<td>3.52%</td>
+</tr>
+
+<tr>
+<td>10 000</td>
+<td>0.0557</td>
+<td>0.0587</td>
+<td>5.15%</td>
+</tr>
+
+<tr>
+<td>100 000</td>
+<td>0.4968</td>
+<td>0.5099</td>
+<td>2.56%</td>
+</tr>
+
+<tr>
+<td>1 000 000</td>
+<td>6.2670</td>
+<td>6.4906</td>
+<td>3.44%</td>
+</tr>
+
+<tr>
+<td>10 000 000</td>
+<td>75.9548</td>
+<td>79.2614</td>
+<td>4.17%</td>
+</tr>
+</tbody>
+</table>
+
+<p>Figures <em>Figure 1</em> and <em>Figure 2</em> displays distribution of percentage
+difference for each number of rows with distinction whenever standard
+<code>database/sql</code> reading was first or second in benchmark algorithm. As you can
+see there is significant difference between case when standard reading was first
+and the case where it was executed second. When standard reading was executed
+first then usually <code>sqlx</code> reading was faster! It is caused probably by database
+caching rather then unusual behavior of go code. Because of this in mentioned
+benchmark algorithm order of execution was sampled with equal distribution to
+got averaged unbiased results.</p>
+
+<p>Another interesting thing is that with number of rows percentage difference goes
+closer to 0 and variance decreases.</p>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<figure role="group" aria-describedby="caption-0d165b8308220e3649a8010ef9db7e9e">
+  <a href="https://dskrzypiec.dev/gosqlstdsqlx/BenchmarkResults2columns.jpg" class="img-link">
+    <img src="https://dskrzypiec.dev/gosqlstdsqlx/BenchmarkResults2columns_hu21b9e49ea1be57fda8844b1d6074f367_347328_800x0_resize_q99_box.jpg">
+  </a>
+  <figcaption id="caption-0d165b8308220e3649a8010ef9db7e9e">
+    Boxplot of percentage difference in reading time by number of rows - case for two columns Points.
+  </figcaption>
+</figure>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<figure role="group" aria-describedby="caption-62b80e307d9d42775a327589103618ef">
+  <a href="https://dskrzypiec.dev/gosqlstdsqlx/BenchmarkResults10columns.jpg" class="img-link">
+    <img src="https://dskrzypiec.dev/gosqlstdsqlx/BenchmarkResults10columns_hu21b9e49ea1be57fda8844b1d6074f367_342140_700x0_resize_q99_box.jpg">
+  </a>
+  <figcaption id="caption-62b80e307d9d42775a327589103618ef">
+    Boxplot of percentage difference in reading time by number of rows - case for ten columns Points.
+  </figcaption>
+</figure>
+
+
+<p>Using standard <code>go test -bench</code> benchmark we can see that <code>sqlx.Select</code> also
+does more number of allocations. For reading <code>10 000</code> of rows benchmark
+statistics are displayed below:</p>
+
+<pre class="cmd"><code>
+go test -bench=. -benchtime=30s -benchmem</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<figure role="group" aria-describedby="caption-3911876424592c651c961598c1929ee4">
+  <a href="https://dskrzypiec.dev/gosqlstdsqlx/goTestBench.JPG" class="img-link">
+    <img src="https://dskrzypiec.dev/gosqlstdsqlx/goTestBench.JPG">
+  </a>
+  <figcaption id="caption-3911876424592c651c961598c1929ee4">
+    Result of go test bench command for 10k rows reading.
+  </figcaption>
+</figure>
+
+
+<h2 id="summary">Summary</h2>
+
+<p>Based on benchmark results we can answer question about overhead - it's <strong>roughly
+5%</strong> overhead of database reading using <code>sqlx</code> over standard <code>database/sql</code> package.
+Performing the same benchmark in another environment might give slightly different
+result but I think it shouldn't differ significantly and stays around 5%.</p>
+
+<h2 id="appendix">Appendix</h2>
+
+<div class="ticks">
+  <ul>
+<li><a href="https://github.com/DSkrzypiec/blogSourceCodes/tree/master/20190823_GoSqlSqlx">Link to benchmark source codes</a></li>
+<li>OS - <code>Microsoft Windows 10 Home 10.0 Build 18362</code></li>
+<li>Processor - <code>Intel Core i5-7200U, 2.50Ghz 2.71Ghz</code></li>
+<li>Hard disk - <code>LITE-ON CB1-SD256 (SDD)</code></li>
+<li>Database - <code>PostreSQL 10.10, compiled by Visual C++ build 1800, 64-bit</code></li>
+<li>go version - <code>go1.13beta1 windows/amd64</code></li>
+<li>go database driver package - <code>github.com/lib/pq</code></li>
+</ul>
+</div>
+
   </main>
+  <div id="disqus-container">
+  
+</div>
+
 
           <footer role="contentinfo">
   <div>
