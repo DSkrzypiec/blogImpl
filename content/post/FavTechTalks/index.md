@@ -1,5 +1,5 @@
 ---
-date: "2019-09-09"
+date: "2019-09-12"
 tags: ["techTalks"]
 title: "My favorite tech talks"
 draft: false
@@ -24,6 +24,16 @@ seen it but if not (hopefully) I would enjoy something new.
 
 ## "From Vim muggle to wizard in ten easy steps" - Erik Falor [Openwest 2015]
 **Link:** https://www.youtube.com/watch?v=MquaityA1SM
+
+It's my favorite talk in **vim overview** category. I'd recommended this
+presentation to anyone who wants to check out what is vim, what it does and why it's
+cool. Erik has prepared very good presentation. Besides presenting ten selected
+features of vim he also mentioned about history of text editors and vim. This
+talk is in form of live coding but very well prepared. There is no typos, delays
+and so on. The pace of presentation is rather fast but for an overview I think
+it's excellent. I really enjoyed listening to this talk. I think after this talk
+I've deep dived into vim.
+
 
 ## "Advanced Python (or understanding Python)" - Thomas Wouters [Google 2007]
 **Link:** https://www.youtube.com/watch?v=E_kZDvwofHY
@@ -54,3 +64,4 @@ seen it but if not (hopefully) I would enjoy something new.
 
 ## Summary
 Here will be summary :) 
+
