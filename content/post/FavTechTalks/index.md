@@ -22,6 +22,8 @@ seen it but if not (hopefully) I would enjoy something new.
 ## "Data-Oriented Design and C++" - Mike Acton [CppCon 2014]
 **Link:** https://www.youtube.com/watch?v=rX0ItVEVjHc
 
+I like this talk because I have very similar 
+
 ## "From Vim muggle to wizard in ten easy steps" - Erik Falor [Openwest 2015]
 **Link:** https://www.youtube.com/watch?v=MquaityA1SM
 
@@ -47,8 +49,24 @@ I've deep dived into vim.
 ## "Go Concurrency Patterns" - Rob Pike [Google I/O 2012]
 **Link:** https://www.youtube.com/watch?v=f6kdp27TYZs
 
+I've seen few Rob's talks and each one of them was well prepared and very well
+presented. This one I've seen in my early days of learning go and it gave
+me a glimpse of what concurrent programming looks like in go. It gave me extra
+motivation. I've done some examples and read 
+[_CSP_](https://dl.acm.org/citation.cfm?id=3921).
+Examples in this talk are very well selected - rather easy but precisely 
+presenting ideas of main concepts regarding concurrency in go.
+If you want to see why concurrency is fun in go in about 30 minutes it's the
+best source IMO.
+
+
 ## "Growing a Language" - Guy L. Steel Jr. [1998]
 **Link:** https://www.youtube.com/watch?v=_ahvzDzKdB0
+
+This talk is very special becuase of its form. I cannot say more without
+spoilers but IMO the idea for this talk is great! Presentation is now over
+twenty years old but characteristics Guy L. Steel gave on developing programming
+language are mostly still accurate.
 
 ## "Efficiency with Algorithms, Performance with Data Structures" - Chandler Carruth [CppCon 2014]
 **Link:** https://www.youtube.com/watch?v=fHNmRkzxHWs
