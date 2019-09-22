@@ -14,15 +14,15 @@ are special to me and why their are worth watching. Order of titles is not
 particularly important. 
 
 I wanted to keep this list pretty short (around 10) therefore it's not complete.
-I've selected only fraction of those I really like. Nevertheless please let me
-know if you've watched tech talk which had great impact on you. I've probably 
-seen it but if not (hopefully) I would enjoy something new.
-
+I've selected only fraction of those I really like. 
 
 ## "Data-Oriented Design and C++" - Mike Acton [CppCon 2014]
 **Link:** https://www.youtube.com/watch?v=rX0ItVEVjHc
 
-I like this talk because I have very similar 
+I put this talk first because it's special for me. This talk points many 
+programming approaches and attitudes that are close to my heart. Obviously it's
+about data-oriented design but Mike points several general 
+
 
 ## "From Vim muggle to wizard in ten easy steps" - Erik Falor [Openwest 2015]
 **Link:** https://www.youtube.com/watch?v=MquaityA1SM
@@ -40,8 +40,12 @@ I've deep dived into vim.
 ## "Advanced Python (or understanding Python)" - Thomas Wouters [Google 2007]
 **Link:** https://www.youtube.com/watch?v=E_kZDvwofHY
 
+TODO: Forth
+
 ## "Go: building on the shoulders of giants and stepping on a few toes" - Steve Francia [2018]
 **Link:** https://www.youtube.com/watch?v=sX8r6zATHGU
+
+TODO: Third
 
 ## "Why C++ Sails When the Vasa Sank" - Scott Meyers [2014]
 **Link:** https://www.youtube.com/watch?v=ltCgzYcpFUI
@@ -63,16 +67,25 @@ best source IMO.
 ## "Growing a Language" - Guy L. Steel Jr. [1998]
 **Link:** https://www.youtube.com/watch?v=_ahvzDzKdB0
 
-This talk is very special becuase of its form. I cannot say more without
+This talk is very special because of its form. I cannot say more without
 spoilers but IMO the idea for this talk is great! Presentation is now over
 twenty years old but characteristics Guy L. Steel gave on developing programming
 language are mostly still accurate.
 
+
 ## "Efficiency with Algorithms, Performance with Data Structures" - Chandler Carruth [CppCon 2014]
 **Link:** https://www.youtube.com/watch?v=fHNmRkzxHWs
 
+
 ## "Rich Code for Tiny Computers: A Simple Commodore 64 Game in C++17" - Jason Turner [CppCon 2016]
 **Link:** https://www.youtube.com/watch?v=zBkNBP00wJE
+
+Very interesting talk! As title suggests in this talk Jason Turner presents how
+to implement "Pong" in C++17 and port it onto Commodore 64. Presentation is in
+form of live coding (most parts was prepared beforehand). It was a pleasure to
+watch how "zero overhead" in C++ looks like in action. This talk is both fun to
+watch and also very inspiring learning modern C++. 
+
 
 ## "Cpu Caches and Why You Care" - Scott Meyers [code::dive conference 2014]
 **Link:** https://www.youtube.com/watch?v=WDIkqP4JbkE
