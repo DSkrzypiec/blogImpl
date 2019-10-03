@@ -1,5 +1,5 @@
 ---
-date: "2019-09-12"
+date: "2019-10-03"
 tags: ["techTalks"]
 title: "My favorite tech talks"
 draft: false
@@ -21,7 +21,8 @@ I've selected only fraction of those I really like.
 
 I put this talk first because it's special for me. This talk points many 
 programming approaches and attitudes that are close to my heart. Obviously it's
-about data-oriented design but Mike points several general 
+about data-oriented design but Mike points several general "truths" 
+
 
 
 ## "From Vim muggle to wizard in ten easy steps" - Erik Falor [Openwest 2015]
@@ -40,15 +41,31 @@ I've deep dived into vim.
 ## "Advanced Python (or understanding Python)" - Thomas Wouters [Google 2007]
 **Link:** https://www.youtube.com/watch?v=E_kZDvwofHY
 
-TODO: Forth
+This talk is from 2007. I've watched it around 2015, when I've already "know" Python
+and I was shocked. Despite being few years old this talk contains very
+detailed information about python fundamentals and its design. Till this talk
+I've never seen something similar regarding Python. In case when you're already
+experienced programmer and you're familiar with several programming languages
+and you want to know what is Python this is IMO best talk you can get.
+For beginners it might be too fast paced and a bit too advanced. I'd still
+recommend it to anyone but not everyone will be able to learn Python from this
+talk.
+
 
 ## "Go: building on the shoulders of giants and stepping on a few toes" - Steve Francia [2018]
 **Link:** https://www.youtube.com/watch?v=sX8r6zATHGU
 
-TODO: Third
+This talks is probably my favorite **Go overview** kind of talk. I very
+appreciate history background and many well selected quotes. Presentation is
+well structured and examples are very carefully prepared. I've rewatched this
+talk many times. If you want to know why Go has been created and learn its most
+common characterization this talk is a very good source. 
+
 
 ## "Why C++ Sails When the Vasa Sank" - Scott Meyers [2014]
 **Link:** https://www.youtube.com/watch?v=ltCgzYcpFUI
+
+// TODO
 
 ## "Go Concurrency Patterns" - Rob Pike [Google I/O 2012]
 **Link:** https://www.youtube.com/watch?v=f6kdp27TYZs
@@ -87,12 +104,18 @@ watch how "zero overhead" in C++ looks like in action. This talk is both fun to
 watch and also very inspiring learning modern C++. 
 
 
-## "Cpu Caches and Why You Care" - Scott Meyers [code::dive conference 2014]
-**Link:** https://www.youtube.com/watch?v=WDIkqP4JbkE
-
 ## "Linus Torvalds on git" - Linus Torvalds [Google 2007]
 **Link:** https://www.youtube.com/watch?v=4XpnKHJAok8
 
+[Git](https://www.git-scm.com/) nowadays is used every in software development.
+This talk is presented by primary Git creator and designer - Linus Torvalds.
+Linus describe Git and its features, compares it to another version control
+management tools. During this talk you can find many interesting facts about Git
+which you might not heard before. I think now it's one of the classic tech
+talks. I'd recommend this talk also for Git users and for ones who want to start
+learning Git.
+
+
 ## Summary
-Here will be summary :) 
+
 
