@@ -1,5 +1,5 @@
 ---
-date: "2019-10-03"
+date: "2019-10-05"
 tags: ["techTalks"]
 title: "My favorite tech talks"
 draft: false
@@ -16,13 +16,19 @@ particularly important.
 I wanted to keep this list pretty short (around 10) therefore it's not complete.
 I've selected only fraction of those I really like. 
 
+
 ## "Data-Oriented Design and C++" - Mike Acton [CppCon 2014]
 **Link:** https://www.youtube.com/watch?v=rX0ItVEVjHc
 
 I put this talk first because it's special for me. This talk points many 
-programming approaches and attitudes that are close to my heart. Obviously it's
-about data-oriented design but Mike points several general "truths" 
-
+programming approaches and attitudes that are close to my heart. In my past 
+I've got to deal with developers who didn't understand the problem they were 
+solving using software. Software they produced was very complex, 
+over-engineered and performance was very poor. I always believed that
+understanding and focusing on the problem was the most important thing. Next one
+is to develop custom solution which is easy after the first step. Mike talks
+about it and many other things which are very good approaches to produce
+software. I'd recommend this talk to every programmer.
 
 
 ## "From Vim muggle to wizard in ten easy steps" - Erik Falor [Openwest 2015]
@@ -65,7 +71,13 @@ common characterization this talk is a very good source.
 ## "Why C++ Sails When the Vasa Sank" - Scott Meyers [2014]
 **Link:** https://www.youtube.com/watch?v=ltCgzYcpFUI
 
-// TODO
+This presentation is one of less technical talk then most of Scott's talk. But I
+like it very much. It presents how C++ looks like and in which direction it's
+going. Scott Meyers is a great performer, his presentations are always well
+prepared. Watching this talk you can feel his enormous experience regarding
+C++ and the community. I'd recommend this talk specially for people who are
+scared of C++'s increasing complexity. 
+
 
 ## "Go Concurrency Patterns" - Rob Pike [Google I/O 2012]
 **Link:** https://www.youtube.com/watch?v=f6kdp27TYZs
@@ -93,6 +105,14 @@ language are mostly still accurate.
 ## "Efficiency with Algorithms, Performance with Data Structures" - Chandler Carruth [CppCon 2014]
 **Link:** https://www.youtube.com/watch?v=fHNmRkzxHWs
 
+After university I've been learned all of fancy data structures and I really
+believed that those actually matters in term of performance. This was first talk
+I've realized that hardware matters. And also that not everything that seems
+better in theory is better in practice. The first time I've watched this talk
+I've learned a great deal and I was shocked in the same time. After that I
+watched every Chandler's talk and everyone was great! But I've put this one on
+the list because it was first and I think most inspiring.
+
 
 ## "Rich Code for Tiny Computers: A Simple Commodore 64 Game in C++17" - Jason Turner [CppCon 2016]
 **Link:** https://www.youtube.com/watch?v=zBkNBP00wJE
@@ -117,5 +137,6 @@ learning Git.
 
 
 ## Summary
-
+Those talks were for me a source of knowledge, inspiration, motivation and fun!
+That is the reason I wanted to share this list with you.
 
