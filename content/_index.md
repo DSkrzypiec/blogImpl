@@ -6,6 +6,8 @@ title: "Home"
 List of posts:
 
 {{% ticks %}}
+* [Coming next] Make R packages user-friendly
+* [2019-10-11] [Vim movement challenge]({{< ref "/post/VimMovChallenge/index.md" >}})
 * [2019-10-05] [My favorite tech talks]({{< ref "/post/FavTechTalks/index.md" >}})
 * [2019-09-05] [Go *database/sql* vs *github.com/jmoiron/sqlx* reading
   benchmark]({{< ref "/post/GoSQLStdSQLX/index.md" >}})
