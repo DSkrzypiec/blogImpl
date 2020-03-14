@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vim on DSkrzypiec Blog</title>
+    <link>https://dskrzypiec.dev/tags/vim/</link>
+    <description>Recent content in vim on DSkrzypiec Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 11 Oct 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://dskrzypiec.dev/tags/vim/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Vim Movement Challenge</title>
+      <link>https://dskrzypiec.dev/vimmovchallenge/</link>
+      <pubDate>Fri, 11 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dskrzypiec.dev/vimmovchallenge/</guid>
+      <description>I&#39;ve been using Vim for about 3 years now and I feel very comfortable using it. But recently I&#39;ve got feeling that for a long time I didn&#39;t make any progress regarding my movement in Vim. In those years w\W, b\B, e\E, t, f, /, ?, $, ^, 0, } and G were my best friends for making fast and precise moves in normal mode. Don&#39;t get me wrong. With those I&#39;m happy and still can finish editing much more quicker than in standard text editor.</description>
+    </item>
+    
+  </channel>
+</rss>
