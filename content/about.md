@@ -8,7 +8,7 @@ databases.
 You already know my name and I believe you can deduce my surname. I live in
 `Earth->Europe->Poland->Warsaw`. I'm math postgrad but my main interest is
 programming and computer science. Currently my main language is 
-[go](https://golang.org/) alongside with R and python. I also used to use C# 
+[go](https://golang.org/) alongside with C# and R. I also used to use python 
 and C++. I like classic relational databases, I didn't fell for NoSQL meme. 
 I'm vim user and I prefer CLI tools both on Linux and Windows.
 
