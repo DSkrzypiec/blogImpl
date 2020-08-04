@@ -6,5 +6,17 @@ draft: true
 markup: "mmark"
 ---
 
-## TODO
-TODO: For few years when I was practicing data science I've used
+## Background
+Regarding operating system I prefer Linux over Windows. Even though in my job I
+have to use Windows. 
+To make my work on Windows more pleasant I've been 
+using Command Line with vim, grep, GNU AWK and other UNIX/Linux tools.
+
+Before Windows 10 using cmd was 
+
+## Transition to Powershell
+
+## Samples From Powershell
+
+
+
