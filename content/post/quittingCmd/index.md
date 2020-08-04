@@ -9,7 +9,7 @@ markup: "mmark"
 ## Background
 Regarding operating systems I prefer Linux over Windows. Even though in my job I
 have to use Windows. To make my work on Windows more pleasant I've been 
-using Command-line with vim, grep, AWK and other Unix/Linux tools.
+using Command-line alongside with vim, grep, AWK and other Unix/Linux tools.
 
 Using cmd before Windows 10 was not a very visual appealing experience. It
 suppose to be just a rectangle box with a text and somehow they made it hard to
@@ -20,11 +20,11 @@ For the last five years I've been using Command-line on Windows 10.
 So what suddenly have changed my mind? PowerShell. 
 
 I always have been conscious that PowerShell exists but I've never give it a
-try. Why? To be honest because of it's horrible default dark blue screen color.
+try. Why? To be honest because of it's horrible default dark blue background color.
 Recently I had to extend some PowerShell script and I found out it's a great
 tool! And also I've configured [ConEmu](https://conemu.github.io/) to use
-PowerShell as a default shell with the same appearance as previously cmd was
-setup.
+PowerShell as a default shell with the same appearance as cmd (black
+background and white JetBrains mono).
 
 
 ## What is PowerShell?
