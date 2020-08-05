@@ -2,7 +2,7 @@
 date: "2020-08-05"
 tags: ["Windows", "cmd", "PowerShell"]
 title: "I'm quitting cmd"
-draft: true
+draft: false
 markup: "mmark"
 ---
 
