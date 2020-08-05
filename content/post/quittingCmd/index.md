@@ -59,11 +59,40 @@ The example above get a list of all text files from all sub-catalogs, get their
 content and finally count number of lines, words and characters.
 
 ### Object-based 
-TODO:
+
+In traditional shells usual output from program is just text which can be input
+to another program which will produce another text output and so on. In this
+environment very common is combination of programs like grep, AWK and sed 
+to deal with those streams of text.
+
+PowerShell on contrary is object-based. Output of standard PowerShell utilities
+are .NET objects. To access object's properties and methods dot notation is
+used. 
+
+{{% code %}}
+$fileList = ls
+$file5 = $fileList[5]
+Write-Host "File" $file5.FullName "was created" $file5.CreationTime
+{{% /code %}}
+
+In the above example we've created `$fileList` (dollar sign have to precede
+variable name) which is an array of objects representing files. It's not an
+array of strings. It's an array of actual objects representing files. Next we
+defined `$file5` which is an object representing 6th element of `ls`. Formally
+`$file5` is of type `FileInfo` and have about fifty properties and methods. For
+example `FullName` and `CreationTime` properties which we used to print custom
+message but also methods like `$file5.Open()` which returns
+`System.IO.FileStream` which is regular .NET object representing a file stream.
+For C#, F# or VB programmers it's a very good news.
 
 {{% code %}}
 ls -Recurse *.go | Where-Object {$_.CreationTime -ge '2020-07-25'}
 {{% /code %}}
+
+Another example displays how expressive it can be. This particular example
+lists all of files with `.go` extension from all sub-catalogs which was created
+after `2020-07-25`. Notation `$_` represents current value in the pipeline.
+
 
 ### Integration with .NET
 
@@ -78,7 +107,7 @@ ls -Recurse *.go | Where-Object {$_.CreationTime -ge '2020-07-25'}
 ## Summary
 
 
-## Bibliography
+## References
 
 1. [What is PoweShell](https://docs.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7)
 2. [Wiki](https://en.wikipedia.org/wiki/PowerShell)
