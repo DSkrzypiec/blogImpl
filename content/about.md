@@ -1,6 +1,6 @@
 # About this blog
 
-Hi! I'm Damian Skrzypiec and this is my blog. I wrote mostly about mathematics and
+Hi! I'm Damian Skrzypiec and this is my blog. I write mostly about mathematics and
 programming in general.
 
 ## About me
