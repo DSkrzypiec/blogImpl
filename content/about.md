@@ -1,16 +1,22 @@
 # About this blog
 
-Hi! I'm Damian and this is my blog. I wrote mostly about mathematics and
-programming in general. Here you can find posts about statistics, R, Go, vim and
-databases.
+Hi! I'm Damian Skrzypiec and this is my blog. I wrote mostly about mathematics and
+programming in general.
 
 ## About me
-You already know my name and I believe you can deduce my surname. I live in
-`Earth->Europe->Poland->Warsaw`. I'm math postgrad but my main interest is
+I live in Warsaw in Poland. I'm math graduate but my main interest is
 programming and computer science. Currently my main language is 
 [Go](https://golang.org/) alongside with C# and R. I also used to use Python 
-and C++. I like classic relational databases, I didn't fell for NoSQL meme. 
-I'm vim user and I prefer CLI tools both on Linux and Windows.
+and C++. I do like classical relational databases. I'm also interested in functional
+programming languages (F# currently). I'm vim user and I prefer CLI tools both 
+on Linux and Windows.
+
+I used to be a speedcuber ([WCA](https://www.worldcubeassociation.org/persons/2009SKRZ01)). 
+Nowadays I like to play with 3x3x3 and 5x5x5 during programming to practice my
+muscle memory and concentration.
+
+For last few years I've been working in financial sector (credit risk to be
+precise) where I've been an analyst, data scientist and backend developer.
 
 
 ## Contact
