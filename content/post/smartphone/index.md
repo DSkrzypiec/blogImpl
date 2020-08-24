@@ -1,7 +1,8 @@
 ---
-date: "2020-08-23"
+date: "2020-08-24"
 tags: ["Android", "Go"]
 title: "Writing a blog on smartphone"
+toc: false
 draft: true
 ---
 
@@ -30,13 +31,12 @@ I'm (and most of Android phones are) on Android OS using ARM architecture CPU.
 So we can use any program and programming language which is compatible with
 this OS and architecture.
 
-In term of technological stack I've selected the same which is used by this blog -
-[Hugo](https://gohugo.io/).
+In term of technological stack I've selected the same which is used by this
+blog - [Hugo](https://gohugo.io/). To prepare Termux for writing a blog on our
+smartphone we'll need to install:
 
-To prepare Termux for writing a blog on our smartphone we'll need to install:
-
-* **git** for communication with outside World - `pkg install git` 
 * **Go** programming language - `pkg install golang` 
+* **git** for communication with outside World - `pkg install git` 
 
 In order to use Hugo we'll compile it from the source code. Hugo is written in
 Go so it'll be a one-liner. The following code clones Hugo repository and build
@@ -87,8 +87,25 @@ address - *http://localhost:1313/*.
 First time I did it I was shocked how smooth it went. I did not have a single
 error while installing Go or compiling and using Hugo on Android phone.
 At that moment I felt what real cross-platform feels like. From this point I
-even more like Go (and C++). It's a pitty I cannot say the same about C#.
+even more like Go (and C++). It's a pity I cannot say the same about C#.
 The .NET core is not currently ported to Termux.
+
+To sum up. We've used Linux, git, Go, vim and Hugo to setup a environment for
+developing a blog and running it locally on the Android smartphone! In my
+opinion this is amazing. It's literally the same setup I'm using on my laptop.
+The only difference is smaller screen. But on the another hand smartphone
+accessibility is far greater for most people then even a light wight laptop.
+
+Getting back to our main question *The answer is yes but is it actual feasible?*.
+Using Termux on the phone give us the possibility. In my opinion writing a
+blog, playing around with code samples, using \*UNIX programs and *read* a
+project source code can be even effective(\*) in this environment. But developing
+actual project can be a bit hard. Mainly due to small screen and not efficient
+keyboard obviously. However I was surprised how many things around programming can be
+feasible using Termux.
+
+(\*) Assuming you're familiar with a terminal-based text editor like Vim, nano
+or Emacs. 
 
 
 ## References
