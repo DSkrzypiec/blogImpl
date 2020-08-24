@@ -3,7 +3,7 @@ date: "2020-08-24"
 tags: ["Android", "Go"]
 title: "Writing a blog on smartphone"
 toc: false
-draft: true
+draft: false
 ---
 
 ![img](postVimTermux.jpg)
@@ -25,11 +25,11 @@ post on the phone? I did and it went better then I expected.
 
 ## Setup
 
-My main development environment on Android phone is Termux application which is
-a terminal emulator with Linux environment. I do really love it.
-I'm (and most of Android phones are) on Android OS using ARM architecture CPU.
-So we can use any program and programming language which is compatible with
-this OS and architecture.
+My main development environment on Android phone is
+[Termux](https://termux.com/) application which is a terminal emulator with
+Linux environment. I do really love it.  I'm (and most of Android phones are)
+on Android OS using ARM architecture CPU.  So we can use any program and
+programming language which is compatible with this OS and architecture.
 
 In term of technological stack I've selected the same which is used by this
 blog - [Hugo](https://gohugo.io/). To prepare Termux for writing a blog on our
@@ -65,14 +65,15 @@ After extending your `PATH` you'll need to restart Termux or run
 
 ## Workflow
 
-After the setup we're ready to write a blog and use Hugo to generate
-actual website from the source code. I'd recommend to do [initial
+After the setup we're ready to write a blog and use Hugo to generate actual
+website from the source code. I'd recommend to do [initial
 setup](https://gohugo.io/getting-started/quick-start/) of Hugo project on
 actual PC or laptop. In my case I've configured the project and I've put it on
 my GitHub. Next using git I've cloned the project into Termux on my smartphone.
 Now I'm ready to edit or create content of my blog. To do that you'll have to
-use one of terminal-based text editor. I use vim. Once the content is ready you
-can compile your blog and preview it in your browser on your phone!
+use one of terminal-based text editor. I use vim but you can also install
+either nano or Emacs. Once the content is ready you can compile your blog and
+preview it in your browser on your phone!
 
 ![img](hugoServer.jpg)
 
@@ -94,7 +95,7 @@ To sum up. We've used Linux, git, Go, vim and Hugo to setup a environment for
 developing a blog and running it locally on the Android smartphone! In my
 opinion this is amazing. It's literally the same setup I'm using on my laptop.
 The only difference is smaller screen. But on the another hand smartphone
-accessibility is far greater for most people then even a light wight laptop.
+accessibility is far greater for most people then even a lightweight laptop.
 
 Getting back to our main question *The answer is yes but is it actual feasible?*.
 Using Termux on the phone give us the possibility. In my opinion writing a
