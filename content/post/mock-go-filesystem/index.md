@@ -1,5 +1,5 @@
 ---
-date: "2020-09-20"
+date: "2020-09-21"
 tags: ["Go"]
 title: "Mocking a file system in Go"
 toc: false
@@ -69,8 +69,13 @@ func Scan(...) (Dir, error) {
 }
 ```
 
+## Interface
+
+## Actual implementation
+
 ## Mock
 
+## Apendix
 
 
 ## References
