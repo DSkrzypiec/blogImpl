@@ -143,7 +143,7 @@ func Scan(reader DirReader) (Dir, error) {
 
 		newPath := filepath.Join(reader.DirPath(), name)
 		newReader := reader.New(newPath)
-		subDir, err := Scan(newReader, config)
+		subDir, err := Scan(newReader)
 		if err != nil {
 			return Dir{}, err
 		}
