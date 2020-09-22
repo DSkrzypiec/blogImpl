@@ -135,7 +135,6 @@ func Scan(reader DirReader) (Dir, error) {
 
 	for _, fileInfo := range fileInfos {
 		name := fileInfo.Name()
-
 		if !fileInfo.IsDir() {
 			dir.Files = append(dir.Files, fileInfo)
 			continue
@@ -149,7 +148,6 @@ func Scan(reader DirReader) (Dir, error) {
 		}
 		dir.SubDirs[name] = subDir
 	}
-
 	return dir, nil
 }
 ```
