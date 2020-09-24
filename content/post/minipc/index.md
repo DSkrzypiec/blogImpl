@@ -1,5 +1,5 @@
 ---
-date: "2020-08-26"
+date: "2020-09-24"
 tags: ["Hardware", "SFF"]
 title: "Building a small factor form PC"
 toc: false
@@ -11,6 +11,8 @@ draft: true
 ## Components
 
 ## Building Experience
+
+## Summary
 
 
 
