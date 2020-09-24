@@ -6,8 +6,10 @@ programming in general.
 ## About me
 I live in Warsaw in Poland. I'm math graduate but my main interest is
 programming and computer science. Currently my main language is 
-[Go](https://golang.org/) alongside with C# and R. I also used to use Python 
-and C++. I do like classical relational databases. I'm also interested in functional
+[Go](https://golang.org/) alongside with C#. I like C++ a lot but unfortunately
+I didn't work with it professionally. 
+I use Python for scripting and R for stats and data mining.
+I do like classical relational databases. I'm also interested in functional
 programming languages (F# currently). I'm vim user and I prefer CLI tools both 
 on Linux and Windows.
 
