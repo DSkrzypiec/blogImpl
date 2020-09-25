@@ -64,7 +64,7 @@ meets.
 For future reference total price was about 6400 PLN which is around $1600 or
 1400 EUR (according to actual rates).
 
-## Building Experience
+## Building
 
 ![img](minipc-side.jpg)
 
