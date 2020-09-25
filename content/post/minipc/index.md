@@ -1,9 +1,9 @@
 ---
 date: "2020-09-25"
 tags: ["Hardware", "SFF"]
-title: "Building a small factor form PC"
+title: "Building a small form factor PC"
 toc: false
-draft: true
+draft: false
 ---
 
 ## Intro
@@ -103,4 +103,6 @@ prior experience in building a PC. On the next day I installed operating system
 Even in domain of programming I've noticed a huge improvements. Compiling
 projects and installing stuff is for sure 10-20x faster than on my laptop.
 Everything is so smooth. I'm very satisfied with the result.
+Overall experience of building a PC by myself was very pleasant and rewarding.
+Probably won't be my last build.
 
