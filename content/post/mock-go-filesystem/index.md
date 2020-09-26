@@ -1,5 +1,5 @@
 ---
-date: "2020-09-22"
+date: "2020-09-26"
 tags: ["Go"]
 title: "Mocking a file system in Go"
 toc: false
@@ -108,7 +108,7 @@ At this point we could even provide a full implementation of `Scan` function
 using only `DirReader` interface definition. I'll leave this implementation in
 the Appendix to not distract us from main goal which is mocking a *FS*.
 
-On next two parts we'll focus on implementing `DirReader` interface for actual
+In the next two sections we'll focus on implementing `DirReader` interface for actual
 OS file system using cross-platform [os package](https://golang.org/pkg/os/)
 and for mocked in-memory Go objects. This pattern, having an interface
 depending on interface rather then concrete type, is very broadly used despite
@@ -119,7 +119,60 @@ C++ we could define abstract base class with methods similar to `DirReader`.
 
 ## Actual implementation
 
+The actual implementation of `DirReader` which would use actual OS file system
+is rather straightforward. Let's start from defining a new type which will
+represent single (non-recursive) directory - `FlatDir`.
+
+```
+type FlatDir struct {
+    Path string
+}
+```
+
+To satisfy `DirReader` interface we've got to implement required methods.
+Getting directory's path and create a new `FlatDir` are trivial methods in this
+case:
+
+```
+func (fd FlatDir) DirPath() string {
+    return fd.Path
+}
+
+func (fd FlatDir) New(path string) DirReader {
+    return FlatDir{Path: path}
+}
+```
+
+All of the work is done in `Readdir` method. We'll use functionalities from Go 
+`os` package to implement reading content of OS file system directory.
+
+```
+func (fd FlatDir) Readdir() ([]os.FileInfo, error) {
+    currentDir, err := os.Open(fd.Path)
+    if err != nil {
+        return nil, err
+    }
+
+    fileInfos, err := currentDir.Readdir(-1)
+    if err != nil {
+        return nil, err
+    }
+
+    return fileInfos, nil
+}
+```
+
+That method is really just a wrapper on
+[Readdir](https://golang.org/pkg/os/#File.Readdir) method which is
+cross-platform and do the heavy lifting for us.
+
+After that type `FlatDir` satisfies `DirReader` interface. Now, in order to
+scan file tree for given root path, we could run `tree, err := Scan(FlatDir{path})`.
+
+
 ## Mock
+
+
 
 ## Appendix
 
