@@ -1,5 +1,5 @@
 ---
-date: "2020-09-26"
+date: "2020-09-29"
 tags: ["Go"]
 title: "Mocking a file system in Go"
 toc: false
@@ -119,7 +119,7 @@ C++ we could define abstract base class with methods similar to `DirReader`.
 
 ## Actual implementation
 
-The actual implementation of `DirReader` which would use actual OS file system
+The actual implementation of `DirReader` which would use an actual OS file system
 is rather straightforward. Let's start from defining a new type which will
 represent single (non-recursive) directory - `FlatDir`.
 
@@ -143,7 +143,7 @@ func (fd FlatDir) New(path string) DirReader {
 }
 ```
 
-All of the work is done in `Readdir` method. We'll use functionalities from Go 
+All of the work is done in `Readdir` method. We'll use functionalities from Go
 `os` package to implement reading content of OS file system directory.
 
 ```
@@ -172,36 +172,103 @@ scan file tree for given root path, we could run `tree, err := Scan(FlatDir{path
 
 ## Mock
 
+In order to prepare mock for a file system we have to define an object which
+behaves like a file system and at the same time satifies `DirReader` interface.
+As I stated at the beggining `Dir` is natural representation of a file system
+for me. Because of that my mock object will be very close to `Dir`:
+
+```
+type MockDir struct {
+    Path    string
+    Files   []os.FileInfo
+    SubDirs map[string]*MockDir
+}
+```
+
+Defined `MockDir` represents our mock *FS*. Using `map[string]*MockDir`
+instead of `map[string]MockDir` is just for my convenience while building mock
+trees. In the first version I can in fact modify sub trees of defined tree.
+
+To satifsy `DirReader` interface we, once again, have to provide implemnetation
+of methods `DirPath`, `Readdir` and `New`. The first one in this case also just
+returns `MockDir.Path`. Method `Readdir` returns all files from `MockDir.Files`
+and based on `SubDirs` keys - sub catalog names also list of catalogs as
+`[]os.FileInfo`. Method `New` is a bit tricky in context of the
+mock object. This method suppose to return a new `DirReader` for a given path.
+In this case we can do that only for sub catalogs of current tree, becuase
+there isn't any other valid path outside sub trees. Implementation of those
+three methods can be found in the Appendix.
+
+Up to this point we have function `Scan` which scans a file tree based on
+`DirReader` interface. We've got implementation of `DirReader` for actual OS
+file system and also implementation of mock `DirReader`. Hence we can use both
+`FlatDir` and `MockDir` in `Scan` function.
+
+One last pice left is convenient building `MockDir` object for unit testing.
 
 
 ## Appendix
 
-Source code of `Scan` function:
+### Source code of `Scan` function:
 
 ```
 func Scan(reader DirReader) (Dir, error) {
-	fileInfos, err := reader.Readdir()
-	if err != nil {
-		return Dir{}, err
-	}
-	dir := New(reader.DirPath(), 100) // Produces a new empty Dir
+    fileInfos, err := reader.Readdir()
+    if err != nil {
+        return Dir{}, err
+    }
+    dir := New(reader.DirPath(), 100) // Produces a new empty Dir
 
-	for _, fileInfo := range fileInfos {
-		name := fileInfo.Name()
-		if !fileInfo.IsDir() {
-			dir.Files = append(dir.Files, fileInfo)
-			continue
-		}
+    for _, fileInfo := range fileInfos {
+        name := fileInfo.Name()
+        if !fileInfo.IsDir() {
+            dir.Files = append(dir.Files, fileInfo)
+            continue
+        }
 
-		newPath := filepath.Join(reader.DirPath(), name)
-		newReader := reader.New(newPath)
-		subDir, err := Scan(newReader)
-		if err != nil {
-			return Dir{}, err
-		}
-		dir.SubDirs[name] = subDir
-	}
-	return dir, nil
+        newPath := filepath.Join(reader.DirPath(), name)
+        newReader := reader.New(newPath)
+        subDir, err := Scan(newReader)
+        if err != nil {
+            return Dir{}, err
+        }
+        dir.SubDirs[name] = subDir
+    }
+    return dir, nil
+}
+
+```
+
+### `MockDir` methods
+
+```
+func (md MockDir) DirPath() string {
+    return md.Path
+}
+
+func (md MockDir) Readdir() ([]os.FileInfo, error) {
+    files := make([]os.FileInfo, 0, 10)
+
+    for _, file := range md.Files {
+        files = append(files, file)
+    }
+
+    for dirName := range md.SubDirs {
+        files = append(files, NewMockFileInfo(dirName, true))
+    }
+
+    return files, nil
+}
+
+func (md MockDir) New(path string) DirReader {
+    for _, dir := range md.SubDirs {
+        if dir.Path == path {
+            return dir
+        }
+    }
+
+    emptyDirs := make(map[string]*MockDir)
+    return MockDir{path, make([]os.FileInfo, 0), emptyDirs}
 }
 ```
 
