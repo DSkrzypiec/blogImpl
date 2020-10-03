@@ -1,11 +1,11 @@
 ---
-date: "2020-09-29"
+date: "2020-10-03"
 title: "Home"
 ---
 
 List of posts:
 
-* [2020-09-29] [Mocking filesystem in Go]({{< ref "/post/mock-go-filesystem/index.md" >}})
+* [2020-10-03] [Mocking filesystem in Go]({{< ref "/post/mock-go-filesystem/index.md" >}})
 * [2020-09-25] [Building a small form factor PC]({{< ref "/post/minipc/index.md" >}})
 * [2020-08-24] [Writing a blog on smartphone]({{< ref "/post/smartphone/index.md" >}})
 * [2020-08-05] [I'm quitting cmd]({{< ref "/post/quittingCmd/index.md" >}})

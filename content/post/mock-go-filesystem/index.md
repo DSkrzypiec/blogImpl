@@ -1,5 +1,5 @@
 ---
-date: "2020-09-29"
+date: "2020-10-03"
 tags: ["Go"]
 title: "Mocking a file system in Go"
 toc: false
@@ -172,10 +172,10 @@ scan file tree for given root path, we could run `tree, err := Scan(FlatDir{path
 
 ## Mock
 
-In order to prepare mock for a file system we have to define an object which
-behaves like a file system and at the same time satifies `DirReader` interface.
-As I stated at the beggining `Dir` is natural representation of a file system
-for me. Because of that my mock object will be very close to `Dir`:
+In order to prepare a mock for a file system we have to define an object which
+behaves like a file system and at the same time satisfies `DirReader` interface.
+As I stated at the beginning `Dir` is natural representation of a file system
+for me. Because of that my mock object will be very similar to `Dir`:
 
 ```
 type MockDir struct {
@@ -187,24 +187,103 @@ type MockDir struct {
 
 Defined `MockDir` represents our mock *FS*. Using `map[string]*MockDir`
 instead of `map[string]MockDir` is just for my convenience while building mock
-trees. In the first version I can in fact modify sub trees of defined tree.
+trees. In this version I can modify sub trees of the tree which was already
+initialized.
 
-To satifsy `DirReader` interface we, once again, have to provide implemnetation
+To satisfy `DirReader` interface we, once again, have to provide implementation
 of methods `DirPath`, `Readdir` and `New`. The first one in this case also just
 returns `MockDir.Path`. Method `Readdir` returns all files from `MockDir.Files`
 and based on `SubDirs` keys - sub catalog names also list of catalogs as
 `[]os.FileInfo`. Method `New` is a bit tricky in context of the
 mock object. This method suppose to return a new `DirReader` for a given path.
-In this case we can do that only for sub catalogs of current tree, becuase
+In this case we can do that only for sub catalogs of current tree, because
 there isn't any other valid path outside sub trees. Implementation of those
 three methods can be found in the Appendix.
 
-Up to this point we have function `Scan` which scans a file tree based on
+Wait but what about `MockDir.Files`? As we saw earlier `os.FileInfo` is an
+interface from Go standard library. We also have to mock this interface in
+order to produce `MockDir` objects. Let's define `MockFileInfo` type which
+would satisfy `os.FileInfo` interface:
+
+```
+type MockFileInfo struct {
+    FileName    string
+    IsDirectory bool
+}
+
+func (mfi MockFileInfo) Name() string       { return mfi.FileName }
+func (mfi MockFileInfo) Size() int64        { return int64(8) }
+func (mfi MockFileInfo) Mode() os.FileMode  { return os.ModePerm }
+func (mfi MockFileInfo) ModTime() time.Time { return time.Now() }
+func (mfi MockFileInfo) IsDir() bool        { return mfi.IsDirectory }
+func (mfi MockFileInfo) Sys() interface{}   { return nil }
+```
+
+The actual object contains only information about file name and flag stating
+whenever this file is a catalog. In this particular case I don't need other
+file information like size or last modification date.
+
+Up to this point we've defined function `Scan` which scans a file tree based on
 `DirReader` interface. We've got implementation of `DirReader` for actual OS
 file system and also implementation of mock `DirReader`. Hence we can use both
 `FlatDir` and `MockDir` in `Scan` function.
 
-One last pice left is convenient building `MockDir` object for unit testing.
+One last piece left is convenient building `MockDir` object for unit testing.
+I've found very useful to have a
+[variadic function](https://gobyexample.com/variadic-functions) to produce my
+mock file trees. In this situation we have a plenty of options but my first
+attempt was implement a helper function with the following signature
+
+```
+func NewMockDir(rootPath string, files ...string) MockDir {
+    ...
+}
+```
+
+This function have an assumption about `files`. If single file name contains
+`_` then it would be put inside sub catalog. For example
+
+```
+mockTree := NewMockDir("~/Downloads/", "f1.go", "f2.cpp", 
+                       "sub1_g.txt", "sub2_h.html")
+```
+
+would create a file tree which looks like
+
+{{< fileTree >}}
+* ~/Downloads
+    * f1.go
+    * f2.cpp
+    * sub1
+        * g.txt
+    * sub2
+        * h.html
+{{< /fileTree >}}
+
+In case when I need deeper trees I would use `NewMockDir` functions to create
+sub catalogs (and sub catalogs of sub catalogs...).
+
+
+## Summary
+
+Created `mockTree` is of type `MockDir` which satisfies `DirReader` interface.
+Hence we could use `Scan(mockTree)`, to produce actual file tree representation - `Dir`.
+That means now we are able to test every functionality which depends
+on `Dir` object. And that's great! We can easily and safely test manipulations
+of a file system. In praticular now we can setup scenarios which could be very
+difficult to create on actual OS file system like creating `1 << 30` files or
+tree with very large depth.
+
+The idea of mocking a file system using an "interface" can be used in most of
+programming languages. What Go saves us is having already defined interface 
+`os.FileInfo` representing meta file information. In other languages we usually
+have to wrap it to abstract class or an interface and mock these afterwards.
+
+
+## References
+
+1. [Afero](https://github.com/spf13/afero)
+2. [Go 'os' package](https://golang.org/pkg/os/)
 
 
 ## Appendix
@@ -256,7 +335,6 @@ func (md MockDir) Readdir() ([]os.FileInfo, error) {
     for dirName := range md.SubDirs {
         files = append(files, NewMockFileInfo(dirName, true))
     }
-
     return files, nil
 }
 
@@ -266,14 +344,48 @@ func (md MockDir) New(path string) DirReader {
             return dir
         }
     }
-
     emptyDirs := make(map[string]*MockDir)
     return MockDir{path, make([]os.FileInfo, 0), emptyDirs}
 }
 ```
 
-## References
+### `MockFileInfo`
 
-1. [Afero](https://github.com/spf13/afero)
-2. [Go 'os' package](https://golang.org/pkg/os/)
+
+```
+func NewMockFileInfo(name string, isDir bool) MockFileInfo {
+    return MockFileInfo{
+        FileName:    name,
+        IsDirectory: isDir,
+    }
+}
+```
+
+```
+func NewMockDir(rootPath string, files ...string) MockDir {
+    topFiles := make([]os.FileInfo, 0, 10)
+    subDirs := make(map[string]*MockDir)
+
+    for _, file := range files {
+        if strings.Contains(file, "_") {
+            parts := strings.Split(file, "_")
+            dirName := parts[0]
+            subFile := NewMockFileInfo(parts[1], false)
+
+            if _, exist := subDirs[dirName]; exist {
+                (*subDirs[dirName]).Files = append((*subDirs[dirName]).Files, subFile)
+                continue
+            }
+
+            subDirs[dirName] = &MockDir{filepath.Join(rootPath, dirName), []os.FileInfo{subFile}, nil}
+            continue
+        }
+        topFiles = append(topFiles, NewMockFileInfo(file, false))
+    }
+
+    return MockDir{rootPath, topFiles, subDirs}
+}
+```
+
+
 
