@@ -3,7 +3,7 @@ date: "2020-10-03"
 tags: ["Go"]
 title: "Mocking a file system in Go"
 toc: false
-draft: true
+draft: false
 ---
 
 {{< fileTree >}}
