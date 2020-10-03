@@ -284,6 +284,7 @@ have to wrap it to abstract class or an interface and mock these afterwards.
 
 1. [Afero](https://github.com/spf13/afero)
 2. [Go 'os' package](https://golang.org/pkg/os/)
+3. [dorg](https://github.com/dskrzypiec/dorg/)
 
 
 ## Appendix
