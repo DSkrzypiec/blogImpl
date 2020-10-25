@@ -5,7 +5,7 @@ title: "Home"
 
 List of posts:
 
-* [2020-10-25] [Calka is dead]({{< ref "/post/calka/index.md" >}})
+* [2020-10-25] [Goodbye Całka]({{< ref "/post/calka/index.md" >}})
 * [2020-10-03] [Mocking filesystem in Go]({{< ref "/post/mock-go-filesystem/index.md" >}})
 * [2020-09-25] [Building a small form factor PC]({{< ref "/post/minipc/index.md" >}})
 * [2020-08-24] [Writing a blog on smartphone]({{< ref "/post/smartphone/index.md" >}})
