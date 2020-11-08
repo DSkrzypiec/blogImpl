@@ -9,17 +9,17 @@ draft: true
 ## Intro
 
 Last month after my daughter was born we've received a bunch
-of documents in this matter. Birth certificate, medical papers
+of documents in this matter. Birth certificate, medical papers,
 assignment of [PESEL](https://en.wikipedia.org/wiki/PESEL),
 etc. When I was about to put those papers into document folders
 I thought it's time for digitalization.
 
 Most of our very important documents like mortgage papers or university
 diplomas exist only in physical version without any copy either digital or
-physical. We had in plans to scan or at least make a photo of those but we
-didn't do it. Therefore I thought let's make this right.
+physical. We had plans to scan or at least make photos of those but we
+didn't do it. Therefore I thought let's make this right this time.
 
-Besides documents, in so-called *HomeApp* I would also want to keep track of
+Besides documents, in so-called *Home App* I would also want to keep track of
 usage of water and energy in our home, bank transactions history and list
 of our books.
 
@@ -31,7 +31,7 @@ computers). Mostly because it is very personal and sensitive. On other hand it
 happens that Google disable accounts without prior notice. Thus I want to build
 something locally, in my internal network, with safe external backups.
 
-I want my **homeDB**, yet abstract bag for home data, to be:
+I want my **home DB**, yet abstract bag for home data, to be:
 
 * in form of a single file
 * accessible on multiply platforms and devices
@@ -45,12 +45,12 @@ self-contained, it's free and it's probably
 non-trivial program ever written. I also personally like SQLite for being
 minimalistic. Setup is trivial or even nonexistent.
 
-At the end of (any given future) day I'll be having a single database file
+Finally I'll be having a single database file
 containing all of my and my family important files from our adult life.
 That sounds serious. We'll back to that in *Security* section.
 
 Wait... But how can I upload my files and data to this database? Yep, I'm also
-developing **HomeApp**.
+developing **Home App**.
 
 
 ## Home App
@@ -84,7 +84,7 @@ For someone who avoid frontend technologies it was significant advantage.
 It's useful when I go to the hall to check my water and energy usage. In this
 case I can fill the form directly on my phone to submit it to the database.
 
-In the moment of writing this post repo with source code of *homeApp* is
+In the moment of writing this post repo with source code of *Home App* is
 private but I might make it public someday.
 
 
