@@ -26,6 +26,11 @@ of our books.
 
 ## The database
 
+I don't want to store this kind of data on the cloud (someone else's
+computers). Mostly because it is very personal and sensitive. On other hand it
+happens that Google disable accounts without prior notice. Thus I want to build
+something locally, in my internal network, with safe external backups.
+
 I want my **homeDB**, yet abstract bag for home data, to be:
 
 * in form of a single file
@@ -52,6 +57,36 @@ developing **HomeApp**.
 
 ![img](documents.png)
 
+Still the main "product" of this life-long project is the database but to make
+it more comfortable to operate on this DB I need some kind of application.
+I have decided to build a web application which would run on my local network.
+I choose
+[ASP.NET Core MVC](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-3.1&tabs=visual-studio)
+(C#) over Go because all SQL drivers for SQLite in Go
+uses *cgo*.
+
+As you can see above I'm not focused much on the UI side. Maybe someday but not
+in foreseeable future. Main goals for this app is to ensure data insertion
+layer both for documents (files) and other data. Secondly to give a quick view
+on data. For example if I want to check my diploma from high school I should be
+able to do it quickly through the UI.
+
+It doesn't need to be a complete application with coverage of all
+functionalities and corner cases. This application will be used literally by
+1-4 users in local network. If something throw exception I could quickly pick
+it up. It sounds like very comfortable assumptions for developer and in fact it
+is. That made it possible for me to implement most of functionalities in couple
+of evenings.
+
+MVC over Go have one more advantage for me. It has already bootstrap setup so
+this application is also usable from my mobile phone without any extra effort.
+For someone who avoid frontend technologies it was significant advantage.
+It's useful when I go to the hall to check my water and energy usage. In this
+case I can fill the form directly on my phone to submit it to the database.
+
+In the moment of writing this post repo with source code of *homeApp* is
+private but I might make it public someday.
+
 
 ## Data uploading
 
@@ -59,7 +94,7 @@ developing **HomeApp**.
 
 ![img](upload.png)
 
-## Security
+## Security and backups
 
 ## Summary
 
