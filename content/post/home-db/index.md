@@ -90,11 +90,43 @@ private but I might make it public someday.
 
 ## Data uploading
 
+Till this point I've setup SQLite database and connected web app for uploading
+and accessing data. So now I could focus on actually using the *Home App* to
+populate *Home DB*.
+
+Regarding water and energy usage in home I manually check water counter and
+energy counter at evening every fifth day. I think it's a good middle ground.
+Daily basis wouldn't be possible and monthly basis would be rather too rarely.
+
+Regarding financial transactions. Once a month I download XML with all
+transactions from my bank. Part of *Home App* parses and uploads this XML into
+appropriate table in the DB. Only manual work here is to download XML once a
+month which doesn't seems like a problem. Maybe one day there will be API for
+that? I hope so.
+
+Digitalization of documents is for sure the most time-consuming part of
+uploading data. In most cases I have to scan actual physical paper sheets. When
+I've discovered there are tiny scanners I immediately bought one:
+
 ![img](scanner.gif)
 
+On evening when scanner arrived I've scanned around 35 documents. There is
+still many more but even after this sample I felt it was a very good choice.
+It'll probably took me at least few evening to scan significant documents but
+once that will be done keeping up with new ones would required much effort.
+
 ![img](upload.png)
+
 
 ## Security and backups
 
 ## Summary
+
+Having **Home DB** makes me feel secure and be in control. It's priceless.
+The power of querying through several years of your personal finance or
+browsing through specific kind of invoices effortlessly without need to go
+through sorting physical folders and papers is amazing. It was definitely worth
+the effort to put together the database and the app.
+
+After all it's 2020
 
