@@ -5,6 +5,7 @@ title: "Home"
 
 List of posts:
 
+* [2020-11-08] [Home DB]({{< ref "/post/home-db/index.md" >}})
 * [2020-10-25] [Goodbye Całka]({{< ref "/post/calka/index.md" >}})
 * [2020-10-03] [Mocking filesystem in Go]({{< ref "/post/mock-go-filesystem/index.md" >}})
 * [2020-09-25] [Building a small form factor PC]({{< ref "/post/minipc/index.md" >}})
