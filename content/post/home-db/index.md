@@ -113,7 +113,7 @@ I've discovered there are tiny scanners I immediately bought one:
 On evening when scanner arrived I've scanned around 35 documents. There is
 still many more but even after this sample I felt it was a very good choice.
 It'll probably took me at least few evening to scan significant documents but
-once that will be done keeping up with new ones would required much effort.
+once that will be done keeping up with new ones will not require much effort.
 
 ![img](upload.png)
 
@@ -122,11 +122,12 @@ once that will be done keeping up with new ones would required much effort.
 
 ## Summary
 
-Having **Home DB** makes me feel secure and be in control. It's priceless.
+Having **Home DB** makes me feel secure and be in control of my personal
+data. It's priceless.
 The power of querying through several years of your personal finance or
 browsing through specific kind of invoices effortlessly without need to go
 through sorting physical folders and papers is amazing. It was definitely worth
 the effort to put together the database and the app.
 
-After all it's 2020
+After all it's 2020.
 
