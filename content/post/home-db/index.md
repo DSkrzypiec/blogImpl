@@ -1,9 +1,9 @@
 ---
-date: "2020-11-08"
+date: "2020-11-11"
 tags: ["database"]
 title: "Home Database"
 toc: true
-draft: true
+draft: false
 ---
 
 ## Intro
@@ -27,7 +27,7 @@ of our books.
 ## The database
 
 I don't want to store this kind of data on the cloud (someone else's
-computers). Mostly because it is very personal and sensitive. On other hand it
+computers) directly. Mostly because it is very personal and sensitive. On other hand it
 happens that Google disable accounts without prior notice. Thus I want to build
 something locally, in my internal network, with safe external backups.
 
@@ -82,7 +82,7 @@ MVC over Go have one more advantage for me. It has already bootstrap setup so
 this application is also usable from my mobile phone without any extra effort.
 For someone who avoid frontend technologies it was significant advantage.
 It's useful when I go to the hall to check my water and energy usage. In this
-case I can fill the form directly on my phone to submit it to the database.
+case I can fill the forms directly on my smartphone.
 
 In the moment of writing this post repo with source code of *Home App* is
 private but I might make it public someday.
@@ -120,6 +120,41 @@ once that will be done keeping up with new ones will not require much effort.
 
 ## Security and backups
 
+As I stated before security is one of most crucial aspects of this project. I
+could do local backups on my HD and SSD drives but preferably I'd like to have
+safe backups on the Web to be able to reach for those outside my home or even
+on new device. If only there would be some safe and anonymous way to do online
+backups...
+
+Fortunately there is [Tarsnap](https://www.tarsnap.com/) - *"Online
+backups for the truly paranoid"* by Dr. Colin Percival. It's a tool for secure
+and efficient online backups. Tarsnap security is based on *key file* which is
+generated during account setup. Only person with that key file can access your
+backups. The key file is generated locally on the client's device. Therefore
+even Tarsnap cannot restore your backups in case when you lost your key file.
+It uses very strong encryption, details can be read
+[here](https://www.tarsnap.com/crypto.html). It also a have cool feature which
+is deduplication. Only new bytes in comparison to previous backup are
+compressed, encrypted and send onto servers.
+
+Tarsnap works under UNIX-like OS. On my main PC I use Linux so everything went
+smooth. I've tested it also on my Windows Laptop using Windows Subsystem for
+Linux and Ubuntu 20 to configure Tarsnap. Once again there wasn't any problems.
+Note that on the Windows box I had to put my original key file from my main PC.
+Generating new key would create a new namespace for backups even under the same
+Tarsnap account.
+
+Besides secure backups *Home App* is hosted on my local (home) network and also
+authentication is setup. So even someone would get into my network during
+application is listening then he/she have to also hack the *Home App*. That is
+very unlikely.
+
+Even if someone would steal my main PC and brute force my password and finally
+get hands on my personal data that is still better then stealing my physical
+documents. Backup can be restored with no cost. "Restoring" physical documents
+wouldn't probably be possible in many cases without having *Home DB*.
+
+
 ## Summary
 
 Having **Home DB** makes me feel secure and be in control of my personal
@@ -129,5 +164,13 @@ browsing through specific kind of invoices effortlessly without need to go
 through sorting physical folders and papers is amazing. It was definitely worth
 the effort to put together the database and the app.
 
-After all it's 2020.
+Probably next steps would be to extend data scheme and introduce data analytic
+and visualization layer into *Home App*. As I said it is a life-long project of
+storing and analyzing my and my family data. I'm sure there would be plenty
+improvements and extensions. I will probably write another post someday on
+this.
+
+I'm very excited about this project. I find this idea (digitalization of
+personal data and assets) very attractive. I wonder if there is a market for
+this kind of service (not a product, but whole service)? But this is for another time.
 
