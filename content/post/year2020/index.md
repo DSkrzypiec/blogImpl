@@ -3,7 +3,7 @@ date: "2020-12-30"
 tags: ["Annual Summary"]
 title: "Summary of 2020"
 toc: false
-draft: true
+draft: false
 ---
 
 ## Intro
