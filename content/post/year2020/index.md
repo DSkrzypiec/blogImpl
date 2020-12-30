@@ -106,7 +106,8 @@ It was for sure the one year which was the most different from previous ones.
 Mostly due to the whole global COVID-19 pandemic and its implications.
 
 In general I think it was a good year for me. I've changed my career. I've been
-working from home most of the year. My daughter was born. I didn't catch
+working from home most of the year. My daughter was born. I've started
+developing [Home Database](https://dskrzypiec.dev/home-db/). I didn't catch
 COVID-19 (at least without symptoms). So far, so good. Looking forward into
 2021 :)
 
