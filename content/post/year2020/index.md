@@ -58,9 +58,9 @@ closest family.
 
 Starting from May I've pivoted to *Senior Backend Engineer* in a team
 responsible **only** for developing system applications. Before this transition
-I had many roles. I had been doing what needed to be done including data
-mining, testing, modelling and programming in general. All of this hidden under
-a broad title *Senior Associate*.
+I had many roles. I had been doing what needed to be done in area of financial
+risk management including data mining, testing, modelling and programming in
+general. All of this hidden under a broad title *Senior Associate*.
 
 In 2019 I've decided that system programming using statically typed and
 compiled languages is what I want to do. After the transition daily average time of
@@ -109,5 +109,5 @@ In general I think it was a good year for me. I've changed my career. I've been
 working from home most of the year. My daughter was born. I've started
 developing [Home Database](https://dskrzypiec.dev/home-db/). I didn't catch
 COVID-19 (at least without symptoms). So far, so good. Looking forward into
-2021 :)
+2021!
 
