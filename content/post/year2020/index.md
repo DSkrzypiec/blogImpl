@@ -18,6 +18,7 @@ of my personal and professional important events within the year.
 1. Changed team and position at work
 1. I've started learning Russian
 1. I've build a PC
+1. Całka died
 1. My daughter was born
 
 
@@ -86,8 +87,11 @@ I'll keep it up in 2021.
 
 ## I've build a PC
 
-At the end of September 2020 [I've build a mini ITX PC by myself.](https://dskrzypiec.dev/minipc/)
+At the end of September 2020 [I've build a mini ITX PC by myself.](https://dskrzypiec.dev/minipc/).
 
+## Całka died
+
+On October 17th my beloved cat [Całka has died](https://dskrzypiec.dev/calka/).
 
 ## My daughter was born
 
