@@ -1,6 +1,6 @@
 ---
 date: "2021-04-14"
-tags: ["C#"]
+tags: ["C#", ".NET"]
 title: "Iterators in C#"
 toc: false
 draft: true
@@ -126,7 +126,7 @@ Let's start from the very top and find out what is under the hood of
 
 ```
 IL_0000: ldc.i4.s -2
-IL_0002: newobj instance void _GenerateNumbers::.ctor(int32)_
+IL_0002: newobj instance void _GenerateNumbers::.ctor(int32)
 IL_0007: ret
 ```
 
@@ -194,18 +194,201 @@ produce the new one. Finally after the line
 using (var enumerator = GenerateNumbers().GetEnumerator())
 ```
 
-object `enumerator` is the instance of `_GenerateNumbers` with `_state` set to
-zero. Now we can proceed to using our `enumerator` to iterate using
-`MoveNext()` method. Let's dive deep what is under this method.
+object `enumerator` is the instance of `_GenerateNumbers` (the generated class)
+with `_state` set to zero. Now we can proceed to using our `enumerator` to
+iterate over the sequence using `MoveNext()` method. Let's dive deep into this
+crucial part.
 
 
 ### MoveNext() method
 
+As I stated before this is the method where the actual work is done. Generated
+IL code is a bit longer then in earlier examples, therefore we'll try to break
+it into parts.
+
+Let's start from the observation that this method has three local variables
+
+```
+.maxstack 3
+.locals init (
+    [0] int32,
+    [1] int32,
+    [2] bool
+)
+```
+
+The method starts from branching based on field `_state`:
+
+```
+IL_0000: ldarg.0
+IL_0001: ldfld int32 _GenerateNumbers::_state
+IL_0006: stloc.0
+IL_0007: ldloc.0
+IL_0008: switch (IL_001f, IL_0021, IL_0023, IL_0025)
+
+IL_001d: br.s IL_002a
+IL_001f: br.s IL_002c
+IL_0021: br.s IL_0054
+IL_0023: br.s IL_007c
+IL_0025: br IL_00b6
+```
+
+This listing can be translated into
+
+* load local variable `[0]` onto the stack
+* load field `_state` onto the stack
+* store `_state` in local variable `[0]`
+* load local variable `[0]`
+* go to location based on local variable `[0]`
+
+Instruction `br.s <target>` branches to `<target>` location. At the beginning
+(after the initialization) value of `_state` field is equal to zero. Let's than
+examine code starting from location `IL_002c`.
+
+
+```
+IL_002c: ldarg.0
+IL_002d: ldc.i4.m1
+IL_002e: stfld int32 _GenerateNumbers::_state
+IL_0033: nop
+IL_0034: ldarg.0
+IL_0035: ldc.i4.s 42
+IL_0037: stfld int32 _GenerateNumbers::_secretLocalNumber
+IL_003c: ldarg.0
+IL_003d: ldarg.0
+IL_003e: ldfld int32 _GenerateNumbers::_secretLocalNumber
+IL_0043: ldc.i4.s 13
+IL_0045: add
+IL_0046: stfld int32 _GenerateNumbers::_current
+IL_004b: ldarg.0
+IL_004c: ldc.i4.1
+IL_004d: stfld int32 _GenerateNumbers::_state
+IL_0052: ldc.i4.1
+IL_0053: ret
+```
+
+Let translate this block to English
+
+* set `_state = -1`
+* set `_secretLocalNumber = 42`
+* set `_current = _secretLocalNumber + 13` (**our first yield return**)
+* set `_state = 1`
+* return `1 (true)`
+
+OK, so at this point `MoveNext()` has returned `true` and set `_current =
+_secretLocalNumber + 13`. Therefore when the value from enumerator will be
+consumed in the first iteration of the loop enumerator will pass current value
+of `_current` field which is `55`. That's exactly what we wanted.
+
+In `GenerateNumbers()` method the step would be to `yield return` from the
+`for` loop. Let's take a look how next call of `MoveNext()` will handle that.
+Now `_state = 1` so based on initial branching now we have to start from
+`IL_0054` location.
+
+
+```
+IL_0054: ldarg.0
+IL_0055: ldc.i4.m1
+IL_0056: stfld int32 _GenerateNumbers::_state
+IL_005b: ldarg.0
+IL_005c: ldc.i4.0
+IL_005d: stfld int32 _GenerateNumbers::_tmpId
+IL_0062: br.s IL_0093
+```
+
+This block starts from setting `_state = -1` and `_tmpId = 0`. At the end there
+is branch to `IL_0093`. Block starting from `IL_0093` check bound condition on
+`_tmpId`. If `_tmpId < 3` then branches to `IL_0064`. Otherwise it continues.
+At the moment `_tmpId = 0 < 3` so we should continue from `IL_0064`.
+
+
+```
+IL_0064: ldarg.0
+IL_0065: ldarg.0
+IL_0066: ldfld int32 _GenerateNumbers::_tmpId
+IL_006b: ldc.i4.s 10
+IL_006d: add
+IL_006e: stfld int32 _GenerateNumbers::_current
+IL_0073: ldarg.0
+IL_0074: ldc.i4.2
+IL_0075: stfld int32 _GenerateNumbers::_state
+IL_007a: ldc.i4.1
+IL_007b: ret
+```
+
+In the above block the following happens
+
+* load `_tmpId` onto the stack
+* load short integer `10` onto the stack
+* add `_tmpId` and `10` and store in `_current` (**our second yield return**)
+* set `_state = 2`
+* return `1 (true)`
+
+In this iteration `MoveNext()` returns `true` with `_current = 10`, `_state =
+2` and `_tmpId = 0`.
+
+On the next `MoveNext()` call we will start with `_state = 2` which means
+location `IL_007c` based on initial branching. Generated IL code is almost
+identical as in the previous listings so I'll summarize this in the following
+steps
+
+* Field `_tmpId` is incremented by one
+* Bound check is performed
+* Whenever `_tmpId < 3` we will jump to `IL_0064` and the previous listing will
+  happen
+* While we are inside `for` loop the state of `_state` field will remain
+  constant with set value `2`
+
+
+Based on this we now know exactly how lazy evaluation is done in case of loops.
+Our generated class keep the information which iteration was performed last
+time `MoveNext()` was called within `_tmpId` variable.
+
+At the end let's take a look what happens when `_tmpId = 3` and for loop is
+done:
+
+
+```
+IL_00a0: ldarg.0
+IL_00a1: ldc.i4.s -99
+IL_00a3: call int32 SomeStaticMethod(int32)
+IL_00a8: stfld int32 _GenerateNumbers::_current
+IL_00ad: ldarg.0
+IL_00ae: ldc.i4.3
+IL_00af: stfld int32 _GenerateNumbers::_state
+IL_00b4: ldc.i4.1
+IL_00b5: ret
+```
+
+Basically nothing new. Static method `SomeStaticMethod` is being called with
+parameter `-99` and the result is stored inside `_current` field. Field
+`_state` is set to `3` and method returns `true`.
+
+
+Finally when the `MoveNext()` will be called again the method will start with
+`_state = 3`. So we will start from `IL_00b6` location:
+
+
+```
+IL_00b6: ldarg.0
+IL_00b7: ldc.i4.m1
+IL_00b8: stfld int32 _GenerateNumbers::_state
+IL_00bd: ldc.i4.0
+IL_00be: ret
+```
+
+Internal `_state` is set to `-1` and the method returns `0 (false)` therefore
+next iteration would not happen.
+
+
+TODO: summary of MoveNext() method.
 
 ## File iterator
 
 ## Composition and Linq
 
+
 ## References
 
 1. ["C# In Depth" - Jon Skeet](https://www.manning.com/books/c-sharp-in-depth-fourth-edition)
+2. []()
