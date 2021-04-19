@@ -381,14 +381,108 @@ Internal `_state` is set to `-1` and the method returns `0 (false)` therefore
 next iteration would not happen.
 
 
-TODO: summary of MoveNext() method.
-
-## File iterator
-
 ## Composition and Linq
+
+**TODO**
+
+## Performance
+
+After our rather detailed analysis of `MoveNext()` method I thought about
+performance of using iterators. Looping over a collection would call
+`MoveNext()` frequently and as we saw earlier that would cause many jumps just
+to get single element in lazy fashion. I'm worried that this behaviour might
+causes many CPU cache misses and decrease performance.
+
+This is not post about performance but I've decided to make a simple benchmark
+to check what would be the cost of iterating over simple integer collection
+just to sum its values.
+
+I've benchmarked three methods:
+
+1. Sum numbers by iteration using `for` loop over `List<int>` using indexes
+2. Sum numbers by using `foreach` loop over `List<int>`
+3. Sum numbers by using `foreach` loop over `IEnumerable<int>` created by
+   iterator block
+
+Source code of this benchmark can be found
+[here](https://github.com/DSkrzypiec/blogSourceCodes/tree/master/202104_Iterators/IEnumerableBench).
+
+I have run this benchmark on Mac M1 with ARM CPU architecture and on
+[my desktop](https://dskrzypiec.dev/minipc/) with Linux.
+
+### Results on Mac M1 (ARM)
+
+```
+BenchmarkDotNet=v0.12.1, OS=macOS 11.2.3 (20D91) [Darwin 20.3.0]
+Apple M1 2.40GHz, 1 CPU, 8 logical and 8 physical cores
+.NET Core SDK=5.0.202
+  [Host]     : .NET Core 5.0.5 (CoreCLR 5.0.521.16609, CoreFX 5.0.521.16609), X64 RyuJIT
+  DefaultJob : .NET Core 5.0.5 (CoreCLR 5.0.521.16609, CoreFX 5.0.521.16609), X64 RyuJIT
+```
+
+|        Method |     Size |         Mean | Allocated |
+|-------------- |--------- |-------------:|----------:|
+|  SumByIndexes |     1000 |     2.507 ns |         - |
+|           Sum |     1000 |    30.659 ns |      40 B |
+| SumEnumerable |     1000 | 1,559.437 ns |     328 B |
+|  SumByIndexes |  1000000 |     4.965 ns |         - |
+|           Sum |  1000000 |    25.535 ns |      40 B |
+| SumEnumerable |  1000000 | 1,550.568 ns |     328 B |
+|  SumByIndexes | 10000000 |     3.064 ns |         - |
+|           Sum | 10000000 |    23.035 ns |      40 B |
+| SumEnumerable | 10000000 | 1,557.213 ns |     328 B |
+
+
+### Results on Linux (x86)
+
+```
+BenchmarkDotNet=v0.12.1, OS=ubuntu 20.04
+AMD Ryzen 7 3700X, 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=5.0.200
+  [Host]     : .NET Core 5.0.3 (CoreCLR 5.0.321.7203, CoreFX 5.0.321.7203), X64 RyuJIT
+  DefaultJob : .NET Core 5.0.3 (CoreCLR 5.0.321.7203, CoreFX 5.0.321.7203), X64 RyuJIT
+```
+
+|        Method |     Size |         Mean | Allocated |
+|-------------- |--------- |-------------:|----------:|
+|  SumByIndexes |     1000 |     1.851 ns |         - |
+|           Sum |     1000 |    20.135 ns |      40 B |
+| SumEnumerable |     1000 | 1,457.868 ns |     328 B |
+|  SumByIndexes |  1000000 |     1.836 ns |         - |
+|           Sum |  1000000 |    20.610 ns |      40 B |
+| SumEnumerable |  1000000 | 1,461.925 ns |     328 B |
+|  SumByIndexes | 10000000 |     1.877 ns |         - |
+|           Sum | 10000000 |    19.509 ns |      40 B |
+| SumEnumerable | 10000000 | 1,479.415 ns |     328 B |
+
+
+### Benchmark Summary
+
+Iterating over the list (actual allocated contiguous block of memory) using
+`foreach` loop is over **fifty** times faster then using iteration over actual
+iterator (lazy evaluated). My best guess is, based on our IL code analysis,
+it's because of CPU cache misses in case of the iterator.
+
+What's also interesting is the cost of using `foreach` over `for` loop.
+But it shouldn't be surprising by now. As we saw earlier `foreach` once call
+`GetEnumerator` method and on each iteration call `MoveNext()` method. An
+actual method. Whereas `for` loop just increment index and take data from
+underlying array directly.
+
+Another interesting point is difference between CPUs (M1 vs faster Ryzen).
+Method `Sum` took about `30ns` on Mac M1 and about `20ns` on Ryzen which is
+around 33% improvement. In case of iterating using iterator the difference is
+much smaller around `1550ns` versus `1470ns` which is around 5%. This is
+another point which suggest importance of CPU cache. It is probably not used
+(at least not used efficiently) in case of iterator and is definitely used in
+case of `List<T>`.
+
+
+## Summary
 
 
 ## References
 
 1. ["C# In Depth" - Jon Skeet](https://www.manning.com/books/c-sharp-in-depth-fourth-edition)
-2. []()
+2. [Source code for this post](https://github.com/DSkrzypiec/blogSourceCodes/tree/master/202104_Iterators)
+3. []()
