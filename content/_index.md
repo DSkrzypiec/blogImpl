@@ -1,11 +1,11 @@
 ---
-date: "2021-04-08"
+date: "2021-04-22"
 title: "Home"
 ---
 
 List of posts:
 
-* [2021-04-14] [Iterators in C#]({{< ref "/post/iterators/index.md" >}})
+* [2021-04-22] [Iterators in C#]({{< ref "/post/iterators/index.md" >}})
 * [2020-12-30] [Summary of 2020]({{< ref "/post/year2020/index.md" >}})
 * [2020-11-11] [Home DB]({{< ref "/post/home-db/index.md" >}})
 * [2020-10-25] [Goodbye Całka]({{< ref "/post/calka/index.md" >}})
