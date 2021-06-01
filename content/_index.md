@@ -5,6 +5,7 @@ title: "Home"
 
 List of posts:
 
+* [2021-05-01] [Дамиан говорю по-русски]({{< ref "/post/russian-first/index.md" >}})
 * [2021-04-27] [Vim sessions]({{< ref "/post/vimsessions/index.md" >}})
 * [2021-04-22] [Iterators in C#]({{< ref "/post/iterators/index.md" >}})
 * [2020-12-30] [Summary of 2020]({{< ref "/post/year2020/index.md" >}})
