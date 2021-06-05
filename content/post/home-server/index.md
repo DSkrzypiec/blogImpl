@@ -25,8 +25,6 @@ probably overkill for a server used mainly by 1-3 users.
 
 ## Architecture
 
-**TODO**: Drawing of the architecture
-
 It is easy enough to buy a Raspberry Pi and set it up in local network but in
 my opinion it's useless when you cannot connect to it securely outside of your
 local network. That's why I needed some kind of _Virtual Private Network_ (VPN) for
@@ -92,7 +90,7 @@ tailscale. To connect within the VPN a device to the server SSH is used.
 
 So my Home DB still lives only on my _local_ device which happens to be secured
 server. In order to access Home App I've to use SSH port forwarding from
-server's localhost port onto SSH client port. Practically that means I still
+server's _localhost_ port onto SSH client port. Practically that means I still
 use my Home App in local environment but in help of VPN and SSH protocol I can
 securely access the app from another devices.
 
@@ -101,9 +99,30 @@ Regarding secure online backups I still use Tarsnap.
 
 ## Why this instead of the cloud?
 
+Why setting up your own server instead of just use one of _clouds_?
+Main reason was to keep my Home DB private. In theory I could store my database
+in encrypted form on the cloud and make Home App to handle decryption.
+But at this moment I'm not able to do that properly, according to security best
+practices. Second reason is that I feel less dependent on the others. I don't need
+the key feature of the cloud infrastructure which is easy scalability. By
+definition Home App and Home DB will stay local.
+Last but not least electricity and cost of Raspberry Pi is much lower than
+keeping up virtual machine 24/7/365 for significant period of time.
+
 
 ## Usage
 
+As I stated before this Home Server serves mainly my Home App and Home DB.
+But this service is very low request per seconds. I could say it's rather
+(few) requests per day. That gives a lot of room for other stuff.
+
+Additionally I store on the server mirrors of my GitHub repos and other side
+projects. I've set up environment for compiling projects in technologies I use
+in case I'd need to check something remotely.
+
+I feel that possibilities are endless and I just started exploring them.
+
 
 ## Summary
+
 
