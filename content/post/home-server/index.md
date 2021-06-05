@@ -1,5 +1,5 @@
 ---
-date: "2021-06-01"
+date: "2021-06-05"
 tags: ["Hardware", "database"]
 title: "Home Server"
 toc: false
@@ -41,6 +41,7 @@ In my opinion it's good because of the following reasons:
 1. _Just workz_, on most operating systems and CPU architectures
 1. Minimalistic and lightweight
 1. Zero config
+1. Provide static IP for each device within the network
 1. Free (as in price) for my usage (single user, many devices)
 
 So in this architecture I can connect to the home server over SSH from any
@@ -50,11 +51,39 @@ _tailscale_ on it, so I can also use the server directly from my smartphone.
 Which is really cool, even better than
 [writing blog post on smartphone](https://dskrzypiec.dev/smartphone).
 
+
 ## Setup
+
+Before my ordered Raspberry Pi arrived I've already installed Ubuntu Server
+20.04 on a microSD card (default RPi storage). This was my first experience
+with Ubuntu **Server**. It's just like a regular Ubuntu Desktop but without any
+unnecessary bloat like UI and default software and GUI programs. So basically
+you got a Linux terminal with \*NIX tools. At this price OS have significantly
+smaller footprint than regular Ubuntu. Running server version consumes only
+about `200MB` of RAM.
+
+On the day when RPi arrived I've prepared OS so I could start with setting up
+the environment. In just under two hours I manage to:
+
+1. setup basics for Linux like `.bashrc` with my aliases and `.vimrc` with my setup
+1. install .NET Core 3.1
+1. install tailscale
+1. install [Tarsnap](https://www.tarsnap.com) and configure my private key
+1. restore latest backup of the [Home DB](https://dskrzypiec.dev/home-db) via Tarsnap
+1. clone repo of my Home App and successfully compile the project (RPi is ARM
+   based CPU)
+1. adjust configs of Home App and run it in the background
+1. test SSH and port forwarding from another devices
+1. access Home App from my smartphone via SSH port forwarding inside my VPN
+
+I was very surprised that I've manage to pulled it off in just one evening.
+Another evening and I've setup scripts for automated backups and some utility
+scripts to my convenience while using the server from mobile devices.
+
 
 ## Security
 
-## Why this instead of Cloud?
+## Why this instead of the cloud?
 
 ## Usage
 
