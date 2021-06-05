@@ -83,9 +83,27 @@ scripts to my convenience while using the server from mobile devices.
 
 ## Security
 
+The server uses two level of security. The first is VPN and another is SSH. As
+I mentioned before I use tailscale to create a VPN for my devices. For details
+how tailscale works I recommend
+[this](https://tailscale.com/blog/how-tailscale-works/) article.
+In order to connect to my server client device have to be authorized by
+tailscale. To connect within the VPN a device to the server SSH is used.
+
+So my Home DB still lives only on my _local_ device which happens to be secured
+server. In order to access Home App I've to use SSH port forwarding from
+server's localhost port onto SSH client port. Practically that means I still
+use my Home App in local environment but in help of VPN and SSH protocol I can
+securely access the app from another devices.
+
+Regarding secure online backups I still use Tarsnap.
+
+
 ## Why this instead of the cloud?
 
+
 ## Usage
+
 
 ## Summary
 
