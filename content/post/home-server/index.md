@@ -1,9 +1,9 @@
 ---
-date: "2021-06-05"
+date: "2021-06-06"
 tags: ["Hardware", "database"]
 title: "Home Server"
 toc: false
-draft: true
+draft: false
 ---
 
 ![img](rpi.jpg)
@@ -20,7 +20,7 @@ server and it's enough for my use.
 
 For a while I though to make my [PC](https://dskrzypiec.dev/minipc) a home
 server but Ryzen 3700X definitely needs more power than Raspberry Pi and is
-probably overkill for a server used mainly by 1-3 users.
+probably an overkill for a server used mainly by myself.
 
 
 ## Architecture
@@ -43,9 +43,9 @@ In my opinion it's good because of the following reasons:
 1. Free (as in price) for my usage (single user, many devices)
 
 So in this architecture I can connect to the home server over SSH from any
-device which has _tailscale_ installed. All my laptops and PC already had
-_tailscale_ installed. Furthermore my android smartphone have _Termux_ and
-_tailscale_ on it, so I can also use the server directly from my smartphone.
+device which has tailscale installed. All my laptops and PC already had
+tailscale installed. Furthermore my android smartphone have Termux and
+tailscale on it, so I can also use the server directly from my smartphone.
 Which is really cool, even better than
 [writing blog post on smartphone](https://dskrzypiec.dev/smartphone).
 
@@ -60,8 +60,8 @@ you got a Linux terminal with \*NIX tools. At this price OS have significantly
 smaller footprint than regular Ubuntu. Running server version consumes only
 about `200MB` of RAM.
 
-On the day when RPi arrived I've prepared OS so I could start with setting up
-the environment. In just under two hours I manage to:
+On the day when RPi arrived I've already had prepared OS so I could start with
+setting up the environment. In just under two hours I manage to:
 
 1. setup basics for Linux like `.bashrc` with my aliases and `.vimrc` with my setup
 1. install .NET Core 3.1
@@ -74,7 +74,8 @@ the environment. In just under two hours I manage to:
 1. test SSH and port forwarding from another devices
 1. access Home App from my smartphone via SSH port forwarding inside my VPN
 
-I was very surprised that I've manage to pulled it off in just one evening.
+I was very surprised that I've manage to pulled it off in just one evening,
+because I expected some kind of issues or surprises. But everything went great.
 Another evening and I've setup scripts for automated backups and some utility
 scripts to my convenience while using the server from mobile devices.
 
@@ -118,11 +119,17 @@ But this service is very low request per seconds. I could say it's rather
 
 Additionally I store on the server mirrors of my GitHub repos and other side
 projects. I've set up environment for compiling projects in technologies I use
-in case I'd need to check something remotely.
+in case I'd need to check something out remotely.
 
 I feel that possibilities are endless and I just started exploring them.
 
 
 ## Summary
 
+Overall I'm very satisfied and happy with setting up my own server. I'm
+feeling comfortable that I can access my Home App from all of my devices from
+anywhere in secure fashion.
 
+Another reason I'm happy about is having a place which is running 24/7 where
+I've prepared development environments and all of kinds config files. In
+particular I can easily synchronize those on a new device.
