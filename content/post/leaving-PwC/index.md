@@ -2,7 +2,7 @@
 date: "2021-07-12"
 tags: ["personal"]
 title: "Leaving PwC"
-toc: false
+toc: true
 draft: true
 ---
 
@@ -108,6 +108,39 @@ I think that was the roughest time in my 6.5 years in PwC.
 
 
 ## Consulting phenomena
+
+Why people in PwC work that much?
+
+That's very interesting question with no simple answer. I think it's very
+interesting phenomena. Most of people who I worked with in PwC are very smart
+so how come they work long hours without any significant compensation?
+I think PwC gather people who are interested in solving problems. And there are
+many very interesting, in many ways, problems to handle. Add to it
+responsibility with impossible deadline and it creates a real challenge.
+Most of reasonable people doesn't want to fail. So they are put enormous effort
+to do the job and prove that you can do it.
+
+By doing this you got another task with even more fetched requirements of
+deadline because you shift definition for new "normal". Once again you don't
+want to fail so you keep working. At the evenings, weekends and so on.
+
+In practice no one is forced to work. You are just put in position where you
+have to deliver impossible task and you don't want to fail and don't want to
+complain about the task itself.
+
+It's no unusual the fact that project for hundreds of thousands of dollars are
+done with 2-3 consultants or senior consultant and manager.
+
+Another point is that there are usually no __interesting__ alternative to this
+job. For example the main alternative for colleagues from FRM is to transfer to
+risk team in a bank. But that is perceived as very stable and boring job.
+
+Data Analytics (DA) was another thing. It's sub team Data Tools which is
+contained mostly with programmers have very different dynamic. All programmers
+work 8 hours a day and nothing more. Probably because they can easily change
+job to another interesting one. That was fascinating to me to experience this.
+To work in PwC and have steady and no long work hours. But this topic I'll
+describe later.
 
 
 ## Focus on technology
