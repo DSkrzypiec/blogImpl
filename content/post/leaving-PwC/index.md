@@ -87,6 +87,25 @@ statically typed and compiled language was luxury for me a that time.
 
 ## Rough times
 
+Date 1st January of 2018 was the date. It was the deadline of introducing IFRS 9
+regulations in European banks. The fall 2017 was very stressful. We were
+working on finalizing credit risk models for IFRS 9 and also working together
+with another team on the production implementation of our models to be part of
+the IT application for the client.
+
+Generally in PwC people works around 9-10 hours a day which is much more than
+in regular job. But at that time, I remember, we would start a day on 8-9am and
+work together (physically in one room) till 1-3am in the night. This period
+takes about two weeks. After that we've presented our models to the client and
+everything was great. Around December 2017 our model was done and discussed
+with the client and theoretically our job was done. But practically
+the implementation (in the tool) of our model wasn't even close to be done.
+So we helped with testing and even proposing the C# implementation of fixes.
+This also was a bit stressful because of very hard deadline and communication
+problems between teams.
+
+I think that was the roughest time in my 6.5 years in PwC.
+
 
 ## Consulting phenomena
 
