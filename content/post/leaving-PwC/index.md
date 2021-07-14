@@ -1,11 +1,12 @@
 ---
-date: "2021-07-12"
+date: "2021-07-13"
 tags: ["personal"]
 title: "Leaving PwC"
 toc: true
 draft: true
 ---
 
+![img](pwc_logo.png)
 
 ## Intro
 
