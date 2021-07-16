@@ -38,30 +38,32 @@ intentional. I wasn't aware of this change for quite some time.
 ## Fresh consultant
 
 One of the biggest advantage of working in consulting is that you can work with
-many different domains, problems and technologies without changing your job. I
-have a funny example for this. Around July or August 2015 I was asked by my
-manager "Hey Damian, do you want to fly to London for a week to make some
+many different domains, people, problems and technologies without changing your
+job. I have a funny example for this. Around July or August 2015 I was asked by
+my manager "Hey Damian, do you want to fly to London for a week to make some
 dashboards in Tableau? The flight is on Monday.". The question was asked on
 Thursday, prior to that Monday. I answered "Sure but I don't know Tableau". He
 answered "Tableau is easy and you got Friday and whole weekend!". So I've
-flown together with an intern and another consultant. Without any manager or
+flown, together with an intern and another consultant. Without any manager or
 any experienced colleague. It was unexpected for me. The whole situation was
-unreal for me. We've got a credit card and few days later we had to work for the
-client in London using completely new tools and be confident and professional.
-Fortunately Tableau was rather easy and we fairly knew SQL so we managed to do
-the job.
+unreal. We've got a credit card and few days later we had to work for
+the client in London using completely new tools and be confident and
+professional. Fortunately Tableau was rather easy and we fairly knew SQL so we
+managed to do the job. This might be extreme example but in general there are
+many different projects for many different clients in variety of fields.
 
-But usually I worked from office in Warsaw on local projects or foreign
+Usually I work from office in Warsaw on local projects or foreign
 projects also from local office. During my first two years in PwC, as
 consultant, I mostly did data analysis with T-SQL, R and Excel. Including data
 validation, data preparation and everything around data that will lead to
 building models and simulations. In technical perspective that was around 60%
 T-SQL, 20% Excel and 20% R.
 Because of many reasons very large part of writing calculations and simulations
-for building a model was done in T-SQL. It is not the best tool for the job but
-that was the way, but we didn't know it back then. Nevertheless it was a good
-practice to me to write such complex algorithms in SQL, not even a programming
-language!
+for building a model was done in T-SQL. Looking back I know that T-SQL
+definitely wasn't the right tool for this. Positive side was that we pushed SQL
+queries to its limits. Also we had to design data schema right.  Otherwise it's
+really hard to test correctness.  Nevertheless it was a good practice to me to
+write such complex algorithms in SQL, not even a programming language!
 
 There was one quick project somewhere in 2016 which had a big impact on me. It
 was some simulation optimization to reduce execution time from 6-8 hours to
@@ -70,16 +72,16 @@ from T-SQL to C#. The methodology was fairly familiar to me but I didn't
 produce any commercial code in C# before. The main idea was to rewrite T-SQL to
 C# and add it as C# assembly to SQL Server in form of stored procedures.
 Therefore interface for the client was the same but implementation was done in
-another technology. I've learned a lot on this 3-week project. I started from
-writing loading data from the database and write many many unit tests (we had
-to produce identical results as T-SQL version). I very much enjoyed coding in
-C# even though it was a new thing for me. The deadline was close and as it
+another technology. I've learned a lot on this 3-week project. I started by
+implementing data loading from the database and write many, many unit tests (we
+had to produce identical results as T-SQL version). I very much enjoyed coding
+in C# even though it was a new thing for me. The deadline was close and as it
 turned out the other dev didn't make much of a progress. I finished my part 3
 days before the deadline. At this point leading dev asked me to take over the
 other part of the implementation. We worked 9 hours on Saturday and from 11am
 on Sunday to 7am on Monday without any break. We finished implementation about
 6am on Monday and thanks to unit tests we were pretty sure it was correct
-around 7am. Around 8am I went to sleep and lead dev have to go the bank to
+around 7am. Around 8am I went to sleep and leading dev had to go the bank to
 present and to deliver our solution. Rewritten implementation with parallel
 simulation in C# in the end took only few minutes to produce the result. After
 this project I though that this the thing I want to do. Implementation in
@@ -97,10 +99,10 @@ the IT application for the client.
 Generally in PwC people works around 9-10 hours a day which is much more than
 in regular job. But at that time, I remember, we would start a day on 8-9am and
 work together (physically in one room) till 1-3am in the night. This period
-takes about two weeks. After that we've presented our models to the client and
-everything was great. Around December 2017 our model was done and discussed
+took about two weeks. After that we've presented our models to the client and
+everything was great. Around December 2017 our models was done and discussed
 with the client and theoretically our job was done. But practically
-the implementation (in the tool) of our model wasn't even close to be done.
+the implementation (in the IT tool) of our model wasn't even close to be done.
 So we helped with testing and even proposing the C# implementation of fixes.
 This also was a bit stressful because of very hard deadline and communication
 problems between teams.
@@ -110,6 +112,7 @@ I think that was the roughest time in my 6.5 years in PwC.
 
 ## Consulting phenomena
 
+I wanted to pause for a moment and write about very interesting phenomena.
 Why people in PwC work that much?
 
 That's very interesting question with no simple answer. I think it's very
@@ -119,7 +122,7 @@ I think PwC gather people who are interested in solving problems. And there are
 many very interesting, in many ways, problems to handle. Add to it
 responsibility with impossible deadline and it creates a real challenge.
 Most of reasonable people doesn't want to fail. So they are put enormous effort
-to do the job and prove that you can do it.
+to do the job and prove that they can do it.
 
 By doing this you got another task with even more fetched requirements of
 deadline because you shift definition for new "normal". Once again you don't
@@ -136,7 +139,7 @@ Another point is that there are usually no __interesting__ alternative to this
 job. For example the main alternative for colleagues from FRM is to transfer to
 risk team in a bank. But that is perceived as very stable and boring job.
 
-Data Analytics (DA) was another thing. It's sub team Data Tools which is
+Data Analytics (DA) was another thing. Its sub team Data Tools which is
 contained mostly with programmers have very different dynamic. All programmers
 work 8 hours a day and nothing more. Probably because they can easily change
 job to another interesting one. That was fascinating to me to experience this.
@@ -145,6 +148,22 @@ describe later.
 
 
 ## Focus on technology
+
+After around 3.5 years (2018 H2) of regular consulting projects in credit risk
+I started talking to my managers and directors that I'm more interested in
+technology rather than credit risk and modelling. Fortunately they backed me up
+to spend around 70% of my time on internal projects focused on
+**implementation** of tools for credit risk both internal and for clients.
+
+This was something new in FRM. It was interesting for me to work on mostly
+implementation. Without client meetings, Excels and long hours in the office.
+I also conduct few technical trainings for our team and provide internal
+technical consultation for other projects in our team.
+
+
+
+
+## My project
 
 
 ## Transfer to Data Tools team
