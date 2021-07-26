@@ -1,11 +1,12 @@
 ---
-date: "2021-07-13"
+date: "2021-07-26"
 tags: ["personal"]
 title: "Leaving PwC"
 toc: true
 draft: true
 ---
 
+**TODO** Zdjęcie z logo PwC ale z kubka
 ![img](pwc_logo.png)
 
 ## Intro
@@ -152,7 +153,7 @@ describe later.
 After around 3.5 years (2018 H2) of regular consulting projects in credit risk
 I started talking to my managers and directors that I'm more interested in
 technology rather than credit risk and modelling. Fortunately they backed me up
-to spend around 70% of my time on internal projects focused on
+and let me to spend around 70% of my time on internal projects focused on
 **implementation** of tools for credit risk both internal and for clients.
 
 This was something new in FRM. It was interesting for me to work on mostly
@@ -160,10 +161,30 @@ implementation. Without client meetings, Excels and long hours in the office.
 I also conduct few technical trainings for our team and provide internal
 technical consultation for other projects in our team.
 
+Besides implementing internal R package for building scoring models we also
+implemented few MVPs and prototypes of applications within about a year.
+Occasionally I was pulled out my tech bubble to real consulting projects when
+there was a need but most of my time I spent on implementations.
 
+In fall 2019 the time has come for _my project_.
 
 
 ## My project
+
+The project was about to rewrite a tool for IFRS 9 written in Excel and Power
+Query to another technology for a factoring company. It was a big deal for me
+because of two reasons. Firstly this was the first project in FRM where we had
+to deliver actual application. Secondly I was designer, leading dev, tester,
+manager and project manager on this project.
+
+We had to choose SQLite and R with frontend in
+[Shiny](https://shiny.rstudio.com), because of reasons. We had around
+3-4 months for the project. On my team I had two interns and one consultant.
+
+There was one hidden matter that wasn't in the agreement but what must be done
+in order to rewrite application - create historical database based on the old
+result files. The initial tool used Excel as UI, calculation engine and the
+database.
 
 
 ## Transfer to Data Tools team
