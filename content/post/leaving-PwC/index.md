@@ -186,6 +186,28 @@ in order to rewrite application - create historical database based on the old
 result files. The initial tool used Excel as UI, calculation engine and the
 database.
 
+Without going into details of the project I can say we've delivered core
+functionalities on time but that required extra hard work from me, including
+few weekends and few days in Christmas.
+
+More important for me are lessons learned from this project and those are:
+
+1. Such a tool should not be implemented in dynamically typed language
+1. I don't want to be a manager in consulting ever
+1. I don't want to be a manager in tech yet
+1. Agreement should be structured more precisely in technical parts
+
+Furthermore my soft skills got a boost after this project. Whole communication
+with the client was through me. I was responsible for dealing with client's
+over interpretation of the agreement and cutting long list of features that was
+unfounded. I've made a deploy on client's server and I was the one who
+presented the application for the client. On the other hand I have a project and
+a team to manage. Prioritizing implementation features and managing
+inexperienced team to hit a really short deadline was challenging. All that
+improve my skills that wasn't much in use prior to that project. Even though
+I'm not continuing my path in management I feel like it was a good experience
+for me after all.
+
 
 ## Transfer to Data Tools team
 
