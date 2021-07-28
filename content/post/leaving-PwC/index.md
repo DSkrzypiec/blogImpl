@@ -12,7 +12,7 @@ draft: true
 ## Intro
 
 After **six and a half** (6.5) years I'm leaving PwC. In this post I wanted to
-shortly described my history in PwC and perhaps expose what is like to work in
+shortly described my history in PwC and perhaps expose what it's like to work in
 consulting.
 
 
@@ -210,6 +210,54 @@ for me after all.
 
 
 ## Transfer to Data Tools team
+
+When _my project_ was practically done I officially said that I'm leaving PwC.
+At this point I had three months notice period. I have four or five meetings in
+this regard in the first month. Finally I was convinced to transfer to Data
+Tools (DT) team. DT team is a subteam of Data Analytics team that I was
+initially recruited in PwC. The team at that time had around 25 programmers
+(mostly senior .NET developers), few analysts and few people in management.
+Data Tools team was dominated by developers. I was told that culture of work is
+very different than in regular consulting. That was the key feature for me
+than.
+
+They weren't lying about that. Work culture was significantly different
+comparing to consulting teams and projects. Over 14 months in DT team I've done
+about 8 extra hours which is nothing comparing to my previous team. That
+stability was a good thing for me, especially after my second child was born
+(few months after I've joined DT team).
+
+The work itself was also very interesting. I've worked on developing and
+maintaining deployed IFRS 9 application for an international bank. The codebase
+of the application was an order of magnitude bigger than my projects in
+financial risk. So I've been doing quite interesting work in very steady and
+comfy environment still working in PwC. I though that cannot be done.
+Personally I'm glad that a group of programmers effected rest of the team and
+introduce more "normal" work culture.
+
+On top of that I've learned a tone. I had pleasure of reading a mass of source
+code from few projects and working with very experienced .NET programmers.
+Funny thing for me was that I wasn't asked about my C# or .NET experience prior
+joining DT team. I guess I had a good reputation and FRM team works together
+with DT team on few projects. Of course I knew C# but I had very little actual
+experience with writing production code in C#, like two short projects in 2016.
+Combining those two things has resulted as perfect environment for me to
+advance my .NET skills. After reading a tone of C# source code and gone through
+first few _pull requests_ I felt how modern, production-ready C# code is
+written.
+
+But after this very short, intensive and fascinating learning period the rest
+was very usual. Almost boring. Just **work**. At that time it was fine for me.
+For the first time since 2015 I had steady and predictable job. At the same
+time I appreciated it and I was bored.
+
+I was bored because the area of problems, tools and technology for almost all
+tools implemented in DT team was known to me. What most important I knew that
+this realm will not change soon. There are very specific kind of applications
+that financial institution wants. I wanted to touch some other technical
+problems which doesn't appear in financial or consulting IT world.
+Like distributed systems with thousands of requests per seconds and high
+availability.
 
 
 ## Summary
