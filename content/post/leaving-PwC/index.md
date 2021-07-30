@@ -1,13 +1,12 @@
 ---
-date: "2021-07-26"
+date: "2021-07-30"
 tags: ["personal"]
 title: "Leaving PwC"
-toc: true
+toc: false
 draft: true
 ---
 
-**TODO** Zdjęcie z logo PwC ale z kubka
-![img](pwc_logo.png)
+![img](pwc_cup.jpg)
 
 ## Intro
 
@@ -217,9 +216,9 @@ this regard in the first month. Finally I was convinced to transfer to Data
 Tools (DT) team. DT team is a subteam of Data Analytics team that I was
 initially recruited in PwC. The team at that time had around 25 programmers
 (mostly senior .NET developers), few analysts and few people in management.
-Data Tools team was dominated by developers. I was told that culture of work is
-very different than in regular consulting. That was the key feature for me
-than.
+Data Tools team was dominated by developers. I was told that culture of work
+there is very different than in regular consulting. That was the key feature
+for me than.
 
 They weren't lying about that. Work culture was significantly different
 comparing to consulting teams and projects. Over 14 months in DT team I've done
@@ -238,13 +237,12 @@ introduce more "normal" work culture.
 On top of that I've learned a tone. I had pleasure of reading a mass of source
 code from few projects and working with very experienced .NET programmers.
 Funny thing for me was that I wasn't asked about my C# or .NET experience prior
-joining DT team. I guess I had a good reputation and FRM team works together
-with DT team on few projects. Of course I knew C# but I had very little actual
-experience with writing production code in C#, like two short projects in 2016.
-Combining those two things has resulted as perfect environment for me to
-advance my .NET skills. After reading a tone of C# source code and gone through
-first few _pull requests_ I felt how modern, production-ready C# code is
-written.
+joining DT team. I guess I had a good reputation. Of course I knew C# but I had
+very little actual experience with writing production code in C#, like two
+short projects in 2016.  Combining those two things has resulted as perfect
+environment for me to advance my .NET skills. After reading a tone of C# source
+code and gone through first few _pull requests_ I felt how modern,
+production-ready C# code is written.
 
 But after this very short, intensive and fascinating learning period the rest
 was very usual. Almost boring. Just **work**. At that time it was fine for me.

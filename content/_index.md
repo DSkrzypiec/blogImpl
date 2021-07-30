@@ -1,11 +1,11 @@
 ---
-date: "2021-07-26"
+date: "2021-07-30"
 title: "Home"
 ---
 
 List of posts:
 
-* [2021-07-26] [Leaving PwC]({{< ref "/post/leaving-PwC/index.md" >}})
+* [2021-07-30] [Leaving PwC]({{< ref "/post/leaving-PwC/index.md" >}})
 * [2021-06-06] [Home Server]({{< ref "/post/home-server/index.md" >}})
 * [2021-04-27] [Vim sessions]({{< ref "/post/vimsessions/index.md" >}})
 * [2021-04-22] [Iterators in C#]({{< ref "/post/iterators/index.md" >}})
