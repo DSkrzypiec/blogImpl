@@ -3,7 +3,7 @@ date: "2021-08-01"
 tags: ["personal"]
 title: "Leaving PwC"
 toc: false
-draft: true
+draft: false
 ---
 
 ![img](pwc_cup.jpg)
