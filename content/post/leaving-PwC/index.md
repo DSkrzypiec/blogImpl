@@ -1,5 +1,5 @@
 ---
-date: "2021-07-30"
+date: "2021-08-01"
 tags: ["personal"]
 title: "Leaving PwC"
 toc: false
@@ -14,6 +14,13 @@ After **six and a half** (6.5) years I'm leaving PwC. In this post I wanted to
 shortly described my history in PwC and perhaps expose what it's like to work in
 consulting.
 
+All of the following are my recollections and my thoughts about working in PwC.
+On the publish date I'm no longer PwC employee. All opinions are my own and
+does not represent PwC in any way. Furthermore the following is very local
+focused. Other PwC offices in other countries might be significant different.
+Even other teams within PwC in Warsaw might be very different. So when I'm
+referring to _PwC_ I mean the direct environment I was exposed to during my
+days in PwC.
 
 ## Joining PwC
 
@@ -85,7 +92,7 @@ around 7am. Around 8am I went to sleep and leading dev had to go the bank to
 present and to deliver our solution. Rewritten implementation with parallel
 simulation in C# in the end took only few minutes to produce the result. After
 this project I though that this the thing I want to do. Implementation in
-statically typed and compiled language was luxury for me a that time.
+statically typed and compiled language was luxury for me at that time.
 
 
 ## Rough times
@@ -113,7 +120,7 @@ I think that was the roughest time in my 6.5 years in PwC.
 ## Consulting phenomena
 
 I wanted to pause for a moment and write about very interesting phenomena.
-Why people in PwC work that much?
+Why people in PwC work that much? Even though no one is forced to do anything.
 
 That's very interesting question with no simple answer. I think it's very
 interesting phenomena. Most of people who I worked with in PwC are very smart
@@ -163,7 +170,10 @@ technical consultation for other projects in our team.
 Besides implementing internal R package for building scoring models we also
 implemented few MVPs and prototypes of applications within about a year.
 Occasionally I was pulled out my tech bubble to real consulting projects when
-there was a need but most of my time I spent on implementations.
+there was a need but most of my time I spent on implementations.  I even
+introduced Go programming language to FRM. We've made one very successful
+project using Go to perform simulations efficiently and the other one for
+backend implementation for one of the MVPs.
 
 In fall 2019 the time has come for _my project_.
 
@@ -234,13 +244,13 @@ comfy environment still working in PwC. I though that cannot be done.
 Personally I'm glad that a group of programmers effected rest of the team and
 introduce more "normal" work culture.
 
-On top of that I've learned a tone. I had pleasure of reading a mass of source
+On top of that I've learned a ton. I had pleasure of reading a mass of source
 code from few projects and working with very experienced .NET programmers.
 Funny thing for me was that I wasn't asked about my C# or .NET experience prior
 joining DT team. I guess I had a good reputation. Of course I knew C# but I had
 very little actual experience with writing production code in C#, like two
 short projects in 2016.  Combining those two things has resulted as perfect
-environment for me to advance my .NET skills. After reading a tone of C# source
+environment for me to advance my .NET skills. After reading a ton of C# source
 code and gone through first few _pull requests_ I felt how modern,
 production-ready C# code is written.
 
@@ -260,3 +270,23 @@ availability.
 
 ## Summary
 
+I think that being in PwC at the beginning of the career can be very
+beneficial. I'm glad that I was exposed to variety of projects, clients,
+technologies. I'm glad that I worked with many smart people from whom I learned
+a lot. I'm glad that I had opportunity to being part of improving tech culture
+within my teams in PwC. I'm glad for interesting problems and hard deadlines
+after all. I'm glad that I've been a consultant before I become a programmer.
+I can see things in wider perspective. I have an idea what the management have
+to deal with.
+
+But...  I don't want to continue to work in this manner for my whole life. For
+few years it was a good thing for my career. No necessary for my life outside
+work.  Therefore since last year (after transition to DT team) I started to
+better balance work and life. Working in IT helps a lot. In pure consulting it
+was not possible or extremely hard.
+
+For students who don't really know what to do I can recommend checking out
+working in consulting. You can touch many fields and find out what you really
+want to work on.
+
+Now I'm off to new challenges. Bye, bye PwC!
