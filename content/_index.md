@@ -1,11 +1,11 @@
 ---
-date: "2021-09-22"
+date: "2021-10-08"
 title: "Home"
 ---
 
 List of posts:
 
-* [2021-09-22] [Bloom Filter]({{< ref "/post/bloom-filter/index.md" >}})
+* [2021-10-08] [Bloom Filter]({{< ref "/post/bloom-filter/index.md" >}})
 * [2021-08-01] [Leaving PwC]({{< ref "/post/leaving-PwC/index.md" >}})
 * [2021-06-06] [Home Server]({{< ref "/post/home-server/index.md" >}})
 * [2021-04-27] [Vim sessions]({{< ref "/post/vimsessions/index.md" >}})

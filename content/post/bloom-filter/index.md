@@ -1,9 +1,10 @@
 ---
-date: "2021-09-25"
+date: "2021-10-08"
 tags: ["Data Structures", "C#"]
 title: "Bloom filter"
 toc: false
-draft: true
+draft: false
+markup: "goldmark"
 ---
 
 
@@ -159,8 +160,60 @@ were activated by single object.
 
 ## Maths
 
+At this point we know why the answer is probabilistic but it's not merely
+enough. I'd like to know what is the probability of false positive and how it
+is related with `_bitset` size. Let's find out.
+
+False positive in this context means that `ProbablyContains(x) == true` and `x`
+is not contained in the search set which is equivalent to the fact that at
+least one bit checked for `x` wasn't set to one by `x`.
+Using assumption about uniform distribution of hash functions and independence
+of hash function we can determine probability of described event
+
+
+$$ P(A) = \left( 1 - \frac{1}{m} \right)^{k}$$
+
+Where `A` is an event of that particular bit is not set to one by any of `k`
+hash functions and `m` is size of `_bitset`. Once again, by independence, event
+`B` which is the same as `A` but after `n` inserts can be expressed as
+
+$$ P(B) = \left( 1 - \frac{1}{m} \right)^{k \cdot n} $$
+
+Finally we can write approximation for a probability of false positives
+
+$$ P(FP) = \left( 1 - \left( 1 - \frac{1}{m} \right)^{m \cdot \frac{k \cdot n}{m}} \right)^{k} \approx 
+\left( 1 - e^{-\frac{k \cdot n}{m}} \right)^{k}  $$
+
+The above approximation says that the probability of false positives
+
+1. decreases with growth of `_bitset` size
+1. increases with number of insertions
+1. decreases with number of hash functions, but requires more computations
+
+The probability function for false positives can be perceived as functions of
+__k__ (number of hash functions) assuming that __m__ and __n__ are given
+constants. In this case we can easily calculate optimal number of hash
+functions by minimizing false positives function. It's a
+differentiable function so we can use standard methods from calculus.
+The number of hash functions that minimizes false positives is
+
+$$ k_{opt} = \frac{m}{n} \ln 2 $$
+
+That's cool! We can a priori choose number of hash functions by estimating
+`_bitset` size and number of insertions.
+
+
+## Summary
+
+There are [many variations](https://www.dca.fee.unicamp.br/~chesteve/pubs/bloom-filter-ieee-survey-preprint.pdf)
+of Bloom filters including ones with deletion capibilities but the most
+fascinating to me was the original idea. Very clever usage of properties of
+hash functions to significantly reducees memory usage and disk reads.
+
 
 ## References
 
+1. [Original paper](https://www.cs.princeton.edu/courses/archive/spr05/cos598E/bib/p422-bloom.pdf)
 1. [Wiki](https://en.wikipedia.org/wiki/Bloom_filter)
-2. [Basic implementation](https://github.com/dskrzypiec/bloom-filter)
+1. [Basic implementation](https://github.com/dskrzypiec/bloom-filter)
+1. [Variations of Bloom filters](https://www.dca.fee.unicamp.br/~chesteve/pubs/bloom-filter-ieee-survey-preprint.pdf)
