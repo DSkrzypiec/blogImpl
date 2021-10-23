@@ -5,6 +5,7 @@ title: "Home"
 
 List of posts:
 
+* [2021-10-23] [Foundations]({{< ref "/post/foundations/index.md" >}})
 * [2021-10-08] [Bloom Filter]({{< ref "/post/bloom-filter/index.md" >}})
 * [2021-08-01] [Leaving PwC]({{< ref "/post/leaving-PwC/index.md" >}})
 * [2021-06-06] [Home Server]({{< ref "/post/home-server/index.md" >}})
