@@ -59,6 +59,23 @@ planche or front lever but it is crucial to keep it strong with the perfect form
 
 ## IT
 
+The main field I'm into is IT. As we've already established foundations are
+important whatever you do. Nowadays it is very easy to do many things in
+programming without knowing almost any basics. For example you can train deep
+neural network in Python with less than 100 lines of code without knowing any
+maths and even Python, just depending on tutorials and tweaking upon examples.
+It is not a bad thing on its own. Things shouldn't be overly complicated just
+to force you to deepen your knowledge. Appropriate interface should be design.
+
+What, in my opinion, can be a problem is that you can advance your career
+really far without solid understanding of foundations. That even might gave you
+an illusion that you know them. If you often say "yea, that is **probably**
+done this way under the hood..." that might be a symptom. What is even worse is
+thinking that you're too advanced in programming to even think about details of
+basic concepts. One of symptoms of this one might be something like "let's not
+talk about it, this should **probably** optimized by compiler".
+
+
 
 ## Summary
 
