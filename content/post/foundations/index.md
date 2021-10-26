@@ -1,5 +1,5 @@
 ---
-date: "2021-10-23"
+date: "2021-10-26"
 tags: ["General"]
 title: "Foundations"
 toc: false
@@ -73,7 +73,7 @@ an illusion that you know them. If you often say "yea, that is **probably**
 done this way under the hood..." that might be a symptom. What is even worse is
 thinking that you're too advanced in programming to even think about details of
 basic concepts. One of symptoms of this one might be something like "let's not
-talk about it, this should **probably** optimized by compiler".
+talk about it, this should be **probably** optimized by compiler".
 
 In case of programming foundations are very broad. Just to name a several areas
 of IT foundations
@@ -81,7 +81,7 @@ of IT foundations
 * logic
 * data structures and algorithms
 * hardware (CPU, GPU, RAM, storage, ...)
-* data bases
+* databases
 * operating systems
 * networking
 * security
@@ -106,8 +106,8 @@ this practice should be foundations. If you are a programmer you probably have
 used HTTP server clients but have you ever written one? Do you know HTTP(S)
 protocol? How TCP/IP is used in implementation of HTTP? How routing of
 endpoints is done? How HTTP messages looks like in a memory? What is structure
-of URL and what is URI? How clients establish connection with another servers?
-And many more...
+of URL and what is URI? Why are there cookies? How clients establish connection
+with another servers?  And many more...
 
 My criteria for the question "do I really know how it's done?" is the answer
 for the question "Am I able to program it in C?".
@@ -120,5 +120,21 @@ language.
 
 
 ## Summary
+
+I've seen on my example how focusing on the foundations in each field made a
+progress much faster. Do not be ashamed of going back to basics. Foundations
+cannot be too strong. Patiently developed levels upon foundations will bring
+satisfaction and fulfilment. Build gradually. Work, consistency and patience
+will be rewarded.
+
+As maths grad who stepped into data analysis and programming I initially
+started from very high level programming languages (R and Python). But in order
+to deepen my understanding (and performance) I was going down the abstraction
+levels to improve my foundations. It took me few years and I have still plenty
+to learn but I think I know what is important and what I should be focused on.
+
+Obviously I'm not saying that you should practice only foundations. You should
+checkout new languages, tools and frameworks but that shouldn't be vast
+majority of time spent.
 
 
