@@ -75,6 +75,48 @@ thinking that you're too advanced in programming to even think about details of
 basic concepts. One of symptoms of this one might be something like "let's not
 talk about it, this should **probably** optimized by compiler".
 
+In case of programming foundations are very broad. Just to name a several areas
+of IT foundations
+
+* logic
+* data structures and algorithms
+* hardware (CPU, GPU, RAM, storage, ...)
+* data bases
+* operating systems
+* networking
+* security
+* programming languages
+* compilers
+* text editors and tools
+* design (systems and UX)
+* localizations (encodings, time zones and other local conventions)
+
+Yep, that's not all but it is already a lot for _just_ a foundations. Good
+universities covers most of those foundations across lectures and tutorials.
+Even though you had those basics worked out back in a university you probably
+forgot most of it after few years in the industry. We are truly standing on the
+shoulders of giants and we rarely have to tweak around foundations in regular
+job. I encourage you to not be ashamed of going back to basics and to broaden
+your foundations. This will got you more then learning new js framework.
+If your foundations are strong picking up anything on higher levels of
+abstraction will be easy. You will not struggle.
+
+In my opinion if you want advance in IT you should practice and most part of
+this practice should be foundations. If you are a programmer you probably have
+used HTTP server clients but have you ever written one? Do you know HTTP(S)
+protocol? How TCP/IP is used in implementation of HTTP? How routing of
+endpoints is done? How HTTP messages looks like in a memory? What is structure
+of URL and what is URI? How clients establish connection with another servers?
+And many more...
+
+My criteria for the question "do I really know how it's done?" is the answer
+for the question "Am I able to program it in C?".
+
+If you don't know where to start I'd recommend to start reading standard
+library of your favorite programming language. I'd also recommend [Go's
+standard library](https://pkg.go.dev/std) even for people how don't program in
+Go. It is very well written and documented and Go is pretty straightforward
+language.
 
 
 ## Summary
