@@ -74,6 +74,9 @@ It was a bit tedious.
 Using _fzf.vim_ I can use `:Rg` command to use `ripgrep` interactively and
 preview fragment of files for matched results. Because of great performance of
 both _ripgrep_ and _fzf_ browsing through results is extremely smooth.
+Once you find a result you can open it in new tab (`Ctrl + t`), new split
+(`Ctrl + x`) or vertical split (`Ctrl + v`).
+
 The following cast should express more than few paragraphs.
 
 [![asciicast](https://asciinema.org/a/9qVzlU7SRLzvipfivYANQjZB7.svg)](https://asciinema.org/a/9qVzlU7SRLzvipfivYANQjZB7)
@@ -110,7 +113,14 @@ endfunction
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 ```
 
-# Summary
+## Summary
+
+In a very long time I have not been this excited about Vim plugin. Regular
+fuzzy finder for files via _fzf.vim_ is a pleasant feature but if it would be
+the only feature of this plugin I would stick with standard Vim's `find`.
+
+But using this smooth usage of _ripgrep_ inside Vim has really light a spark of
+joy for me. That is it. It is the main reason for this post.
 
 
 ## References
