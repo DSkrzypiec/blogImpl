@@ -34,3 +34,9 @@ first.
 ## _fzf.vim_
 
 
+## References
+
+1. [fzf](https://github.com/junegunn/fzf)
+2. [fzf.vim](https://github.com/junegunn/fzf.vim)
+3. [ripgrep](https://github.com/BurntSushi/ripgrep)
+
