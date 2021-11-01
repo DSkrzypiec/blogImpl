@@ -1,11 +1,11 @@
 ---
-date: "2021-10-26"
+date: "2021-11-01"
 title: "Home"
 ---
 
 List of posts:
 
-* [2021-10-31] [Fuzzy Finder]({{< ref "/post/fuzzy-finder/index.md" >}})
+* [2021-11-01] [Fuzzy Finder]({{< ref "/post/fuzzy-finder/index.md" >}})
 * [2021-10-26] [Foundations]({{< ref "/post/foundations/index.md" >}})
 * [2021-10-08] [Bloom Filter]({{< ref "/post/bloom-filter/index.md" >}})
 * [2021-08-01] [Leaving PwC]({{< ref "/post/leaving-PwC/index.md" >}})
