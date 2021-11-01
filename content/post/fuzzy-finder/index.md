@@ -4,7 +4,6 @@ tags: ["Vim"]
 title: "Fuzzy Finder"
 toc: false
 draft: false
-markup: "goldmark"
 ---
 
 ![img](top.png)
@@ -49,13 +48,69 @@ and open it in Vim and the other one is for jumping to found directory.
 alias vf='vim $(fzf --height 40%)'
 alias cdf='cd $(find . -type directory | fzf --height 60%)'
 ```
-
 A little demo of the those aliases:
-
 [![asciicast](https://asciinema.org/a/hTYFpnEqIekVYmTV7c1xS9PCk.svg)](https://asciinema.org/a/hTYFpnEqIekVYmTV7c1xS9PCk)
 
 
 ## _fzf.vim_
+
+As the name suggests _fzf.vim_ is a Vim package which wraps _fzf_ in very comfy
+form. It takes advantage of Vim pop-up windows to run _fzf_. It can perform
+fuzzy search on files, git commits, Vim help, snippets and many more.
+But what was the most crucial feature for me was integration of _fzf_ with
+[ripgrep](https://github.com/BurntSushi/ripgrep).
+
+For years I've been using the following mapping for using grep while working in
+Vim (I used spaces instead of `<space>` for readability) to grep the word under
+the cursor
+
+```
+noremap <leader>f :!grep --color=always -iran <C-r><C-w> .<CR>
+```
+
+Once I've glanced over the grep result I had to manually open the desired file.
+It was a bit tedious.
+
+Using _fzf.vim_ I can use `:Rg` command to use `ripgrep` interactively and
+preview fragment of files for matched results. Because of great performance of
+both _ripgrep_ and _fzf_ browsing through results is extremely smooth.
+The following cast should express more than few paragraphs.
+
+[![asciicast](https://asciinema.org/a/9qVzlU7SRLzvipfivYANQjZB7.svg)](https://asciinema.org/a/9qVzlU7SRLzvipfivYANQjZB7)
+
+There is one technical caveat in `:Rg` command. The ripgrep query is performed
+once at the beginning and all filters on results are done by _fzf_. Therefore
+you might think that using regular expressions doesn't work. Fortunately author
+gives [an
+example](https://github.com/junegunn/fzf.vim#example-advanced-ripgrep-integration)
+how to fire up _ripgrep_ on every query change. I have set this under `:RB`
+command.
+
+
+## My settings
+
+Make sure you have _fzf_ and _ripgrep_ installed before setting up Vim plugins.
+
+
+```
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+...
+
+let g:fzf_preview_window = ['down:40%', 'ctrl-/']
+
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --line-number --no-heading --color=always -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+```
+
+# Summary
 
 
 ## References
