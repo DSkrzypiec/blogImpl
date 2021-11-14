@@ -1,11 +1,11 @@
 ---
-date: "2021-11-13"
+date: "2021-11-14"
 title: "Home"
 ---
 
 List of posts:
 
-* [2021-11-13] [Parsing T-SQL]({{< ref "/post/parsing-tsql/index.md" >}})
+* [2021-11-14] [Parsing T-SQL]({{< ref "/post/parsing-tsql/index.md" >}})
 * [2021-11-01] [Fuzzy Finder]({{< ref "/post/fuzzy-finder/index.md" >}})
 * [2021-10-26] [Foundations]({{< ref "/post/foundations/index.md" >}})
 * [2021-10-08] [Bloom Filter]({{< ref "/post/bloom-filter/index.md" >}})

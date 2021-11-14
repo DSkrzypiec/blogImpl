@@ -1,5 +1,5 @@
 ---
-date: "2021-11-13"
+date: "2021-11-14"
 tags: ["Database", "T-SQL", "C#"]
 title: "Parsing T-SQL"
 toc: false
@@ -127,6 +127,80 @@ for removing all comments from T-SQL script.
 
 
 ## ANTLR
+
+[ANTLR](https://www.antlr.org) is a tool for generating parsers. As it turned
+out there is already open source, community-built, grammar for T-SQL. Definition
+can be found [here](https://github.com/antlr/grammars-v4/tree/master/sql/tsql).
+
+Based on this grammar definition ANTLR would generate a lexer, parser and
+listeners in a target language. Supported target languages for ANTLR4 are Java
+(ANTLR is written in Java), C#, Python, JavaScript, Go, C++, Swift, PHP and
+Dart.
+
+I wanted to try it mostly because it's open source and I browse through the
+grammar and make some changes (improvements). Another reason is that if this
+would went smooth I could write up a grammar for
+[Snowflake SQL](https://docs.snowflake.com/en/) which I use at work recently.
+
+I've copied `TSqlLexer.g4` and `TSqlParser.g4` files and use ANTLR4 to generate
+set of C# classes using the following command
+
+```
+antlr4 -Dlanguage=CSharp TSqlLexer.g4 TSqlParser.g4 -o tmp
+```
+
+It has generated the following files in the `tmp` catalog
+
+- `TSqlLexer.cs` - a file with `TSqlLexer` class definition in 9775 lines of code
+- `TSqlParser.cs` - a file with `TSqlParser` class definition in 130774 lines of code
+- `TSqlParserListener.cs` - a file with `TSqlParserListener` class definition in 5787 lines of code
+- `TSqlParserBaseListener.cs` - a file with `TSqlParserBaseListener` class definition in 6943 lines of code.
+
+`TSqlParserBaseListener` fill empty implementations of `TSqlParserListener` abstract methods.
+
+In order to actually use those generated C# classes in your project you need
+one more thing -
+[Antlr.Runtime](https://www.nuget.org/packages/Antlr4.Runtime.Standard) library.
+
+
+The basic example of using this ANTLR4-generated parser can looks like this
+
+```
+using (TextReader str = new StreamReader(sqlFilePath)) {
+    var lexer = new TSqlLexer(new AntlrInputStream(str));
+    var tokenStream = new CommonTokenStream(lexer);
+    var parser = new TSqlParser(tokenStream);
+    var tree = parser.tsql_file();
+    ...
+}
+```
+
+In order to write up a listener for an AST you have to implement a class which
+inherits by `TSqlParserBaseListener` like this
+
+```
+public class MyParserListener : TSqlParserBaseListener {
+    public override void ExitDrop_table(TSqlParser.Drop_tableContext context) {
+        var idNames = context
+                        .table_name()
+                        .id_()
+                        .Select(e => e.GetText());
+        var msg = $"You're trying to delete {string.Join(".", idNames)}";
+        Console.WriteLine(msg);
+    }
+}
+```
+
+Once you've got it you can apply it using `ParserTreeWalker`
+
+```
+...
+var ml = new MyParserListener();
+ParseTreeWalker.Default.Walk(ml, tree);
+```
+
+The full running example can be found
+[here](https://github.com/DSkrzypiec/blogSourceCodes/tree/master/202111_ParsingTSQL/antlrTsqlParser).
 
 
 ## Summary
