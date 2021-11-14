@@ -143,7 +143,8 @@ would went smooth I could write up a grammar for
 [Snowflake SQL](https://docs.snowflake.com/en/) which I use at work recently.
 
 I've copied `TSqlLexer.g4` and `TSqlParser.g4` files and use ANTLR4 to generate
-set of C# classes using the following command
+set of C# classes using the following command (assuming you have ANTLR4
+installed)
 
 ```
 antlr4 -Dlanguage=CSharp TSqlLexer.g4 TSqlParser.g4 -o tmp
@@ -203,7 +204,39 @@ The full running example can be found
 [here](https://github.com/DSkrzypiec/blogSourceCodes/tree/master/202111_ParsingTSQL/antlrTsqlParser).
 
 
+I should add that there is no guarantee for the correctness of this unofficial
+T-SQL grammar. Even in case of `DROP TABLE` statement which I've presented here
+there is a difference with actual SQL Server specs.
+It suppose to be
+
+```
+DROP TABLE [ IF EXISTS ] { full_name | schema.table | table } [ ,...n ]
+[ ; ]
+```
+
+which means that there might be many tables listed after `DROP TABLE` keywords
+seperated by comma but in the open source version there is only single table
+allowed:
+
+```
+drop_table
+    : DROP TABLE (IF EXISTS)? table_name ';'?
+    ;
+```
+
 ## Summary
+
+In my opinion having a parser for query (and other) languages might be an
+extremly useful tool, especially if you're a data engineer. Based on AST you
+can implement static analyzers, verifiers, validators, fixers and others.
+
+In term of T-SQL I'd go with official Microsoft library. On the other hand if
+there is no official parser it would be much easier to define a grammer and
+generate parser with ANTLR than writing a parser from scratch.
+
+I'll defenetly play around with ANTLR, probably with Snowflake SQL for which I
+didn't find defined grammer. It also might be a very good excercise to go
+through the whole documentation.
 
 
 ## References
@@ -211,4 +244,5 @@ The full running example can be found
 1. [github.com/DSkrzypiec/mssfmt](https://github.com/DSkrzypiec/mssfmt)
 2. [Microsoft SQL Server Script DOM](https://www.dbdelta.com/microsoft-sql-server-script-dom/)
 3. [Another Microsoft blog post](https://devblogs.microsoft.com/azure-sql/programmatically-parsing-transact-sql-t-sql-with-the-scriptdom-parser/)
+4. [Getting started with ANTLR in C#](https://tomassetti.me/getting-started-with-antlr-in-csharp)
 
