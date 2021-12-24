@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Damian's Resume</title>
+</head>
+<body>
+    <style>
+        ul {
+            list-style-type: circle;
+        }
+
+        .tech {
+            font-family: monospace, monospace;
+        }
+
+        .header-left .email {
+            position: relative;
+            top: -10px;
+        }
+
+        .header-left .www {
+            position: relative;
+            top: -20px;
+        }
+
+        .position-info p {
+            color: #6F6967;
+        }
+
+        .position-info .title {
+            font-family: monospace, monospace;
+        }
+
+        .position-info .firm {
+            font-weight: bold;
+            font-size: large;
+            position: relative;
+            top: -10px;
+        }
+
+        .position-info .team {
+            position: relative;
+            font-size: small;
+            top: -25px;
+        }
+
+        .position-info .date-range {
+            position: relative;
+            font-size: small;
+            top: -35px;
+        }
+
+        .position-info .university {
+            position: relative;
+            font-weight: bold;
+            top: -10px;
+        }
+
+        .position-info .education-date-range {
+            position: relative;
+            top: -25px;
+        }
+
+        .conference-info .place {
+            position: relative;
+            top: -15px;
+            color: #6F6967;
+        }
+
+        .tasks-info {
+            font-family: Georgia, serif;
+        }
+
+        .header-right h2 {
+            text-align: center;
+        }
+
+        .section p {
+           width: 100%;
+           text-align: center;
+           border-bottom: 1px solid #37BEF9;
+           line-height: 0.1em;
+           margin: 10px 0 20px;
+        }
+
+        .section p span {
+            background:#fff;
+            padding:0 10px;
+            font-weight: bold;
+            color: #6F6967;
+        }
+
+        .skills-list {
+            font-family: monospace, monospace;
+        }
+
+        @media (min-width: 1000px) {
+            .section {
+                margin-top: 15px;
+            }
+
+            .tasks-info .top-level-ul {
+                padding-top: 10px;
+                list-style-type: square;
+            }
+
+            .tasks-info:hover {
+                background-color: #F7F7E4;
+            }
+
+            .skills-list:hover {
+                background-color: #F7F7E4;
+            }
+
+            .conf-talk-info:hover {
+                background-color: #F7F7E4;
+            }
+
+            .resume-grid {
+                margin-top: 50px;
+                margin-left: 50px;
+                display: grid;
+                grid-template-columns: 300px 800px;
+            }
+
+            .header-left {
+                grid-row: 1 / 1;
+                grid-column: 1 / 1;
+            }
+
+            .header-right {
+                grid-row: 1 / 1;
+                grid-column: 2 / 2;
+            }
+
+            .work-exp {
+                grid-row: 2 / 2;
+                grid-column: 1 / span 2;
+            }
+
+            .pos-ap-sde {
+                grid-row: 3 / 3;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-ap-sde {
+                grid-row: 3 / 3;
+                grid-column: 2 / 2;
+            }
+
+            .pos-pwc-backend {
+                grid-row: 4 / 4;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-pwc-backend {
+                grid-row: 4 / 4;
+                grid-column: 2 / 2;
+            }
+
+            .pos-pwc-sds {
+                grid-row: 5 / 5;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-pwc-sds {
+                grid-row: 5 / 5;
+                grid-column: 2 / 2;
+            }
+
+            .pos-pwc-sc {
+                grid-row: 6 / 6;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-pwc-sc {
+                grid-row: 6 / 6;
+                grid-column: 2 / 2;
+            }
+
+            .pos-pwc-cons {
+                grid-row: 7 / 7;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-pwc-cons {
+                grid-row: 7 / 7;
+                grid-column: 2 / 2;
+            }
+
+            .pos-orange-jc {
+                grid-row: 8 / 8;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-orange-jc {
+                grid-row: 8 / 8;
+                grid-column: 2 / 2;
+            }
+
+            .pos-orange-intern {
+                grid-row: 9 / 9;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-orange-intern {
+                grid-row: 9 / 9;
+                grid-column: 2 / 2;
+            }
+
+            .education {
+                grid-row: 10 / 10;
+                grid-column: 1 / span 2;
+            }
+
+            .pos-education {
+                grid-row: 11 / 11;
+                grid-column: 1 / 1;
+            }
+
+            .tasks-education {
+                grid-row: 11 / 11;
+                grid-column: 2 / 2;
+            }
+
+            .skills {
+                grid-row: 12 / 12;
+                grid-column: 1 / span 2;
+            }
+
+            .adv-skills {
+                grid-row: 13 / 13;
+                grid-column: 1 / 1;
+            }
+
+            .adv-skills-list {
+                grid-row: 13 / 13;
+                grid-column: 2 / 2;
+            }
+
+            .mid-skills {
+                grid-row: 14 / 14;
+                grid-column: 1 / 1;
+            }
+
+            .mid-skills-list {
+                grid-row: 14 / 14;
+                grid-column: 2 / 2;
+            }
+
+            .hobby-skills {
+                grid-row: 15 / 15;
+                grid-column: 1 / 1;
+            }
+
+            .hobby-skills-list {
+                grid-row: 15 / 15;
+                grid-column: 2 / 2;
+            }
+
+            .conferences {
+                grid-row: 16 / 16;
+                grid-column: 1 / span 2;
+
+            }
+
+            .wdi-2019 {
+                grid-row: 17 / 17;
+                grid-column: 1 / 1;
+            }
+
+            .wdi-2019-talk {
+                grid-row: 17 / 17;
+                grid-column: 2 / 2;
+            }
+
+            .erka {
+                grid-row: 18 / 18;
+                grid-column: 1 / 1;
+            }
+
+            .erka-talk {
+                grid-row: 18 / 18;
+                grid-column: 2 / 2;
+            }
+        }
+    </style>
+
+    <div class="resume-grid">
+        <div class="header-left">
+            <div class="phone">
+                <p>+48 509-777-939</p>
+            </div>
+            <div class="email">
+                <p>damian.j.skrzypiec@gmail.com</p>
+            </div>
+            <div class="www">
+                <a href="https://dskrzypiec.dev">dskrzypiec.dev</a>
+            </div>
+        </div>
+        <div class="header-right">
+            <h2>Damian Skrzypiec</h2>
+        </div>
+
+        <div class="section work-exp">
+            <p><span>WORK EXPERIENCE</span></p>
+        </div>
+
+        <div class="position-info pos-ap-sde">
+            <div class="title"><h3>Senior Data Engineer (C#)</h3></div>
+            <div class="firm"><p>Allegro Pay</p></div>
+            <div class="team"><p>DEA</p></div>
+            <div class="date-range"><p>08.2021 - <span class="tech">$current_date</span></p></div>
+        </div>
+        <div class="tasks-info tasks-ap-sde">
+            <ul class="top-level-ul">
+                <li>Maintenance of the core analytical databases (<span class="tech">Snowflake</span>)</li>
+                <li>Design and implementation of data pipelines (<span class="tech">Apache Airflow</span>)</li>
+                <li>Design and implementation of the process for loan evaluation</li>
+                    <ul>
+                        <li>Set up <span class="tech">Google Composer</span> infrastructure</li>
+                        <li>Design data model schema</li>
+                        <li>Implementation of <span class="tech">Apache Airflow DAGs</span> for the process
+                        <li>Design reporting and communication with other processes</li>
+                    </ul>
+                <li>Consult and review of <span class="tech">C#</span> services regarding data models and <span class="tech">Snowflake</span></li>
+                <li>Implementation of analytical data model based on technical events using
+                    <span class="tech">Snowflake</span> and <span class="tech">dbt</span></li>
+            </ul>
+        </div>
+
+        <div class="position-info pos-pwc-backend">
+            <div class="title"><h3>Senior Backend Developer (C#)</h3></div>
+            <div class="firm"><p>PwC</p></div>
+            <div class="team"><p>Data Tools</p></div>
+            <div class="date-range"><p>05.2020 - 07.2021</p></div>
+        </div>
+        <div class="tasks-info tasks-pwc-backend">
+            <ul class="top-level-ul">
+                <li>Maintenance and development of an IFRS 9 application for an international bank</li>
+                    <ul>
+                        <li>implementation of new features on the backend
+                            (<span class="tech">C#</span> and <span class="tech">SQL Server</span>)</li>
+                        <li>improvement of the key processes of the application</li>
+                        <li>development of end-to-end tests</li>
+                        <li>development of CI/CD processes
+                            (<span class="tech">TeamCity</span> and <span class="tech">Octopus</span>)</li>
+                    </ul>
+                <li>Implementation of <span class="tech">.NET Core</span> backend prototypes for web apps</li>
+                <li>Guiding and performing code reviews for junior devs</li>
+            </ul>
+        </div>
+
+        <div class="position-info pos-pwc-sds">
+            <div class="title"><h3>Senior Data Scientist</h3></div>
+            <div class="firm"><p>PwC</p></div>
+            <div class="team"><p>Financial Risk Management</p></div>
+            <div class="date-range"><p>10.2019 - 04.2020</p></div>
+        </div>
+        <div class="tasks-info tasks-pwc-sds">
+            <ul class="top-level-ul">
+                <li>Design and implementation of an application for credit risk models validation</li>
+                    <ul>
+                        <li>designing the application database schema (<span class="tech">SQL Server</span>)</li>
+                        <li>backend implementation (<span class="tech">HTTP</span> server in <span class="tech">Go</span>)</li>
+                        <li>communication with analytic layer (<span class="tech">R</span>) and the frontend (</span>Angular</span>)</li>
+                    </ul>
+                <li>Design and implementation of an IFRS 9 application for a factoring company</li>
+                    <ul>
+                        <li>managing a four-people team</li>
+                        <li>designing the database (<span class="tech">SQLite</span>)</li>
+                        <li>implementation of estimation, calculation and reporting layer</li>
+                    </ul>
+                <li>Design and implementation of tools (<span class="tech">R</span>) for building behavioral models in market risk</li>
+                <li>Internal workshops - <span class="tech">Go</span> language (8h)</li>
+            </ul>
+        </div>
+
+        <div class="position-info pos-pwc-sc">
+            <div class="title"><h3>Senior Consultant</h3></div>
+            <div class="firm"><p>PwC</p></div>
+            <div class="team"><p>Financial Risk Management</p></div>
+            <div class="date-range"><p>10.2017 - 09.2019</p></div>
+        </div>
+        <div class="tasks-info tasks-pwc-sc">
+            <ul class="top-level-ul">
+                <li>Designing and leading development of internal tools for modelling</li>
+                <li>Implementation of automation estimation of parameters for credit risk models</li>
+                <li>Implementation of calculation stress tests for expected credit loss</li>
+                    <ul>
+                        <li>designing the database schema (<span class="tech">SQL Server</span>)</li>
+                        <li>high performance calculation engine in <span class="tech">Go</span></li>
+                        <li>communication with analytical layer (<span class="tech">R</span>)</li>
+                    </ul>
+                <li>Testing (unit and end-to-end) monolith IFRS 9 (<span class="tech">C#</span>) application</li>
+                <li>Internal workshops - <span class="tech">git</span> (2h), <span class="tech">R</span> (20h)
+                    and an introduction to <span class="tech">HTTP</span> protocol (2h)</li>
+            </ul>
+        </div>
+
+        <div class="position-info pos-pwc-cons">
+            <div class="title"><h3>Consultant</h3></div>
+            <div class="firm"><p>PwC</p></div>
+            <div class="team"><p>Financial Risk Management</p></div>
+            <div class="date-range"><p>02.2015 - 09.2017</p></div>
+        </div>
+        <div class="tasks-info tasks-pwc-cons">
+            <ul class="top-level-ul">
+                <li>Building and implementing models for credit risk</li>
+                <li>Use machine learning to improve parts of credit risk models</li>
+                <li>Algorithms performance optimization (<span class="tech">C#</span> and <span class="tech">T-SQL</span>)</li>
+                <li>Data analysis, reporting and validations (<span class="tech">R</span>)</li>
+            </ul>
+        </div>
+
+        <div class="position-info pos-orange-jc">
+            <div class="title"><h3>Intern & Junior Analyst</h3></div>
+            <div class="firm"><p>Orange</p></div>
+            <div class="team"><p>Business Intelligence</p></div>
+            <div class="date-range"><p>05.2014 - 01.2015</p></div>
+        </div>
+        <div class="tasks-info tasks-orange-jc">
+            <ul class="top-level-ul">
+                <li>Developing a prototype of real-time application using geodata of clients (<span class="tech">R, shiny</span>)</li>
+                <li>Developing an "application" in VBA for periodical reports with data visualization and stats</li>
+            </ul>
+        </div>
+
+        <div class="section education">
+            <p><span>EDUCATION</span></p>
+        </div>
+
+        <div class="position-info pos-education">
+            <div class="major"><h3>MATHEMATICS</h3></div>
+            <div class="university"><p>Warsaw University</p></div>
+            <div class="education-date-range"><p>2011 - 2017</p></div>
+        </div>
+        <div class="tasks-info tasks-education">
+            <ul class="top-level-ul">
+                <li>Bachelor degree - probability theory</li>
+                <li>Masters degree - statistics</li>
+            </ul>
+        </div>
+
+        <div class="section skills">
+            <p><span>SKILLS</span></p>
+        </div>
+
+        <div class="adv-skills skill-level">
+            <h3>ADVANCED</h3>
+        </div>
+
+        <div class="adv-skills-list skills-list">
+            <ul>
+                <li>C#, Go, R, Vim, SQL Server, SQLite, Snowflake</li>
+            </ul>
+        </div>
+
+        <div class="mid-skills skill-level">
+            <h3>INTERMEDIATE</h3>
+        </div>
+
+        <div class="mid-skills-list skills-list">
+            <ul>
+                <li>Python, Apache Airflow, git, HTTP, *NIX tools</li>
+            </ul>
+        </div>
+
+        <div class="hobby-skills skill-level">
+            <h3>HOBBY</h3>
+        </div>
+
+        <div class="hobby-skills-list skills-list">
+            <ul>
+                <li>C++, F#, Machine Learning</li>
+            </ul>
+        </div>
+        <div class="section conferences">
+            <p><span>CONFERENCES</span></p>
+        </div>
+
+        <div class="conference-info wdi-2019">
+            <div class="name"><h3>WDI 2019</h3></div>
+            <div class="place"><p>03.2019, Warsaw</p></div>
+        </div>
+        <div class="conf-talk-info wdi-2019-talk">
+            <ul class="top-level-ul">
+                <li>Presentation "Functional programming in R" - <span class="tech">github.com/DSkrzypiec/WDI2019FP</span></li>
+            </ul>
+        </div>
+
+        <div class="conference-info erka">
+            <div class="name"><h3>eRKa</h3></div>
+            <div class="place"><p>03.2017, Cracov</p></div>
+        </div>
+        <div class="conf-talk-info erka-talk">
+            <ul class="top-level-ul">
+                <li>Presentation "Reporting automation in R" - <span class="tech">github.com/DSkrzypiec/ReportGenerator</span></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

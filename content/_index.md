@@ -3,7 +3,7 @@ date: "2021-11-14"
 title: "Home"
 ---
 
-List of posts:
+## List of posts:
 
 * [2021-11-14] [Parsing T-SQL]({{< ref "/post/parsing-tsql/index.md" >}})
 * [2021-11-01] [Fuzzy Finder]({{< ref "/post/fuzzy-finder/index.md" >}})

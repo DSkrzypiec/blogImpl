@@ -39,3 +39,7 @@ canonifyURLs = true
     name = "About"
     url = "/about/"
     weight = 4
+  [[menu.nav]]
+    name = "Resume"
+    url = "/resume.html"
+    weight = 5
