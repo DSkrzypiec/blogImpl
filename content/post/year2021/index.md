@@ -18,7 +18,18 @@ draft: false
 
 ## I've started jogging
 
-TODO
+On January 16th after a long pandemic home isolation I've started jogging. For
+my whole life I always hate jogging. I love most sports but running was
+something else. After almost a year in pandemic with gyms being closed and
+almost no going outside I though that I'll give it a try.
+
+At first two tries I couldn't run 500 meters without a break for catching a
+breath. Unexpectedly body adaptation was very quick! After two weeks I could
+run over 1500m without any break. That was very motivating.
+
+I've kept running through the whole year. I started to like jogging after the
+first two or three weeks of doing it, just when my endurance increased to the
+level when jogging wasn't dying for me.
 
 
 ## My first MacBook Air (M1)
