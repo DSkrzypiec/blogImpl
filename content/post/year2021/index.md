@@ -34,7 +34,11 @@ level when jogging wasn't dying for me.
 
 ## My first MacBook Air (M1)
 
-TODO
+I've never been much of an Apple fan. At the end of 2020 Apple released the
+first Mac Book with their own processor - M1. Reviews were amazing. I was very
+interested. In March 2021 I decided to buy MacBook Air M1. Up to this point
+I'm very happy with this choice. Performance is great, battery life is amazing
+(still around 15-20h) and general build quality is beyond my expectations.
 
 
 ## Still learning Russian
