@@ -1,10 +1,11 @@
 ---
-date: "2021-12-30"
+date: "2022-03-13"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2022-03-13] [AWK - forgotten data engineering tool]({{< ref "/post/awk/index.md" >}})
 * [2021-12-30] [Summary of 2021]({{< ref "/post/year2021/index.md" >}})
 * [2021-11-14] [Parsing T-SQL]({{< ref "/post/parsing-tsql/index.md" >}})
 * [2021-11-01] [Fuzzy Finder]({{< ref "/post/fuzzy-finder/index.md" >}})
