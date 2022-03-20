@@ -1,5 +1,5 @@
 ---
-date: "2022-03-13"
+date: "2022-03-20"
 tags: ["Data engineering", "CLI"]
 title: "AWK - forgotten data engineering tool"
 toc: false
