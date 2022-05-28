@@ -41,6 +41,41 @@ not be a cyclical process. We must not oversaturate Cassandra cluster.
 
 ## High level solution
 
+In consideration to the above constrains I decided to sketch custom copying
+program in Go which would connect to Cassandra (using `gocql` library), connect
+to Snowflake and somehow efficiently copy the data with extra schema
+validation.
+
+After initial testing it was clear that Cassandra responses very quickly and
+consistently for queries of the form
+
+``` SELECT * FROM ... WHERE user_id = $id ```
+
+
+That's great, because we already have (in Snowflake) a set of all existing
+`user_id` values. The upside of this approach is that we can stop and resume
+copying as we like because we know what `user_ids` have been already copied.
+Also this program doesn't require much disk space (just for the binary) and RAM
+(configurable by copying parameters).
+
+The downside is possible many rather small requests to Cassandra which in
+general could be (and almost always is) slower than using native `COPY TO`. But
+in light of the constrains it is a necessary cost that we have to pay.
+
+Let's outline high level phases of the algorithm:
+
+1. Get a set of `user_id` values that shall be copied
+1. Send a bunch of concurrent calls to Cassandra, one for each `user_id`
+1. Asynchronously deserialize data and put it in a shared collection
+1. Start sending batched `INSERT INTO` statements into Snowflake concurrently
+1. Wait before another batch of aync calls to Cassandra only when number of
+   goroutines responsible for sending data to Snowflake reaches its limit
+1. Repeat from start
+
+One can notice that there are two degrees of concurrency in this algorithm. In
+order to provide efficient solution those degrees have to be set appropriately.
+
+
 ## Concurrency optimization
 
 ## Summary
@@ -48,4 +83,6 @@ not be a cyclical process. We must not oversaturate Cassandra cluster.
 
 ## References
 
-1. [Wiki](https://en.wikipedia.org/wiki/AWK)
+1. [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load)
+1. [ELT](https://en.wikipedia.org/wiki/Extract,_load,_transform)
+1. [gocql](https://github.com/gocql/gocql)
