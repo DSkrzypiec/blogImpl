@@ -1,11 +1,11 @@
 ---
-date: "2022-05-27"
+date: "2022-06-05"
 title: "Home"
 ---
 
 ## List of posts:
 
-* [2022-05-27] [Copying data between distributed systems]({{< ref "/post/copying-data/index.md" >}})
+* [2022-06-05] [Copying data between distributed systems]({{< ref "/post/copying-data/index.md" >}})
 * [2022-03-20] [AWK - forgotten data engineering tool]({{< ref "/post/awk/index.md" >}})
 * [2021-12-30] [Summary of 2021]({{< ref "/post/year2021/index.md" >}})
 * [2021-11-14] [Parsing T-SQL]({{< ref "/post/parsing-tsql/index.md" >}})

@@ -1,5 +1,5 @@
 ---
-date: "2022-05-27"
+date: "2022-06-05"
 tags: ["Data engineering"]
 title: "Copying data between distributed systems"
 toc: false
@@ -26,6 +26,7 @@ problem and possible solutions.
 The main problem was to copy rather large amount of data from very legacy
 database (Apache Cassandra 2.1) located on premise data center into
 cloud-based [Snowflake](https://www.snowflake.com).
+
 
 ## Constrains
 
@@ -69,8 +70,8 @@ Let's outline high level phases of the algorithm:
 1. Asynchronously deserialize data and put it in a shared collection
 1. Start sending batched `INSERT INTO` statements into Snowflake concurrently
 1. Wait before another batch of aync calls to Cassandra only when number of
-   goroutines responsible for sending data to Snowflake reaches its limit
-1. Repeat from start
+    goroutines responsible for sending data to Snowflake reaches its limit
+1. Repeat
 
 One can notice that there are two degrees of concurrency in this algorithm. In
 order to provide efficient solution those degrees have to be set appropriately.
@@ -78,7 +79,66 @@ order to provide efficient solution those degrees have to be set appropriately.
 
 ## Concurrency optimization
 
+Naturally we should start our optimization with exploration of reasonable limits
+of the load that our end systems, Cassandra and Snowflake, could take including
+the constrains. On the Cassandra end few tests was enough to determine how many
+concurrent requests per seconds could be sent to not oversaturate the cluster.
+On the Snowflake end one of limitations was limit of queued queries for
+particular [warehouse](https://docs.snowflake.com/en/user-guide/warehouses-overview.html).
+Also number of rows in `VALUES` in `INSERT INTO` statement has its upper bound.
+Since single batched `INSERT INTO` takes around 1-5 seconds in my case and there
+is upper bound for queued queries I could easily estimate inserting data into
+Snowflake safely and near maximum efficiency.
+
+Now we're getting into the most interesting part of the problem. How to
+integrate dynamics of two systems? For example let's say we would send to
+Cassandra as many as possible concurrent requests (including the constrains).
+It might turned out that inserting the data, which will be sent from Cassandra,
+to Snowflake would take significantly longer than Cassandra response. In this
+case traffic on the Cassandra clusters would be like: spike, long flat, spike,
+long flat, etc. It also requires much more memory for the program which is
+performing this copying in order to keep buffers for Cassandra response data.
+
+We could get the same (or better) efficiency with fewer concurrent requests to
+Cassandra if we minimize pauses between Snowflake's reaching its set limit and
+next batch of requests to Cassandra. This optimization is a bit familiar to
+classic [Lotka-Volterra equations](https://en.wikipedia.org/wiki/Lotka–Volterra_equations).
+
+In general rate of generating outputs by the producer to rate of transforming
+and inserting data by consumer is a crucial statistics to optimize.
+
+
+## Go implementation
+
+I wrote a program which implemented above algorithm in Go. It took around one
+office day (few hours really) including implementation and tests for
+concurrency optimization. That was really smooth! Mostly because of Go easy
+concurrency model (goroutines and channels) and Go standard library [sync](https://pkg.go.dev/sync) for
+providing basic synchronization primitives.
+
+I cannot include code examples this time. What is the most important is a fact
+that it was very easy to write general patterns like:
+
+* send this `N` request concurrently
+* in the meantime results are sent over the channel
+* concurrently results are taken from channel and batched `INSERT INTO` are
+  produced
+* start sending asynchronous `INSERT`s into Snowflake
+* if number of concurrent writers are reached its max than we wait
+
+It was really easy to write correct concurrent algorithm based just on high
+level plan using Go.
+
+
 ## Summary
+
+Copying data usually is not very excited task. In this particular case the
+constrains of the whole task and optimization aspect was rather interesting in
+my opinion. There are many Cassandra caveats and possible networking
+issues that was not mentioned here which also might be interesting.
+
+Also if you got a bit less restrictive constrains you should use Cassandra
+native `COPY TO` instead of writing custom concurrent program for moving data.
 
 
 ## References
