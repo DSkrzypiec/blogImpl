@@ -40,6 +40,43 @@ direct manager.
 
 ## New technologies
 
+When I've joined Allegro Pay data engineering team mainly used the following
+technologies: Snowflake, Airflow and dbt in purely data layer and besides that
+C# microservices. The first three I've never used prior joining Allegro.
+
+
+### Snowflake
+
+We've used [Snowflake](https://www.snowflake.com) as our main source for all
+analytical data and even a bit more. From all new technologies that I learned
+at Allegro Snowflake was easiest for me. Basically it's a modern, distributed
+data [warehouse | lake | store] done right. In almost all aspects using
+Snowflake was pure joy. It's just works. Regarding compression, performance and
+general convenience it's just great.
+
+
+### Apache Airflow
+
+[Airflow](https://airflow.apache.org) was our main orchestrator for data
+pipelines. In fall 2021 we started using Airflow on Google Cloud Platform in
+form of [Cloud Composer](https://cloud.google.com/composer). I even liked the
+main idea besides the design of Airflow but it has unbelievably poor
+performance. Even first version of Composer (on the Cloud!) didn't resolve
+those issues. I definitely wasn't a fan of this one. On the other hand Allegro
+also uses Airflow and we've got support regarding Composer from another team.
+
+
+### dbt
+
+We've tried using [dbt](https://www.getdbt.com) as an alternative solution to
+improve effectiveness of local development of Airflow DAGs. First POCs were
+successful, so we decided to use it in one of our processes. Basically we were
+developing data pipelines locally using dbt and later on we automatically
+generate Airflow DAG based on dbt models (also DAGs). So final product was
+still data pipeline in Airflow but development process doesn't require local
+Airflow instance and rather slow feedback loop.
+
+
 ## Flashbacks from consulting
 
 ## AMD
