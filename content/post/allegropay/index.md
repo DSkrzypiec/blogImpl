@@ -79,6 +79,34 @@ Airflow instance and rather slow feedback loop.
 
 ## Flashbacks from consulting
 
+In October 2021 [Allegro Pay signed the
+deal](https://www.bankier.pl/wiadomosc/Allegro-Pay-ma-umowe-sprzedazy-wierzytelnosci-z-Aion-Bankiem-saldo-niesplaconych-wierzytelnosci-moze-siegnac-2-mld-zl-8203280.html)
+with [Aion Bank](https://aion.eu) for selling some exposures. In general
+Allegro Pay would get paid and Aion, as rather new bank, would get portfolio of
+exposures. This project was important for Allegro Pay because at the time
+Allegro was also [acquiring Mall
+Group](https://about.allegro.eu/news-releases/news-release-details/allegro-acquire-mall-group-leading-e-commerce-platform-across).
+
+So the project was very important, deadline was really tight (3-4 weeks) and I
+was responsible for designing and implementing a process for exposures (in
+tranches) evaluation. Based on this evaluation actual offers, in form of formal
+legal documents, were prepared and sent to Aion. Pressure was very real. Based
+on this evaluation Allegro Pay would received 100-200mln PLN (~$40mln USD) in
+single payment.
+
+Just three months after I've escaped consulting I got into a project almost
+exactly the same I would expected to happen only in consulting. Nevertheless my
+experience was very good fit and I knew that for Allegro this is very unusual
+project so I did it. It was the only period in my time in Allegro when I had to
+done overtime. It was very intense couple of weeks.
+
+At the end we pulled it off before the deadline. Including very tough
+constrains I think we did very solid job. There wasn't single major mistake
+both in technical and business aspects. That was a great success. I think that
+in a regular bank or even consulting the same project would take a least 3
+months for consulting and at least 10 months for a bank.
+
+
 ## AMD
 
 ## Integrating delivery addresses
