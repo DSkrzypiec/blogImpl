@@ -1,10 +1,11 @@
 ---
-date: "2022-06-24"
+date: "2022-09-10"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2022-09-10] [A year in Allegro Pay]({{< ref "/post/allegropay/index.md" >}})
 * [2022-06-24] [First thoughts on Scala]({{< ref "/post/scala/index.md" >}})
 * [2022-06-05] [Copying data between distributed systems]({{< ref "/post/copying-data/index.md" >}})
 * [2022-03-20] [AWK - forgotten data engineering tool]({{< ref "/post/awk/index.md" >}})
