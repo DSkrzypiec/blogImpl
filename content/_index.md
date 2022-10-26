@@ -1,11 +1,11 @@
 ---
-date: "2022-10-23"
+date: "2022-10-26"
 title: "Home"
 ---
 
 ## List of posts:
 
-* [2022-10-23] [Implementing SQLite parser in Scala]({{< ref "/post/sqlite-parser/index.md" >}})
+* [2022-10-26] [Implementing SQLite parser in Scala]({{< ref "/post/sqlite-parser/index.md" >}})
 * [2022-09-10] [A year in Allegro Pay]({{< ref "/post/allegropay/index.md" >}})
 * [2022-06-24] [First thoughts on Scala]({{< ref "/post/scala/index.md" >}})
 * [2022-06-05] [Copying data between distributed systems]({{< ref "/post/copying-data/index.md" >}})
