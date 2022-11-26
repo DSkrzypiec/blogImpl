@@ -1,5 +1,5 @@
 ---
-date: "2022-11-23"
+date: "2022-11-26"
 tags: ["database", "Go"]
 title: "Home App v2 - rewritten in Go"
 toc: false
@@ -23,6 +23,24 @@ post, you can visit
 * and use credentials `testuser/password`
 
 Or you can compile it from [source code](https://github.com/dskrzypiec/homeAppGo) and run locally.
+
+
+## Home Database after two years
+
+Even though development of Home App stuck a bit, we were actively using it. Over
+past two years we gathered around 230 scanned (or in digital version)
+documents, almost 4500 bank transactions and kept record of our water and
+energy counters. Home Database has increased in size from ~50 MB to ~300 MB.
+I'm glad that it didn't turn out as a regular side project which is parked
+indefinitely.
+
+It become a really handy when I had to pick up some of those
+documents. It happens more often than I initially expected. Also, as it turned
+out, almost always digital version is sufficient and there is no need for
+physical copy. While changing companies I had to provide diplomas and other
+documents. Moreover I was required to fill many legal forms. All of it I've
+done using documents from Home Database and it took me significantly faster
+without any effort comparing to browsing through stacks of paper documents.
 
 ## Why v2?
 
@@ -51,11 +69,13 @@ poor UX.
 
 ## Migration to Go
 
+![img](gh_languages.png)
+
 ### MVC
 
 Regarding high level design in both C# and Go versions I've implemented
 [MVC](https://en.wikipedia.org/wiki/Model–view–controller) approach. It's
-suitable because of two things. The first one is that I don't do much frontend and
+suitable because of two reasons. The first one is that I don't do much frontend and
 the other one is fact that Home App is, and probably will be, rather straightforward
 application regarding UI and UX.
 
@@ -109,7 +129,6 @@ In case if you're interested in reading more details:
 * All Home App controllers are defined within `homeApp/controller` package
   [here](https://github.com/DSkrzypiec/homeAppGo/tree/main/controller)
 
-
 ### SQLite and new driver
 
 In May 2022 I found out that there is a [SQLite Go
@@ -121,8 +140,8 @@ benchmark](https://datastation.multiprocess.io/blog/2022-05-12-sqlite-in-go-with
 shows it's not that bad. Regarding Home App use-case that will be sufficient.
 Usually I'm not a fan of moving cost from compile-time to run-time but in this
 particular case keeping development process as smooth as possible is more
-important, than a bit slower `INSERT`s.
-
+important, than a bit slower `INSERT`s (which are performed at most few times
+per week).
 
 ### HTTP backend
 
@@ -139,7 +158,6 @@ comparing to ASP.NET. I feel that Go `net/http` is a bit lower level of
 abstraction then ASP.NET and I prefer it this way. Although I might be a bit
 biased, because I've spent more time in the past in networking in Go, than in
 C#.
-
 
 ### Full text search on documents
 
@@ -170,16 +188,131 @@ opinion it's rather small cost for convenient google-like searching integrated
 in a half an hour.
 
 
+## Home App v2 features
+
+* Hosted online (new in v2)
+* Two-factor authentication (2FA) via Telegram (new in v2)
+* General statistics on home page (new in v2)
+* View/insert counters state (water, energy)
+* View statistics and insert financial transactions from [PKO
+  Bank](https://www.pkobp.pl)
+* Inserting new documents
+* Browsing documents using full-text search (new in v2)
+* Downloading documents
+* [coming soon] book catalog with possibility of including and downloading e-books
+
+
 ## Going online
+
+For the last two years I've been hosting Home App and Home Database on a RPi in
+my home. During this period I had around 2-3 days of downtime totally. One of
+outages happened when I was two hours drive from home. After this incident I
+started to thinking about moving the application into the cloud. I could invest
+in some kind of UPS, but that wouldn't solve all problems. There was still a
+factor that application could be reached only within Tailscale network. The
+main problem with this approach is that to access Home App in some device I
+have to install Tailscale and login on that device. This is not a major problem
+but it's less flexible than just a web application.
+
+The new architecture of Home App is really simple. Application is hosted on AWS
+EC2 (compiled app + Home Database). To that EC2 I have load balancer attached
+to setup TLS (HTTPS). Finally this load balancer is setup with Amazon Route 53
+where my personal subdomain for the application is registered.
+
+I've setup two environments - dev and production. The dev environment was
+already mentioned - [https://homeappdev.dskrzypiec.dev](https://homeappdev.dskrzypiec.dev).
+I thought that is a good idea to share dev version of Home App which uses mock
+database without any sensitive data. For development process it's good that I
+can test process end-to-end on separated environment. The other reason is that
+if someone was interested in deploying their own version of my Home App, using
+mock database at the beginning should provide smooth introduction.
+
+
+### Authentication
+
+Once the infrastructure for cloud-based online version of Home App was setup
+only one thing was missing - user authentication. In the RPi version there was
+no need for authentication, because it was handled by Tailscale.
+
+
+![img](hashed_pass.png)
+
+I've implemented rather standard user authentication where salted and hashed
+password is checked against original salted and hashed password from the Home
+Database. There is also second step of authentication (2FA) which requires that
+user have to send specific message on private [Telegram](https://telegram.org)
+channel within a minute. On dev environment 2FA is turned off. More on Telegram
+integration in the next chapter.
+
+In current version I've decided that there is no need for new user registration
+capability. All users that shall have access to Home App are added manually by
+the admin directly to the table in Home Database. Regarding 2FA all privileged
+users should also be added to the private Telegram channel.
+
 
 
 ## Security
 
+Security of Home Database is still very important factor. Exposing Home App v2
+to the World created many security scenarios that have to be covered.
+
+The first one was how to keep "the server" with application and the database
+protected. In order to do so I've setup that connection to Home App EC2
+instance can be performed only via SSH using my private RSA key only from my IP
+or via HTTPS directly to Home App. So even when someone could get my RSA key
+for this instance he/she should have also get into my AWS account or using the
+same IP. Both are possible but very unlikely.
+
+The other matter was protection of the Home App itself. Beyond standard user
+authentication I've introduced second step of authentication via private
+Telegram channel. After successful authentication user got short-lived session
+token (10-15 minutes) via HTTP-only cookie. Moreover every endpoint, except
+login form, of Home App is protected by checking validation of session token.
+
+I'm not a security expert so this might not be a state-of-the-art setup but
+with combination of monitoring I feel rather safe. Still it would be simpler to
+break into my home and take part of those physical documents rather than
+hacking Home App.
+
+
+## Telegram
+
+![img](telegram_chan.jpeg)
+
+I choose Telegram for 2FA and notification, because it's the main communicator
+I'm using together with my wife and the rest of the family. I have it installed
+on my mobile and also it can be accessed via web version, so it's always within
+my hand's reach. It's also much less of a hassle for other users in my family
+then using Tailscale.
+
+Primarily Telegram was choose for second step of 2FA. Later I thought it's also
+very convenient way to notify me and other users regarding activities and
+statistics.
+
 
 ## Summary
+
+I'm really excited about both putting Home App online and migrating it to Go.
+At the moment Home App is rather a simple web application, thus migration took me
+less then three weeks of evenings and not every evening in that period. In
+current Go version I feel like adding new things and maintenance in general
+would be more pleasant for me.
+
+Additionally for me this migration was a good learning experience. Where on the
+backend side I've implemented similar things many times, there on the other
+side it's my first application that is hosted in public.
+
+I'm very happy that Home Database is alive and growing. I hope that with
+current better accessibility and availability of Home App it will bring much
+better experience for me and my family. I can feel it already but we'll see how
+it turned out in the future.
 
 
 ## References
 
-1. [Termux](https://termux.com/)
-2. [Hugo](https://gohugo.io/)
+1. [Home Database and Home App v1](https://dskrzypiec.dev/home-db)
+1. [Home App v2 repo](https://github.com/dskrzypiec/homeAppGo)
+1. [Go SQLite drivers benchmark](https://datastation.multiprocess.io/blog/2022-05-12-sqlite-in-go-with-and-without-cgo.html)
+1. [modernc.org/sqlite driver](https://pkg.go.dev/modernc.org/sqlite)
+1. [SQLite FTS5](https://www.sqlite.org/fts5.html)
+1. [Telegram Bots API](https://core.telegram.org/bots/api)
