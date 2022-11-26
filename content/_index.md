@@ -1,10 +1,11 @@
 ---
-date: "2022-10-26"
+date: "2022-11-26"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2022-11-26] [Home App v2 - rewritten in Go]({{< ref "/post/home-app-go/index.md" >}})
 * [2022-10-26] [Implementing SQLite parser in Scala]({{< ref "/post/sqlite-parser/index.md" >}})
 * [2022-09-10] [A year in Allegro Pay]({{< ref "/post/allegropay/index.md" >}})
 * [2022-06-24] [First thoughts on Scala]({{< ref "/post/scala/index.md" >}})
