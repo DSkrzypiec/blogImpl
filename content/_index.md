@@ -1,10 +1,11 @@
 ---
-date: "2022-12-30"
+date: "2023-01-25"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2023-01-25] [Implicit is great util it isn't - AWS CDK example]({{< ref "/post/aws-cdk-implicit/index.md" >}})
 * [2022-12-30] [Summary of 2022]({{< ref "/post/year2022/index.md" >}})
 * [2022-11-26] [Home App v2 - rewritten in Go]({{< ref "/post/home-app-go/index.md" >}})
 * [2022-10-26] [Implementing SQLite parser in Scala]({{< ref "/post/sqlite-parser/index.md" >}})
