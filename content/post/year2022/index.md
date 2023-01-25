@@ -19,6 +19,33 @@ almost two years now. Battery still can make over 10 hours of work on single
 charging. The last one is not a habit, but I wanted to mention it here.
 
 
+## Russian aggression on Ukraine
+
+[This paragraph was added on 2023-01-25]
+
+It was very sad and shocking moment when Russian army actually attacked Ukraine.
+I wanted just highlight single event in this regard. Around a week after the war
+has begun at Friday night I've got a call from my colleague (and team member at
+that time) if I could drive to Polish-Ukraine border to help him pick up part of
+his family. They were evacuating Ukraine. I agreed, started getting ready and in
+an hour we met. I knew from my parents that there is problem with gas
+availability in regions near the Ukrainian boarder so we've tried to refuel
+around 100km from Warsaw. Fortunately there was gas available but queue on this
+gas station took about an hour. In about 4 hours we make it to the border. It
+was already after midnight. My colleague was in touch with his family all the
+time but it was really hard to tell for them what is actually happening. They
+knew that they are close to border crossing but they couldn't estimate how long
+it would take. We slept 3-5 hours in the car. Finally around 2-3pm next day they
+arrived on Polish side and we've met.
+
+I'm describing this, because it was definitely an experience like no other.
+Ukrainian on average needed to travel for 2-5 days across whole country to get
+to Polish boarder. They were exhausted, stressed, hungry and lost. On the other
+hand it was great to see that many Poles come to help. There was like 50-100
+cars just at that night. There was food, clothes, rugs, dippers and other needed
+stuff gathered and prepared for refugees.
+
+
 ## I've left Allegro Pay and joined TCL
 
 In August 2021 I've left Allegro Pay and joined
