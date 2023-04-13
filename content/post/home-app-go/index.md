@@ -20,7 +20,7 @@ In case if you want to explore dev version of Home App before reading this
 post, you can visit
 
 * [https://homeappdev.dskrzypiec.dev](https://homeappdev.dskrzypiec.dev)
-    or [http://35.157.102.33](http://35.157.102.33) if previous doesn't work
+    or [http://3.74.170.81](http://3.74.170.81) if previous doesn't work
 * and use credentials `testuser/password`
 
 Or you can compile it from [source code](https://github.com/dskrzypiec/homeAppGo) and run locally.
