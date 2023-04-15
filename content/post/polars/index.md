@@ -1,5 +1,5 @@
 ---
-date: "2023-04-13"
+date: "2023-04-15"
 tags: ["data", "python", "rust"]
 title: "Polars - modern data frame library"
 toc: false
@@ -74,10 +74,10 @@ We can see there a simple manipulation on columns, filtration and aggregation.
 Polars provide very solid implementation of lazy evaluation comparing to other data frame libraries. To perform
 transformations in lazy fashion you just need to call `.lazy()` method on a `DataFrame` which would convert it to
 `LazyFrame` which has almost identical API as regular `DataFrame`. The difference is that operation will be performed
-when `.collect()` method will be called. There are two least two advantages of using this approach. One is a room for
+when `.collect()` method will be called. There are at least two advantages of using this approach. One is a room for
 optimization. Usually we perform many operations on data frames. In (default) eager mode top-level operations are
 executed sequentially. In lazy approach, just before `.collect()` we are aware of all operations and the engine can
-perform optimization because at the time no operation is being executed yet. I've precisely measure the difference in
+perform optimization because at the time no operation is being executed yet. I've not precisely measure the difference in
 performance but it feels to be significant. Let's consider the following example on a ~4GB data frame.
 
 ```
@@ -255,6 +255,7 @@ Let's start from creating a new project and virtual env:
 mkdir rust_from_python
 cd rust_from_python
 python3 -m venv .venv
+source .venv/bin/activate
 pip install maturin
 ```
 
@@ -379,12 +380,34 @@ fn calc_new_column_in_rust(pydf: PyDataFrame, col_name: &str) -> PyResult<PyData
 }
 ```
 
+Now we are ready to do `maturin develop` once again to build new version of Rust extension module. Once it's done we
+can use our new Rust function `calc_new_column_in_rust` in our Python code:
+
+
+```
+import polars as pl
+from my_rust_module import sum_as_string, calc_new_column_in_rust
+
+def main() -> None:
+    print(sum_as_string(42, 13))
+    df = pl.DataFrame({"A": [1, 42, 13, -10]})
+    df2 = calc_new_column_in_rust(df, "rust_col")
+    print(df2)
+
+
+if __name__ == '__main__':
+    main()
+
+```
 
 ## Summary
 
-**TODO** Fucking delete 27GB file `test.csv`!
+In summary I really enjoyed Polars after my initial encounter. I liked it performance, expressions and how easy it is
+to write custom extensions in Rust. For sure I'll continue to learn more about Polars. Perhaps it would be a good idea
+to write few examples in Rust using Polars next time and take a closer look into Polars implementation details.
 
 ## References
 
 1. [Polars](https://www.pola.rs)
-1.
+1. [pyo3](https://pyo3.rs/v0.18.2/)
+1. [pyo3-polars](https://github.com/pola-rs/pyo3-polars)

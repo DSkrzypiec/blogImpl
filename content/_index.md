@@ -1,11 +1,11 @@
 ---
-date: "2023-04-13"
+date: "2023-04-15"
 title: "Home"
 ---
 
 ## List of posts:
 
-* [2023-04-13] [Polars - modern data frames]({{< ref "/post/polars/index.md" >}})
+* [2023-04-15] [Polars - modern data frame library]({{< ref "/post/polars/index.md" >}})
 * [2023-01-25] [Implicit is great util it isn't - AWS CDK example]({{< ref "/post/aws-cdk-implicit/index.md" >}})
 * [2022-12-30] [Summary of 2022]({{< ref "/post/year2022/index.md" >}})
 * [2022-11-26] [Home App v2 - rewritten in Go]({{< ref "/post/home-app-go/index.md" >}})
