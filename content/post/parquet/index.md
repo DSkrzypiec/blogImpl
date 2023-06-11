@@ -1,6 +1,6 @@
 ---
-date: "2023-05-17"
-tags: ["data"]
+date: "2023-06-11"
+tags: ["data", "file format"]
 title: "What's inside parquet file?"
 toc: false
 draft: false
@@ -147,7 +147,10 @@ File Metadata
 4-byte magic number "PAR1"
 ```
 
-Column and file metadata are stored using Thrift format which for parquet is defined
+In more general case parquet file is composed of possibly many row groups. Within each row groups there are columns
+which are split into pages. Metadata is included on each level, but most importantly in the file footer there is
+`FileMetaData` which keeps information about all row groups, column chunks and data pages. All metadata is encoded
+using Thrift format and definition for parquet might be found
 [here](https://github.com/apache/parquet-format/blob/master/src/main/thrift/parquet.thrift).
 
 Before we jump into reading and analyzing hex dump let's me briefly mention a very helpful tool in context of parquet
@@ -282,7 +285,7 @@ As Apache Parquet file format specified.
 
 We already stated that before last 4 magic bytes there are 4 bytes which presents length of file metadata in bytes. In
 our case it is `hex(BF) = 191` bytes. In this very simple example 191 out of 361 bytes are just file metadata. Which
-makes sense, because we store actually two rows and two columns of data only.
+makes sense, because we only store actually two rows and two columns of data.
 
 At first I even tried to analyze this raw bytes of file metadata but I very quickly noticed it would be very hard task
 to do, due to complex behaviour of the file format. Precise definition of parquet metadata format is specified by
@@ -455,13 +458,17 @@ row group and single page of data.
 
 ## Summary
 
-
-
+I definitely deepened my knowledge about Apache Parquet file format while working on this post. I didn't expect this to
+be such complex file format. I haven't analyzed every single byte in our basic example but nevertheless I learned and
+**saw** how data is structured and what is the format of metadata. I feel I overcome, even if not fully, the
+boundary of binary file format and actually read it. I hope readers of this blog post will have at least glimpse of
+internals of Apache Parquet file format.
 
 
 ## References
 
-1.[Apache Parquet](https://parquet.apache.org)
-1.[parquet.thrift](https://github.com/apache/parquet-format/blob/master/src/main/thrift/parquet.thrift)
-1.[Scripts for this post](https://github.com/DSkrzypiec/blogSourceCodes/tree/master/20230609_Parquet)
-1.
+
+1. [Apache Parquet](https://parquet.apache.org)
+1. [parquet.thrift](https://github.com/apache/parquet-format/blob/master/src/main/thrift/parquet.thrift)
+1. [Scripts for this post](https://github.com/DSkrzypiec/blogSourceCodes/tree/master/20230609_Parquet)
+1. Images with hex dumps were took from hex editor [ImHex](https://github.com/WerWolv/ImHex)

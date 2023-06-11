@@ -1,11 +1,11 @@
 ---
-date: "2023-05-17"
+date: "2023-06-11"
 title: "Home"
 ---
 
 ## List of posts:
 
-* [2023-05-17] [What's inside parquet file?]({{< ref "/post/parquet/index.md" >}})
+* [2023-06-11] [What's inside parquet file?]({{< ref "/post/parquet/index.md" >}})
 * [2023-04-15] [Polars - modern data frame library]({{< ref "/post/polars/index.md" >}})
 * [2023-01-25] [Implicit is great util it isn't - AWS CDK example]({{< ref "/post/aws-cdk-implicit/index.md" >}})
 * [2022-12-30] [Summary of 2022]({{< ref "/post/year2022/index.md" >}})
