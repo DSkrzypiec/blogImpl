@@ -1,7 +1,7 @@
 ---
 date: "2023-08-21"
 tags: ["Go", "AST", "metaprogramming"]
-title: "Getting mathod's source code in Go"
+title: "Getting method's source code in Go"
 toc: false
 draft: false
 ---
