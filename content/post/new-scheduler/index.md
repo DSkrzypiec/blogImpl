@@ -18,11 +18,11 @@ What in here I'm calling _scheduler_ is a program or software system which is re
 tasks or another programs in particular order. That software can be also responsible for executing tasks, but the
 emphasis is placed on scheduling and keeping track of all dependencies, it's statuses and so on.
 
-One of the first such programs was (still used) [cron](https://man7.org/linux/man-pages/man8/cron.8.html) which is
-Linux standard daemon for executing scheduled commands. It basically runs in the background and executes a command or a
-script at particular time expressed by [crontab](https://man7.org/linux/man-pages/man5/crontab.5.html) - classic now `0
-12 * * *` format. It is still used nowadays in some cases, because it's already installed on UNIX systems and requires
-almost no setup.
+One of the first such programs was [cron](https://man7.org/linux/man-pages/man8/cron.8.html) which is Linux standard
+daemon for executing scheduled commands. It basically runs in the background and executes a command or a script at
+particular time expressed by [crontab](https://man7.org/linux/man-pages/man5/crontab.5.html) - classic now `0 12 * * *`
+format. It is still used nowadays in some cases, because it's already installed on UNIX systems and requires almost no
+setup.
 
 Cron is rather simple regarding process definition - it's limited to single command or single script. In most of
 modern schedulers a process is expressed using directed acyclic graph (DAG) of tasks. This way we can express patterns
@@ -34,11 +34,11 @@ weekends. Some of them might have no schedule but are triggered externally.
 
 Where this kind of software is used? From my perspective and best to my knowledge it's mostly used to orchestrate data
 processing. Let's consider an example where we need to prepare data for reporting layer. This process requires talking
-to many data sources, perhaps migrating data between clouds, then doing transformation and aggregations on transformed
-data. This might be very complex process and it needs to run everyday. In this example our DAG could have separate
-tasks for migrating data, another for doing transformation in the database and yet another doing aggregations and
-exporting reporting data to external data source. Having scheduler in this example gives us many positive points such
-as:
+to many data sources, perhaps migrating data between clouds, then doing transformation and then aggregations on
+transformed data. This might be very complex process and it needs to run everyday. In this example our DAG could have
+separate tasks for migrating data, another for doing transformation in the database and yet another doing aggregations
+and exporting reporting data to external data source. Having scheduler in this example gives us many positive points
+such as:
 
 * Process is defined in single place (hopefully via code)
 * If anything break, you know exactly what to fix and what can be affected by the failure
@@ -76,8 +76,28 @@ from small problems like [Getting method's source code in Go](https://dskrzypiec
 
 ## Why new scheduler?
 
+All schedulers I've seen or used can be categorized to at least one of the following groups. Is written in Python, is
+low-code or no-code where processes aren't defined as code or is proprietary with limited control. We have already
+mentioned Python examples - Airflow and Luigi. With this group my main problem is safety, maintainability and
+performance. Example for low-code or no-code can be [Azure Data
+Factory](https://azure.microsoft.com/en-us/products/data-factory). It might be a good choice for some teams but in my
+opinion it's much better investment to have processes defined as a code in almost every case. It makes testing,
+refactoring and migrations possible and doable much less effort.
+
+Is it a good idea to pick language other than Python to write a scheduler when most of data engineering and data
+science stacks are based on Python? Yes, I think so. At least that's my opinion. I think in many cases Python doesn't
+pull its weight. Maintaining Python dependencies, over provisioning infrastructure to make it barely run and living
+without almost any assurance from type system or compilation usually doesn't justify advantage that Python is simple
+and we can swiftly write a lot of code.
+
+Another very important point for me is the fact that in this case I have sort of clear vision how my scheduler will
+look like. It's my first side project that I'm working on longer then a month (it's already almost four months). I feel
+it's good to have long term personal project to think about and work on. Even if everything I said in previous
+paragraphs is nonsense I'd still do it, because of this exact reason. I want to implement something that I'd love to
+use daily and something I can trust. Even if I'll be the only user, I think it's still worth it!
 
 
+## What is my plan?
 
 
 ## Bonus - Airflow rant
