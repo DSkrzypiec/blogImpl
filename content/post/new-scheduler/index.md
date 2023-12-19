@@ -13,10 +13,10 @@ I've started implementing yet another DAG scheduler, something like [Airflow](ht
 [Luigi](https://github.com/spotify/luigi). This post is going to be on why I'm doing this and what I'm trying to
 achieve.
 
-Before we start, let me do short introduction about schedulers, in case you've never heard about it or use it yourself.
+Before we start, let me do a short introduction to schedulers, in case you've never heard about it or use it yourself.
 What in here I'm calling _scheduler_ is a program or software system which is responsible for scheduling execution of
 tasks or another programs in particular order. That software can be also responsible for executing tasks, but the
-emphasis is placed on scheduling and keeping track of all dependencies, it's statuses and so on.
+emphasis is placed on scheduling and keeping track of all dependencies, its statuses and so on.
 
 One of the first such programs was [cron](https://man7.org/linux/man-pages/man8/cron.8.html) which is Linux standard
 daemon for executing scheduled commands. It basically runs in the background and executes a command or a script at
@@ -59,12 +59,12 @@ addition to distributed computation functionalities we also needed a scheduler f
 We didn't want to use our legacy scheduler, because it was embedded in the "old" on-prem infrastructure. We decided to
 go with [AWS MWAA](https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html) which is managed version of
 Airflow on AWS. At the time I was the only person on the team with actual hands-on experience with Airflow, so it was
-my responsibility, to setup infrastructure for MWAA (Terraform), local development environment, CI/CD processes and
-integration with other systems we use in Risk.
+my responsibility, to setup infrastructure for MWAA (Terraform), the local development environment, CI/CD processes and
+integration with other systems used in our Risk department.
 
 It was my second adventure with Airflow and this time I've had similar reflections. Airflow is very easy to use from
 developer view point and has rather good UI, but on the other hand Airflow has poor performance, uses a lot of
-resources and is not reliable. More about downsides of Airflow in another chapter.
+resources and is not reliable. I'll probably talk more about downsides of Airflow another time.
 
 At this point I thought that I really like high-level idea of a scheduler and I'd like to have improved version of
 Airflow. Something that is flexible enough (cannot be more flexible then Python though), has very good performance and
@@ -78,11 +78,11 @@ from small problems like [Getting method's source code in Go](https://dskrzypiec
 
 All schedulers I've seen or used can be categorized to at least one of the following groups. Is written in Python, is
 low-code or no-code where processes aren't defined as code or is proprietary with limited control. We have already
-mentioned Python examples - Airflow and Luigi. With this group my main problem is safety, maintainability and
+mentioned Python examples - Airflow and Luigi. With this group, my main problems are safety, maintainability and
 performance. Example for low-code or no-code can be [Azure Data
 Factory](https://azure.microsoft.com/en-us/products/data-factory). It might be a good choice for some teams but in my
 opinion it's much better investment to have processes defined as a code in almost every case. It makes testing,
-refactoring and migrations possible and doable much less effort.
+refactoring and migrations possible with much less effort.
 
 Is it a good idea to pick language other than Python to write a scheduler when most of data engineering and data
 science stacks are based on Python? Yes, I think so. At least that's my opinion. I think in many cases Python doesn't
@@ -91,22 +91,50 @@ without almost any assurance from type system or compilation usually doesn't jus
 and we can swiftly write a lot of code.
 
 Another very important point for me is the fact that in this case I have sort of clear vision how my scheduler will
-look like. It's my first side project that I'm working on longer then a month (it's already almost four months). I feel
-it's good to have long term personal project to think about and work on. Even if everything I said in previous
-paragraphs is nonsense I'd still do it, because of this exact reason. I want to implement something that I'd love to
-use daily and something I can trust. Even if I'll be the only user, I think it's still worth it!
+look like. It's my first side project that I'm working on for longer then a month (it's already almost four months). I
+feel it's good to have long term personal project to think about and work on. Even if everything I said in the previous
+paragraphs is nonsense I'd still do it because of this single reason. I want to implement something that I'd love to
+use daily and something I can trust. It doesn't need to be implemented by myself, so I can trust it, but at least it
+should behave as expected in most cases. Even if I'll be the only user, I think it's still worth it!
 
 
 ## What is my plan?
 
+I started with regular Go project which had few packages and could built two binaries - scheduler and executor. Then I
+realized that those binaries are very thin wrappers for functionalities from those packages, so I asked myself is it
+possible to expose scheduler and executor just as regular Go packages? I think it's possible and that's what I'm
+working on currently.
 
-## Bonus - Airflow rant
+However, those packages shouldn't be the end product. Even though packages won't be the only outcome of this
+project, making it public pushes me to write better documentation, prepare examples and think extra carefully about the
+API. All of the above are great things. In case when those packages would be private it's still desired to put effort
+in those aspects. To give a little bit of help to my strong will, deciding to make those packages public and
+treating them as intermediate artifacts should have a positive impact on the project overall.
+
+I don't really have very detailed plan. There's a lot of work to be done, but I'm trying to do something along those
+lines
+
+1. Finish implementation and testing of scheduler and executor packages.
+1. Make it trivial to develop and run locally in simplified form (scheduler and executor in single binary + SQLite)
+1. Design UX for core functionalities.
+1. Implement first draft of the UI.
+1. Prepare Kubernetes deployment or something similar, to make it possible to deploy scheduler + N executors on
+   separate nodes.
+1. Setup separate and proper website for documentation, examples, tutorials and other related stuff.
+1. ???
+1. Profit.
+
+
+## Details?
+
+Even though I have figured out high level architecture and few other details, I don't really want to say it publicly
+just yet. I think it might be too soon. I don't even have a name for this project yet. I'll definitely post more
+details on this project in the future!
 
 
 ## Summary
 
-
-## References
-
-1. 
+Yep, so because of this I haven't posted anything in last couple of months. Most of my spare time, besides family time
+and running I was spending working on this project. It's roughly 9k lines of Go including 4.5k lines of tests at the
+moment. I hope to keep working on this, to create something you would be excited to use in production environment.
 
