@@ -1,7 +1,7 @@
 ---
-date: "2023-12-16"
+date: "2023-12-23"
 tags: ["General", "Go"]
-title: "Implementing new scheduler"
+title: "New Scheduler"
 toc: false
 draft: false
 ---
@@ -30,7 +30,9 @@ in a process like task `B` can run in parallel to task `A` and task `C` cannot s
 processes usually run on a certain schedule. For example once a day at 8:00AM or each 15 minutes, but no on
 weekends. Some of them might have no schedule but are triggered externally.
 
-**TODO**: pic with a DAG
+
+![img](dagexample.png)
+
 
 Where this kind of software is used? From my perspective and best to my knowledge it's mostly used to orchestrate data
 processing. Let's consider an example where we need to prepare data for reporting layer. This process requires talking
@@ -91,8 +93,8 @@ without almost any assurance from type system or compilation usually doesn't jus
 and we can swiftly write a lot of code.
 
 Another very important point for me is the fact that in this case I have sort of clear vision how my scheduler will
-look like. It's my first side project that I'm working on for longer then a month (it's already almost four months). I
-feel it's good to have long term personal project to think about and work on. Even if everything I said in the previous
+look like. It's my first side project that I'm working on for longer then a month (it's already four months). I feel
+it's good to have long term personal project to think about and work on. Even if everything I said in the previous
 paragraphs is nonsense I'd still do it because of this single reason. I want to implement something that I'd love to
 use daily and something I can trust. It doesn't need to be implemented by myself, so I can trust it, but at least it
 should behave as expected in most cases. Even if I'll be the only user, I think it's still worth it!
@@ -136,5 +138,5 @@ details on this project in the future!
 
 Yep, so because of this I haven't posted anything in last couple of months. Most of my spare time, besides family time
 and running I was spending working on this project. It's roughly 9k lines of Go including 4.5k lines of tests at the
-moment. I hope to keep working on this, to create something you would be excited to use in production environment.
+moment. I hope to keep working on this, to create something you would be excited to use in production environments.
 
