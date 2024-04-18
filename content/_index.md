@@ -1,10 +1,11 @@
 ---
-date: "2023-12-30"
+date: "2024-04-18"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2024-04-18] [Introducing ppacer: yet another DAG scheduler which I prefer]({{< ref "/post/ppacer-intro/index.md" >}})
 * [2023-12-30] [Summary of 2023]({{< ref "/post/year2023/index.md" >}})
 * [2023-12-23] [New Scheduler]({{< ref "/post/new-scheduler/index.md" >}})
 * [2023-08-21] [Getting method's source code in Go]({{< ref "/post/go-ast/index.md" >}})
