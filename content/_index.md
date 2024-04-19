@@ -1,10 +1,11 @@
 ---
-date: "2024-04-18"
+date: "2024-04-19"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2024-04-19] [Implementing cron]({{< ref "/post/cron/index.md" >}})
 * [2024-04-18] [Introducing ppacer: yet another DAG scheduler which I prefer]({{< ref "/post/ppacer-intro/index.md" >}})
 * [2023-12-30] [Summary of 2023]({{< ref "/post/year2023/index.md" >}})
 * [2023-12-23] [New Scheduler]({{< ref "/post/new-scheduler/index.md" >}})
