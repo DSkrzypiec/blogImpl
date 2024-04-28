@@ -198,7 +198,7 @@ type Cron struct {
 No matter how we would get those number (either parsing a string or setting
 those manually, or using another API), eventually, crontab expression can be
 boiled down to a list of values for each part. Assuming that empty array means
-`*` (a start). Field `start` is just for `Schedule` interface `Start() method.
+`*` (a start). Field `start` is just for `Schedule` interface `Start()` method.
 
 I started slow by trying to support only `minute` and `hour` cases. That was
 rather easy. In default crontab expression when we have starts when we just set
@@ -209,7 +209,7 @@ In this case, for given `time.Time` we need to check the next value in `minute`
 which is greater then a minute from that time. If given time is `2024-04-25
 12:19:00` then the next one should be at `12:50:00`. When we are already at
 `12:51:10`, there is no "next" minute in `minute` field, so we know that the
-next schedule point will be in the hour and at `minute[0]` minute. Easy.
+next schedule point will be in the next hour and at `minute[0]` minute. Easy.
 
 As you can probably see, the same reasoning applies to hours. So far so good.
 We can correctly determine the next schedule point using just few `if`s,
@@ -236,6 +236,80 @@ func (c *Cron) setMinutes(t time.Time) time.Time {
 }
 ```
 
+For hours part implementation looks almost the same. That's also true for
+"months" part of crontab expression.
+
+A bit different approach is needed in case of day of month part. We cannot
+apply the same logic in here. Let me, once again, start by providing an
+example. Let's say we have cron schedule `0 12 31 * *` - expected runs should
+be at noon on 31th day of a month. For this schedule let's consider several
+pairs of timestamps and correspondent next schedule points:
+
+* `next(2024-01-15 13:15) = 2024-01-31 12:00`
+* `next(2024-01-31 13:15) = 2024-03-31 12:00`
+* `next(2024-02-01 20:15) = 2024-03-31 12:00`
+
+As we can see, we cannot simply set a day from `Cron.dayOfMonth` field, because
+it might be invalid date! In the above example `2024-02-31 12:00` would be
+invalid date. Another example, even more extreme would be `0 12 29 2 *`
+schedule which should run at noon on February 29th, that's valid only on leap
+years! So for `2024-02-29 12:01`, the next schedule point should be on
+`2028-02-29 12:00` - four years later! That already sounds more complex
+than handling minute or hour parts and we don't even yet included weekdays! I
+won't put implementation details in here, but as you might except we cannot get
+away without a loop in this case. Fortunately there are finite and small upper
+limit of all possible iterations (<100), so we still should have `O(1)`
+complexity, just with a bit larger constant for those cases.
+
+The last part we need to cover is weekday part. As we already mentioned earlier
+this part is a bit tricky, because it behaves differently than other parts.
+Because of the fact that we either need to set a day of month or a
+weekday, depending on a schedule and which case is closer to the current date,
+there is no other way but include that logic in a function responsible for
+determining setting up next day date. If only day of month in crontab is set,
+it's easy. If only weekday in crontab is set, that's also rather
+straightforward. In case when both parts are set, we need to calculate which of
+those two option would happen first. It's not difficult either, but there are a
+couple of cases we need to get right.
+
+At the end, on high level, function `Next` for `Cron` looks like this:
+
+```
+func (c *Cron) Next(currentTime time.Time, _ *time.Time) time.Time {
+    next := zeroSecondsAndSubs(currentTime)
+    next = c.setMinutes(next)
+    next = c.setHours(next)
+    next = c.setDayOfMonth(next) // This also includes weekdays
+    next = c.setMonth(next)
+    return next
+}
+```
+
+At the end implementing `Next` for cron schedule was a bit annoying. It wasn't
+hard, but I needed to got every case right and there were a lot of cases to
+cover. Looking back, should I've chosen a simpler path and just iterate over
+dates and check if it's right? Perhaps it would be simpler to implement and
+easier to maintain, but it would be probably a bit slower. Maintenance isn't
+really the issue. There is nothing to maintain in here. It's one of things that
+need to be implemented correctly and won't be changed probably ever. It's
+rather small and closed (regarding specs) feature. Given that I implemented it
+correctly I still think I did the right thing and being a bit more annoying for
+me to implement is rather small price to pay in the long term perspective.
+
+
+## To parse or not to parse
+
+
+
+
+## Performance benchmarks
+
+
+* Default `* * * * *` schedule case - 93.43 ns/op (0 B/op, 0 allocs/op)
+* Schedule with minute and hour set - 218.5 ns/op (0 B/op, 0 allocs/op)
+* All parts set except minute and hour - 580.1 ns/op (24 B/op, 2 allocs/op)
+* All parts set - 695.4 ns/op (24 B/op, 2 allocs/op)
+* February 29th case - 1860 ns/op (432 B/op, 18 allocs/op)
 
 ## Summary
 
