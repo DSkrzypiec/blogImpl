@@ -1,6 +1,6 @@
 ---
 date: "2024-04-18"
-tags: ["General", "Go"]
+tags: ["General", "Go", "ppacer"]
 title: "Introducing ppacer: yet another DAG scheduler which I prefer"
 toc: false
 draft: false

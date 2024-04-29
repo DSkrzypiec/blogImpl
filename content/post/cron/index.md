@@ -1,6 +1,6 @@
 ---
-date: "2024-04-19"
-tags: ["data-engineering", "Go"]
+date: "2024-04-29"
+tags: ["data-engineering", "Go", "ppacer"]
 title: "Implementing cron"
 toc: false
 draft: false
@@ -9,28 +9,26 @@ draft: false
 
 ## Intro
 
-Recently I've been writing down documentation for [ppacer
+Recently, I have been documenting [ppacer
 schedules](https://ppacer.org/internals/schedules/) and in that moment I
 thought I should have probably implemented cron schedule for ppacer. Before I
-explain why I thought that, let's take one step back first, to give you a bit
-of context about ppacer schedules. Schedules in ppacer are covered by generic
-and simple interface
+explain why, let's take one step back to give you a bit of context about ppacer
+schedules. Schedules in ppacer are covered by generic and simple interface
 
 
 ```
 type Schedule interface {
     Start() time.Time
-    Next(curentTime time.Time, prevSchedule *time.Time) time.Time
+    Next(current time.Time, prevSched *time.Time) time.Time
     String() string
 }
 ```
 
 Initially I've provided the simplest possible regular schedule which satisfies
-that interface - `schedule.Fixed`
-([docs](https://pkg.go.dev/github.com/ppacer/core/dag/schedule#Fixed)) which
-starts at given time and ticks each given `time.Duration` (e.g.
-`10*time.Minute`). That was definitely good enough for the first ppacer backed
-versions and tests.
+that interface - `schedule.Fixed` which starts at given time and ticks each
+given `time.Duration` (e.g. `10*time.Minute`). See documentation
+([here](https://pkg.go.dev/github.com/ppacer/core/dag/schedule#Fixed)). That was
+definitely good enough for the first ppacer backed versions and tests.
 
 I thought having a generic interface for schedules and providing simple
 concrete implementation would be enough for the MVP ppacer version, but then
@@ -159,7 +157,7 @@ I didn't know about that! So when you have `0 10 13 * 1` crontab expression for
 your schedule, it should run at 10:00AM on 13th day of a month and on every
 Monday at 10:00AM. Naturally I thought it would mean that job should run at
 10:00AM on 13th day of a month but only when it's Monday. Wrong! Though I've
-never used such schedule in my life it's good to know that this part is a bit
+never used such schedule in my life, it's good to know that this part is a bit
 inconsistent. There is logical `AND` between all parts of crontab expression
 parts, except the case when day of month and weekday is set, in this case we
 have logical `OR`. Exactly like Paul said, "yes, it's bizarre".
@@ -299,11 +297,78 @@ me to implement is rather small price to pay in the long term perspective.
 
 ## To parse or not to parse
 
+As I mentioned in the intro, my cron schedule implementation is primarily, to
+be used as ppacer schedule. That means it will be used within a Go project. How
+users would like to define cron schedule in ppacer? Besides mentioned `Cron`
+structure I started with basic default constructor:
 
+```
+// NewCron initialize new default Cron which is "* * * * *"
+// and starts at 1970-01-01.
+func NewCron() *Cron {
+    return &Cron{start: time.Unix(0, 0)}
+}
+```
+
+Usually user would like to define also other cron schedules. I thought perhaps
+it would be convenient and readable if we would have fluent API to set
+particular parts of crontab expression? Let see, for example if we would like
+to set minute parts we could use the following methods:
+
+```
+func (c *Cron) AtMinute(m int) *Cron {
+    c.minute = []int{m % 60}
+    return c
+}
+
+func (c *Cron) AtMinutes(minutes ...int) *Cron {
+    m := make([]int, len(minutes))
+    for idx, minute := range minutes {
+        m[idx] = minute % 60
+    }
+    sort.Ints(m)
+    c.minute = m
+    return c
+}
+```
+
+Similarly we could provide methods for hour, day of month, month and weekday
+crontab expression parts. Then we could conveniently define our cron schedule
+like this:
+
+```
+sched := NewCron().AtMinute(5).AtHours(8, 16).OnWeekday(time.Monday)
+```
+
+Which would be equivalent to `5 8,16 * * 1` crontab expression. All is good,
+life is sweet, but in this setup we loose notion of classic crontab expression
+strings.
+
+On the other hand if we would like to use crontab expression format strings we
+should introduce a function with the following signature
+
+```
+func ParseCron(string) (*Cron, error) {
+    ...
+}
+```
+
+In other words there is a chance that parsing given string might fail. Maybe
+there is a typo in our schedule cron string or we put one character too many.
+Who knows. Even when we have perfectly good crontab expression string, we still
+shall check if `err != nil`. Whereas using fluent API we don't need to do it.
+At least not in this case.
+
+Currently I decided to support only fluent API to define cron schedules in
+ppacer. Though we can implement `ParseCron(string) (*Cron, error)` function
+anytime without breaking package backward compatibility. That might be a good
+exercise for non-lazy reader of this post (PRs are welcome!).
 
 
 ## Performance benchmarks
 
+I've prepared basic benchmarks in Go using `*testing.B`, to have rough idea how
+fast `Next` method for my implementation of cron schedule is.
 
 * Default `* * * * *` schedule case - 93.43 ns/op (0 B/op, 0 allocs/op)
 * Schedule with minute and hour set - 218.5 ns/op (0 B/op, 0 allocs/op)
@@ -311,9 +376,34 @@ me to implement is rather small price to pay in the long term perspective.
 * All parts set - 695.4 ns/op (24 B/op, 2 allocs/op)
 * February 29th case - 1860 ns/op (432 B/op, 18 allocs/op)
 
+It sounds fast enough for me, at least for alpha version. Though I didn't
+compare it to other mentioned earlier libraries from other programming
+languages. That sounds like fun exercise for long winter evening.
+
+
+## Links
+
+I haven't still mentioned **where** you can find my implementation of cron
+schedules for ppacer. Here it is:
+
+* [Source code](https://github.com/ppacer/core/blob/main/dag/schedule/cron.go)
+* [API reference](https://pkg.go.dev/github.com/ppacer/core/dag/schedule#Cron)
+* [Docs](https://ppacer.org/internals/schedules)
+
+You can install this Go package using `go get`:
+
+```
+go get -u github.com/ppacer/core/dag/schedule@latest
+```
+
 ## Summary
 
-TODO
+Overall implementing cron was very interesting tangent to my main project. I'm
+glad that I read Vixie cron source code and get to know cron history better. As
+it turned out I also didn't know all details about crontab expression before I
+started working on it. Even though it was annoyingly hard to get right and
+cover all corner cases I'm glad I did it. It took much longer then I initially
+though (2-3 evenings tops) it was definitely worth it.
 
 
 ## References
@@ -325,4 +415,6 @@ TODO
    Debian](https://salsa.debian.org/debian/cron/-/blob/master/cron.c?ref_type=heads)
 1. [Quora post with screenshot of email from Brian
    Kernighan](https://www.quora.com/What-is-the-etymology-of-cron/answer/Kah-Seng-Tay)
-1.
+1. [crontab(5) man pages](https://manpages.ubuntu.com/manpages/focal/en/man5/crontab.5.html)
+1. [ppacer/dag/schedule docs](https://pkg.go.dev/github.com/ppacer/core/dag/schedule#Cron)
+1. [ppacer schedules](https://ppacer.org/internals/schedules/)
