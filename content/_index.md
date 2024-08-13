@@ -1,10 +1,11 @@
 ---
-date: "2024-07-30"
+date: "2024-08-13"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2024-08-13] [Be Cautious When Using time.Time as Keys in Go Maps]({{< ref "/post/time-in-map/index.md" >}})
 * [2024-07-30] [Releasing ppacer v0.0.1]({{< ref "/post/ppacer001/index.md" >}})
 * [2024-04-29] [Implementing cron]({{< ref "/post/cron/index.md" >}})
 * [2024-04-18] [Introducing ppacer: yet another DAG scheduler which I prefer]({{< ref "/post/ppacer-intro/index.md" >}})
