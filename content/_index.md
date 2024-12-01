@@ -1,10 +1,11 @@
 ---
-date: "2024-08-13"
+date: "2024-12-01"
 title: "Home"
 ---
 
 ## List of posts:
 
+* [2024-12-01] [I made a knife]({{< ref "/post/knife/index.md" >}})
 * [2024-08-13] [Be Cautious When Using time.Time as Keys in Go Maps]({{< ref "/post/time-in-map/index.md" >}})
 * [2024-07-30] [Releasing ppacer v0.0.1]({{< ref "/post/ppacer001/index.md" >}})
 * [2024-04-29] [Implementing cron]({{< ref "/post/cron/index.md" >}})
