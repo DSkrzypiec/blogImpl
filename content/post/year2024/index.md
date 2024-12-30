@@ -77,9 +77,8 @@ quite light and very agile.
 
 From the moment I assembled the new bike until the end of 2024, I managed to
 maintain regular cycling, even during the rainy autumn and colder winter
-periods. As we can see above, from March to the end of the year, I rode almost
-3750km. From March to the end of the year, I cycled nearly 3,750 km, making the
-bike my primary mode of transportation and a key part of my training and
+periods. From March to the end of the year, I cycled nearly 3,750 km, making
+the bike my primary mode of transportation and a key part of my training and
 recreation. I hope that in the coming year, this part of my life will remain at
 least at the same level.
 
