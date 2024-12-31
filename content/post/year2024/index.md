@@ -43,10 +43,9 @@ cycling, which put much less strain on the mentioned knee.
 
 ![img](newfixie.jpg)
 
-During my studies and while working at PwC, I have rode a fixed gear bike for
-several years already. In March 2024, when I chose to return to to cycling
-seriously, I decided to buy a new bike because the frame on my previous fixed
-gear was a bit too small for me.
+During my studies and my time at PwC, I rode a fixed gear bike for several
+years. In March 2024, when I decided to return to cycling more seriously, I
+bought a new bike because the frame on my previous one was a bit too small.
 
 As the base for the new bike, I chose the new 2024 Cinelli Gazzetta. From the
 base offer, mainly the frame remained, as I decided to replace the following
@@ -77,10 +76,10 @@ quite light and very agile.
 
 From the moment I assembled the new bike until the end of 2024, I managed to
 maintain regular cycling, even during the rainy autumn and colder winter
-periods. From March to the end of the year, I cycled nearly 3,750 km, making
-the bike my primary mode of transportation and a key part of my training and
-recreation. I hope that in the coming year, this part of my life will remain at
-least at the same level.
+periods. From March to the end of the year, I cycled nearly 3,750 km (2,330
+miles), making the bike my primary mode of transportation and a key part of my
+training and recreation. I hope that in the coming year, this part of my life
+will remain at least at the same level.
 
 
 ## I left Point72
@@ -95,7 +94,7 @@ after more than a year and a half.
 ![img](ppacer_ff.jpg)
 
 At the end of July I've released [ppacer v0.0.1](https://dskrzypiec.dev/ppacer001).
-I also presented it for my friends and family in mid-October.
+I also presented it to my friends and family in mid-October.
 
 The work is still in progress, but I'm happy we have a basic working version
 with the UI.
@@ -146,9 +145,14 @@ has in store for ConnectyAI.
 ## Additional highlights
 
 * In March, I took my mom for a 3-day trip to London.
+
 * In September, I visited Copenhagen with my wife for a 3-day getaway without
 the kids (our first time traveling alone since our first child was born).
+
 * In November, I attended WebSummit 2024 in Lisbon (with ConnectyAI).
+
+* This year, I also started bouldering with my 6-year-old son, which has been a
+fun and rewarding activity for both of us.
 
 
 ## Reflection on Goals for 2024
