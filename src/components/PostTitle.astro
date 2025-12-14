@@ -1,0 +1,41 @@
+---
+export interface Props {
+  title: string;
+  date?: string;
+}
+
+const { title, date } = Astro.props;
+---
+
+<div class="post-title">
+  <h1>{title}</h1>
+    {date && (
+    <p class="post-date">
+      <span class="publish-label">Publish date:</span> {date}
+    </p>
+    )}
+</div>
+
+<style>
+  .post-title {
+    margin-bottom: 2rem;
+  }
+
+  .post-title h1 {
+    font-size: 1.75rem;
+      color: var(--accent-color);
+    margin: 0;
+  }
+
+  .post-date {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+  }
+
+  .publish-label {
+    font-weight: bold;
+    color: var(--text-primary); /* Primary color for the label */
+  }
+</style>
+

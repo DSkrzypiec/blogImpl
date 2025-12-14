@@ -1,0 +1,123 @@
+/* --- Reset & guardrails --- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { 
+  max-width: 100%; 
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+html { -webkit-text-size-adjust: 100%; }
+
+/* Global Color Palette */
+:root {
+  --bg-color: #111010;
+  --text-primary: #ffe9c6; /* #ccffff; */
+  --text-secondary: #2AA198;
+  --accent-color: #f97d43;
+
+  --font-body: 'Roboto', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+}
+
+
+html {
+    font-size: 19px;
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+
+body {
+  font-size: 1rem;
+  line-height: 1.66;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word; /* Break long words to prevent overflow */
+  overflow-wrap: break-word; /* Modern property for word wrapping */
+}
+
+/* Headings scale down with breakpoints */
+h1 { font-size: 2.25rem; line-height: 1.2; }
+h2 { font-size: 1.75rem; line-height: 1.3; }
+h3 { font-size: 1.35rem; line-height: 1.35; }
+
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.2rem; }
+}
+@media (max-width: 480px) {
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.35rem; }
+  h3 { font-size: 1.1rem; }
+}
+@media (max-width: 360px) {
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.05rem; }
+}
+
+a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Ensure the background of the code block is uniform */
+pre {
+  background-color: #1e1e1e; /* Match the dark-plus theme background */
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto; /* Enable horizontal scrolling for long lines */
+  margin: 1rem 0;
+  font-size: 15px;
+  font-family: var(--font-code);
+}
+
+code {
+  background-color: transparent; /* Remove any "selected" background look */
+}
+
+pre > code {
+  display: block;
+}
+
+.toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.toc li {
+    margin: 0.5rem 0;
+}
+
+.toc a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.toc a:hover {
+    text-decoration: underline;
+}
+
+/* Highlight the active heading in the TOC */
+.toc a.active {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+

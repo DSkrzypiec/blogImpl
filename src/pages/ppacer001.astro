@@ -1,0 +1,45 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+---
+
+<Post title="Releasing ppacer v0.0.1">
+  <PostTitle
+    title="Releasing ppacer v0.0.1"
+    date="2024-07-30"
+  />
+
+  <Image src="/ppacer001/logo_6_full_3.svg" alt="ppacer logo" caption="ppacer v0.0.1 release logo" invertColors={true} />
+
+  <Chapter name="The News" id="the-news" />
+  <p>
+    I'm happy to announce that the first <a href="https://ppacer.org">ppacer</a> release is
+    out! That is literally version <code>v0.0.1</code>. Please check the GitHub release to get
+    the full list of features and changes: <a href="https://github.com/ppacer/core/releases/tag/v0.0.1">v0.0.1 on
+    GitHub</a>.
+  </p>
+
+  <Chapter name="Is It Ready Then?" id="is-it-ready" />
+  <p>
+    Of course it is not. Version <code>v0.0.1</code> was focused on making the backend stable
+    enough and with a minimal set of features to be used by users, including
+    myself. To be clear, there is no frontend yet. You can use ppacer if you are
+    comfortable enough with external alerts and querying internal database as a
+    sort of interfaces to ppacer. So, it is more of a big deal for me rather than
+    other users. It was also the point in development when I decided I wouldn't be
+    adding more features to the backend until initial version of the frontend is
+    done.
+  </p>
+
+  <Chapter name="Next Steps" id="next-steps" />
+  <p>
+    The next big step is to design and implement analogous version <code>v0.0.1</code> for the
+    frontend. I've already implemented the proof of concept, but that's it for now.
+    Once the fronted is rolled out, I think ppacer would be ready as the MVP
+    version. I plan to present it to broader public then and start planning a
+    roadmap towards actual version <code>v1.0.0</code>.
+  </p>
+
+</Post>

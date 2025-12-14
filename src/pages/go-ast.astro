@@ -1,0 +1,323 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Getting method's source code in Go">
+  <PostTitle
+    title="Getting method's source code in Go"
+    date="2023-08-21"
+  />
+
+  <Image src="/go-ast/top.png" alt="Go AST metaprogramming" caption="Go AST metaprogramming - getting method source code at runtime" />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    Recently I thought I want to have a function, implemented in Go, which would return method's source code for given type
+    and method name in the runtime. Something of this signature:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func MethodBodySource(typeName, methodName string) (*ast.BlockStmt, string, error) {
+    // implementation here
+}`} />
+
+  <p>
+    This function would return found function body <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a> (which in Go is
+    block statement), it's source code as string and possibly an error.
+  </p>
+
+  <p>
+    In dynamically typed and interpreted languages this is a foundation functionality.
+    For example, in Python, it's enough to do the following:
+  </p>
+
+  <Code lang="python" theme="dark-plus" code={`import inspect
+
+def func_source(f) -> str:
+    return inspect.getsource(f)`} />
+
+  <p>
+    In compiled languages this looks usually a bit more complicated and involves some kind of metaprogramming. I want to
+    have this function to detect whenever specific kind of methods in my project has been changed, to denote it in the
+    database (external persistent place for data really). I thought I would get the answer to my problem in an hour at
+    most using Stackoverflow, ChatGPT and Google. I was wrong. It took me a bit more. In the end the answer is not really
+    complicated but getting there took me few moments. Thus I thought it might be a good idea to summarize it in a blog
+    post.
+  </p>
+
+  <p>
+    On metaprogramming in Go there are several kinds available. Code generation via <code>go generate</code>, <a href="https://en.wikipedia.org/wiki/Reflective_programming">reflective
+    programming</a> via standard <code>reflect</code> package and manipulation of
+    Go abstract syntax tree (AST) using <code>go/token</code>, <code>go/scanner</code>, <code>go/parser</code> and <code>go/ast</code> standard packages. For my
+    problem reflection and getting use of the AST sounds like perfect match. Usually I don't need to reach for
+    metaprogramming, so in case of this problem I thought it's a good occasion to explore those a bit deeper.
+  </p>
+
+  <Chapter name="High level approach" id="high-level-approach" />
+  <p>
+    High level plan for implementing this function is really simple.
+  </p>
+
+  <ol>
+    <li>Get AST or set of ASTs for the project source code</li>
+    <li>Implement AST traversal for finding the right method (<code>*ast.FuncDecl</code>)</li>
+    <li>Return <code>*ast.FuncDecl.Body</code> (<code>*ast.BlockStmt</code>) and its serialization to a string</li>
+  </ol>
+
+  <Chapter name="Parsing AST of the project" id="parsing-ast" />
+  <p>
+    Initially I thought I could simply use <code>go/parser</code> package to easily parse the whole Go project and I would get a
+    single big AST to work on. It turned out this package only supports <a href="https://pkg.go.dev/go/parser#ParseFile">parser.ParseFile</a>
+    and <a href="https://pkg.go.dev/go/parser#ParseDir">parser.ParseDir</a> functionalities for parsing single file or single
+    directory of files. At this point I thought I don't really know how Go exactly do the compilation.
+  </p>
+
+  <p>
+    As I learned ASTs are parsed for every Go file separately and basic unit is a Go package. That makes sense, because for
+    example methods for a single type might be scattered across many files within the package. But still on the package
+    level Go keeps a list of <code>*ast.File</code> ASTs rather then combining them into a single tree. Then type checking is also done
+    upon slice of ASTs.
+  </p>
+
+  <p>
+    Instead of manually parsing all <code>*.go</code> files I thought, perhaps, I could use already existing functionality which is
+    used by the compiler itself. I found <a href="https://pkg.go.dev/golang.org/x/tools@v0.12.0/go/packages">golang.org/x/tools/go/packages</a>
+    package. As documentation states <em>Package packages loads Go packages for inspection and analysis</em>. In particular it
+    contains <a href="https://pkg.go.dev/golang.org/x/tools@v0.12.0/go/packages#Load">packages.Load</a> function which loads packages
+    according to given configuration and returns slice of pointers to Package:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`type Package struct {
+    ID string
+    PkgPath string
+    Errors []Error
+    TypeErrors []types.Error
+    GoFiles []string
+    // other fields...
+    Types *types.Package
+    Fset *token.FileSet
+    Syntax []*ast.File
+    // other fields...
+}`} />
+
+  <p>
+    As we can see it contains <code>Syntax</code> field which is a slice of ASTs of all <code>*.go</code> files in the package. To load all
+    packages in the current Go module (project) we can use a function similar to the following:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func projectPackages() []*packages.Package {
+    cfg := &packages.Config{
+        Mode:  packages.NeedFiles | packages.NeedSyntax | packages.NeedTypes,
+        Tests: false,
+    }
+    pkgs, err := packages.Load(cfg, "./...")
+    if err != nil {
+        log.Panic(err)
+    }
+    return pkgs
+}`} />
+
+  <p>
+    The crucial configuration in here is adding <code>packages.NeedSyntax</code> to the <code>Mode</code>. Otherwise ASTs will not be parsed. Ok,
+    so at this point we have a slice of ASTs for our project. There are few minor caveats, but we'll come back to it a bit
+    later. Using <code>ast.Print</code> function we can print a AST in a pretty format:
+  </p>
+
+  <Image src="/go-ast/ast.png" alt="Go AST example output" caption="Example output of ast.Print showing the structure of a Go AST" />
+
+  <p>
+    Just for an illustrative example, if you would like to print ASTs for all parsed files, you can do something like that:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`pkgs := projectPackages()
+for _, pkg := range pkgs {
+    for idx, astFile := range pkg.Syntax {
+        fmt.Printf("Pkg: %s | File: %s\n", pkg, pkg.GoFiles[idx])
+        ast.Print(nil, astFile)
+    }
+}`} />
+
+  <Chapter name="Finding the right method in the AST" id="finding-method" />
+  <p>
+    Once we have AST, finding the right sub-tree for given method and type name is rather straightforward. Especially in
+    case when we can just implement few examples and print its ASTs, to get familiar with types used in Go AST. Possible
+    implementation can look like the following:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func findMethodInAST(astFile *ast.File, typeName, methodName string) *ast.FuncDecl {
+    for _, decl := range astFile.Decls {
+        funcDecl, isFunc := decl.(*ast.FuncDecl)
+        if !isFunc {
+            continue
+        }
+        if funcDecl.Recv == nil || len(funcDecl.Recv.List) != 1 || funcDecl.Name.Name != methodName {
+            continue
+        }
+
+        ident, isIdent := funcDecl.Recv.List[0].Type.(*ast.Ident)
+        if isIdent && ident.Name == typeName {
+            return funcDecl
+        }
+
+        // Check for *T receivers
+        starExpr, isStar := funcDecl.Recv.List[0].Type.(*ast.StarExpr)
+        if isStar {
+            ident, isIdent := starExpr.X.(*ast.Ident)
+            if isIdent && ident.Name == typeName {
+                return funcDecl
+            }
+        }
+    }
+    return nil
+}`} />
+
+  <p>
+    A bit of explanations
+  </p>
+
+  <ol>
+    <li>Iterate over all declarations in AST (<code>*ast.File</code>)</li>
+    <li>Check whenever this declaration is a function declaration, if not continue to the next one</li>
+    <li>Check whenever this function has appropriate name and declaration has a receiver, to make sure it's a method and not free function</li>
+    <li>At this point we have two cases. Method can be defined on type <code>T</code> or pointer <code>*T</code></li>
+    <li>In the first case we check if receiver type is an identifier (<code>*ast.Ident</code>) and then check it's name</li>
+    <li>In the other case we check for <code>*ast.StarExpr</code> and then take identifier from <code>*ast.StarExpr.X</code></li>
+    <li>If any of those two cases type name matches given type name, we know we found the right sub-tree and can return <code>*ast.FuncDecl</code></li>
+  </ol>
+
+  <p>
+    Overall, in my problem, we can assume that whole Go project was successfully compiled. In particular we can assume that
+    within single package pairs of types and methods and unique, thus we can return the first matching method in the AST is
+    the only one.
+  </p>
+
+  <Chapter name="AST to string serialization" id="ast-serialization" />
+  <p>
+    As we would expect for AST serialization there is already implemented function in the standard library -
+    <a href="https://pkg.go.dev/go/printer#Fprint">printer.Fprint</a> from <code>go/printer</code> standard package:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func Fprint(output io.Writer, fset *token.FileSet, node any) error`} />
+
+  <p>
+    Argument <code>node</code> is any node of the AST. As we can see this function requires <code>*token.FileSet</code> which is an object that
+    keeps a slice of source files (<code>*token.File</code>). That's basically because <code>printer.Fprint</code> does not serialize AST just
+    based on its content but rather uses token positions from AST to read it from <code>*token.FileSet</code>. I'm guessing it's
+    mainly because to have mapping of AST nodes to concert file in the file system and lines in that file. Those are in
+    particular included in stack traces.
+  </p>
+
+  <p>
+    In case of parsing ASTs using mentioned <code>packages.Load</code> function there is single <code>*token.FileSet</code> per package which is
+    stored in <code>packages.Package.Fset</code> field. Knowing that we can go ahead and serialize AST of body of our target method
+    back into a string.
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`pkgs := projectPackages()
+for _, pkg := range pkgs {
+    for idx, astFile := range pkg.Syntax {
+        helloMethod := findMethodInAST(astFile, "A", "Hello")
+        if helloMethod != nil {
+            var buf bytes.Buffer
+            printer.Fprint(&buf, pkg.Fset, helloMethod.Body)
+            fmt.Println(buf.String())
+        }
+    }
+}`} />
+
+  <p>
+    By default <code>printer.Fprint</code> prints tabs with width of 8 spaces. If you want to change it, you can do it like this
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`printerCfg := printer.Config{Tabwidth: 4, Mode: printer.UseSpaces}
+printerCfg.Fprint(&buf, pkg.Fset, helloMethod.Body)`} />
+
+  <Chapter name="Is it done?" id="is-it-done" />
+  <p>
+    It sounds like we implemented our sketched high level plan and in fact parsed all Go files in the project, found the
+    right method in the AST using reflection and finally serialize it to a string. If you want to easily run the full
+    example, you can pull it <a href="https://github.com/DSkrzypiec/blogSourceCodes/tree/master/20230820_GoAstMethodSource">from here</a>.
+  </p>
+
+  <p>
+    It was a good start, but as I mentioned earlier there is one downside of using <code>packages.Load</code>. That is it only uses
+    actual file system to load go files. It's configured by
+    <a href="https://pkg.go.dev/golang.org/x/tools@v0.12.0/go/packages#Config">packages.Config.Dir</a> field. Additionally we can pass
+    patterns for Go file names matches in <code>packages.Load</code> function, but both settings are referring to files in the file
+    system. That means if I wanted to deploy my program which uses this functionally in the Docker container or remote
+    server I would need to also include project's source files. I don't like it at all! I'd say it's not acceptable for me.
+    Especially in Go where we end up with single statically linked binary. It was a good exercise to fool around with ASTs
+    and reflection, but can we improve the situation?
+  </p>
+
+  <p>
+    I think we have two possibilities. One is to either fork and modify <code>packages</code> package and try to extend it to also
+    accepts abstract file systems (like <code>embed.FS</code>) or to try starting a discussion on adding this functionality to the
+    package and then starting working on the PR. The second approach would be to abandon <code>packages</code> package and implement
+    simpler version - we just need to parse ASTs, based on embedded Go files in the binary. Considering amount of work of
+    the first approach and my specialized use case I decided to go with the latter.
+  </p>
+
+  <Chapter name="Embed Go files in the binary" id="embed-go-files" />
+  <p>
+    In Go 1.16 <a href="https://pkg.go.dev/embed">package embed</a> was added to Go standard library. It enables embedding files into
+    program target binary. Using this embedding all wanted go files from the project into the binary is as easy as this
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`//go:embed *.go tst/*.go tst2/*.go
+var goSourceFiles embed.FS`} />
+
+  <p>
+    There is no support for <code>./...</code> in <code>go:embed</code>. But that's not really a problem, because we know even before compilation
+    which catalogs from the project we want to include in the target binary, so we can list them manually. That was the
+    easy part. A bit more challenging would be adjusting <code>packages</code> package to use in-memory file system. Fortunately for
+    my problem we don't really need it. Mentioned package does much more then just parsing package's file ASTs. It also
+    perform type checks, let you choose which information about the package and files you want to load and much more. In my
+    case perhaps, it's enough to embed source files and use standard <code>go/ast</code>, <code>go/token</code> and <code>go/parser</code> packages? I think
+    so. I won't put whole implementation of this approach in here, but just an example how to mimic <code>packages.Load</code>
+    function regarding parsing ASTs for given packages based on embedded <code>goSourceFiles</code> and <code>tst</code> package.
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`type PackageSimple struct {
+    Fset       *token.FileSet
+    FileToASTs map[string]*ast.File
+}
+
+func tstPackageEmbedded() (PackageSimple, error) {
+    fset := token.NewFileSet()
+    fileASTs := make(map[string]*ast.File)
+    entries, _ := goSourceFiles.ReadDir("tst")
+
+    for _, entry := range entries {
+        fullName := "tst/" + entry.Name()
+        data, _ := goSourceFiles.ReadFile(fullName)
+        astFile, err := parser.ParseFile(fset, entry.Name(), data, parser.AllErrors | parser.ParseComments)
+        if err != nil {
+            return {}, err
+        }
+        if astFile != nil {
+            fileASTs[fullName] = astFile
+        }
+    }
+    return PackageSimple{Fset: fset, FileToASTs: fileASTs}, nil
+}`} />
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    This exercise turned out to be even more fun than I expected! I learned about initial Go compilation phases (lexing,
+    parsing, type checking), a bit more about reflection and got deeper insights on Go AST. I'm glad that I solved my problem
+    of getting method's source code in the runtime. I think that this hands-on experience with Go AST might become handy in
+    the future.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://github.com/DSkrzypiec/blogSourceCodes/tree/master/20230820_GoAstMethodSource">Go project with full example</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a></li>
+    <li><a href="https://pkg.go.dev/golang.org/x/tools@v0.12.0/go/packages">golang.org/x/tools/go/packages</a></li>
+  </ol>
+
+</Post>

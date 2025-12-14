@@ -1,0 +1,271 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostLink from "../components/PostLink.astro";
+
+const posts = [
+  {
+    "title": "19th International Fryderyk Chopin Piano Competition",
+    "date": "2025-11-29",
+    "tags": ["Piano"],
+    "href": "chopin19"
+  },
+  {
+    "title": "Summary of 2024",
+    "date": "2024-12-30",
+    "tags": ["Annual Summary"],
+    "href": "year2024"
+  },
+  {
+    "title": "I made a knife",
+    "date": "2024-12-01",
+    "tags": ["General"],
+    "href": "knife"
+  },
+  {
+    "title": "Be Cautious When Using time.Time as Keys in Go Maps",
+    "date": "2024-08-13",
+    "tags": ["Go"],
+    "href": "time-in-map"
+  },
+  {
+    "title": "Releasing ppacer v0.0.1",
+    "date": "2024-07-30",
+    "tags": ["General", "Go", "ppacer"],
+    "href": "ppacer001"
+  },
+  {
+    "title": "Implementing cron",
+    "date": "2024-04-29",
+    "tags": ["Go", "cron"],
+    "href": "cron"
+  },
+  {
+    "title": "Introducing ppacer: yet another DAG scheduler which I prefer",
+    "date": "2024-04-18",
+    "tags": ["Go", "ppacer", "DAG"],
+    "href": "ppacer-intro"
+  },
+  {
+    "title": "Summary of 2023",
+    "date": "2023-12-30",
+    "tags": ["Annual Summary"],
+    "href": "year2023"
+  },
+  {
+    "title": "New Scheduler",
+    "date": "2023-12-23",
+    "tags": ["General", "Go"],
+    "href": "new-scheduler"
+  },
+  {
+    "title": "Getting method's source code in Go",
+    "date": "2023-08-21",
+    "tags": ["Go", "AST", "metaprogramming"],
+    "href": "go-ast"
+  },
+  {
+    "title": "What's inside parquet file?",
+    "date": "2023-06-11",
+    "tags": ["data", "file format"],
+    "href": "parquet"
+  },
+  {
+    "title": "Polars - modern data frame library",
+    "date": "2023-04-15",
+    "tags": ["data", "python", "rust"],
+    "href": "polars"
+  },
+  {
+    "title": "Implicit is great until it isn't - AWS CDK example",
+    "date": "2023-01-25",
+    "tags": ["Cloud", "AWS"],
+    "href": "aws-cdk-implicit"
+  },
+  {
+    "title": "Summary of 2022",
+    "date": "2022-12-30",
+    "tags": ["Annual Summary"],
+    "href": "year2022"
+  },
+  {
+    "title": "Home App v2 - rewritten in Go",
+    "date": "2022-11-26",
+    "tags": ["database", "Go"],
+    "href": "home-app-go"
+  },
+  {
+    "title": "Implementing SQLite parser in Scala",
+    "date": "2022-10-26",
+    "tags": ["Database", "SQL", "Scala"],
+    "href": "sqlite-parser"
+  },
+  {
+    "title": "A year in Allegro Pay",
+    "date": "2022-09-10",
+    "tags": ["personal"],
+    "href": "allegropay"
+  },
+  {
+    "title": "First thoughts on Scala",
+    "date": "2022-06-24",
+    "tags": ["scala"],
+    "href": "scala"
+  },
+  {
+    "title": "Copying data between distributed systems",
+    "date": "2022-06-05",
+    "tags": ["Data engineering"],
+    "href": "copying-data"
+  },
+  {
+    "title": "AWK - forgotten data engineering tool",
+    "date": "2022-03-20",
+    "tags": ["Data engineering", "CLI"],
+    "href": "awk"
+  },
+  {
+    "title": "Summary of 2021",
+    "date": "2021-12-30",
+    "tags": ["Annual Summary"],
+    "href": "year2021"
+  },
+  {
+    "title": "Parsing T-SQL",
+    "date": "2021-11-14",
+    "tags": ["Database", "T-SQL", "C#"],
+    "href": "parsing-tsql"
+  },
+  {
+    "title": "Fuzzy Finder",
+    "date": "2021-11-01",
+    "tags": ["Vim"],
+    "href": "fuzzy-finder"
+  },
+  {
+    "title": "Foundations",
+    "date": "2021-10-26",
+    "tags": ["General"],
+    "href": "foundations"
+  },
+  {
+    "title": "Bloom filter",
+    "date": "2021-10-08",
+    "tags": ["Data Structures", "C#"],
+    "href": "bloom-filter"
+  },
+  {
+    "title": "Leaving PwC",
+    "date": "2021-08-01",
+    "tags": ["personal"],
+    "href": "leaving-pwc"
+  },
+  {
+    "title": "Home Server",
+    "date": "2021-06-06",
+    "tags": ["Hardware", "database"],
+    "href": "home-server"
+  },
+  {
+    "title": "Vim sessions",
+    "date": "2021-04-27",
+    "tags": ["vim"],
+    "href": "vimsessions"
+  },
+  {
+    "title": "Iterators in C#",
+    "date": "2021-04-22",
+    "tags": ["C#", ".NET"],
+    "href": "iterators"
+  },
+  {
+    "title": "Summary of 2020",
+    "date": "2020-12-30",
+    "tags": ["Annual Summary"],
+    "href": "year2020"
+  },
+  {
+    "title": "Home Database",
+    "date": "2020-11-11",
+    "tags": ["database"],
+    "href": "home-db"
+  },
+  {
+    "title": "Goodbye Całka",
+    "date": "2020-10-25",
+    "tags": ["Personal"],
+    "href": "calka"
+  },
+  {
+    "title": "Mocking a file system in Go",
+    "date": "2020-10-03",
+    "tags": ["Go"],
+    "href": "mock-go-filesystem"
+  },
+  {
+    "title": "Building a small form factor PC",
+    "date": "2020-09-25",
+    "tags": ["Hardware", "SFF"],
+    "href": "minipc"
+  },
+  {
+    "title": "Writing a blog on smartphone",
+    "date": "2020-08-24",
+    "tags": ["Android", "Go"],
+    "href": "smartphone"
+  },
+  {
+    "title": "I'm quitting cmd",
+    "date": "2020-08-05",
+    "tags": ["Windows", "cmd", "PowerShell"],
+    "href": "quittingcmd"
+  },
+  {
+    "title": "My favorite tech talks",
+    "date": "2019-10-05",
+    "tags": ["techTalks"],
+    "href": "favtechtalks"
+  },
+  {
+    "title": "Go database/sql vs jmoiron/sqlx reading benchmark",
+    "date": "2019-09-05",
+    "tags": ["benchmark", "database", "go"],
+    "href": "gosqlstdsqlx"
+  },
+  {
+    "title": "What the quantile really is?",
+    "date": "2019-08-23",
+    "tags": ["stats", "go"],
+    "href": "quantiles"
+  }
+]
+---
+
+<BaseLayout>
+  <section class="post-list">
+    {posts.map((post) => (
+      <PostLink {...post} />
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the posts */
+    gap: 1rem; /* Add spacing between posts */
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 480px) {
+    .post-list {
+      padding: 0.5rem;
+      gap: 0.75rem;
+    }
+  }
+</style>

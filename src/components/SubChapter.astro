@@ -1,0 +1,38 @@
+---
+export interface Props {
+  name: string;
+  id?: string;
+}
+
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")     // remove punctuation
+    .replace(/\s+/g, "-")         // spaces → dashes
+    .replace(/-+/g, "-");         // collapse multiple dashes
+
+const { name, id } = Astro.props;
+const computedId = id ?? slugify(name);
+---
+
+<h3 id={computedId} class="subchapter">
+  <a href={`#${computedId}`}>{name}</a>
+</h3>
+
+<style>
+  .subchapter {
+    font-size: 1.25rem;
+    margin-top: 1.25rem;
+    color: var(--accent-color);
+  }
+
+  .subchapter a {
+    color: var(--accent-color);
+    text-decoration: none;
+  }
+
+  .subchapter a:hover {
+    text-decoration: underline;
+  }
+</style>

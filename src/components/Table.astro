@@ -1,0 +1,125 @@
+---
+export interface Props {
+  data: (string | number)[][];
+  headers?: string[];
+  caption?: string;
+  striped?: boolean;
+  bordered?: boolean;
+  hover?: boolean;
+}
+
+const {
+  data,
+  headers,
+  caption,
+  striped = true,
+  bordered = true,
+  hover = true
+} = Astro.props;
+---
+
+<div class="table-container">
+  <table class={`table ${striped ? 'table-striped' : ''} ${bordered ? 'table-bordered' : ''} ${hover ? 'table-hover' : ''}`}>
+    {headers && (
+      <thead>
+        <tr>
+          {headers.map((header) => (
+            <th>{header}</th>
+          ))}
+        </tr>
+      </thead>
+    )}
+    <tbody>
+      {data.map((row, rowIndex) => (
+        <tr>
+          {row.map((cell, cellIndex) => (
+            <td>{cell}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  {caption && <p class="table-caption">{caption}</p>}
+</div>
+
+<style>
+  .table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background-color: var(--bg-secondary, #1a1a1a);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .table-caption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #666);
+    font-style: italic;
+    text-align: center;
+    max-width: 600px;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color, #333);
+  }
+
+  .table th {
+    background-color: var(--bg-primary, #2a2a2a);
+    color: var(--text-primary, #ffffff);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .table td {
+    color: var(--text-secondary, #cccccc);
+  }
+
+  .table-bordered th,
+  .table-bordered td {
+    border: 1px solid var(--border-color, #333);
+  }
+
+  .table-bordered th {
+    border-bottom: 2px solid var(--border-color, #333);
+  }
+
+  .table-striped tbody tr:nth-child(odd) {
+    background-color: var(--bg-tertiary, #222);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: var(--bg-hover, #333);
+    transition: background-color 0.2s ease;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .table {
+      font-size: 0.8rem;
+    }
+    
+    .table th,
+    .table td {
+      padding: 0.5rem;
+    }
+    
+    .table-caption {
+      font-size: 0.8rem;
+      padding: 0 1rem;
+    }
+  }
+</style>

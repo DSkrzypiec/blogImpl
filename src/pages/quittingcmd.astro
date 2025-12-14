@@ -1,0 +1,201 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="I'm quitting cmd">
+  <PostTitle
+    title="I'm quitting cmd"
+    date="2020-08-05"
+  />
+
+  <Chapter name="Background" id="background" />
+  <p>
+    Regarding operating systems I prefer Linux over Windows. Even though in my job
+    I'm forced to use Windows. To make my work on Windows more pleasant I've been 
+    using Command-line alongside with vim, grep, AWK and other Unix/Linux tools.
+  </p>
+
+  <p>
+    Using cmd before Windows 10 was not a very visual appealing experience. It
+    suppose to be just a rectangle box with a text and somehow they made it hard to
+    read and write text. In Windows 10 cmd was visually improved. It started to
+    look modern and more like other Linux terminals.
+  </p>
+
+  <p>
+    For the last five years I've been using Command-line on Windows 10. 
+    So what suddenly have changed my mind? PowerShell. 
+  </p>
+
+  <p>
+    I always have been conscious that PowerShell exists but I've never give it a
+    try. Why? To be honest because of it's horrible default dark blue background color.
+    Recently I've got a task to extend some PowerShell script and I found out it's a great
+    tool! And also I've configured <a href="https://conemu.github.io/">ConEmu</a> to use
+    PowerShell as a default shell with the same appearance as cmd (black
+    background and white JetBrains mono). That was the beginning of new chapter of my
+    life.
+  </p>
+
+  <Chapter name="What is PowerShell?" id="what-is-powershell" />
+  <p>
+    PowerShell is a framework from Microsoft consisting of scripting language and
+    command-line shell built on top of .NET CLR. In 2016 PowerShell was moved to
+    .NET Core which made it cross-platform and moreover it was open-sourced in
+    August 2016 (under name PowerShell Core).
+  </p>
+
+  <p>
+    So basically it's a better command-line (not only) for Windows. How better?
+    Let's find out.
+  </p>
+
+  <Chapter name="Benefits of PowerShell over cmd" id="benefits-of-powershell-over-cmd" />
+  <p>
+    Here I've selected top features of PowerShell which in my opinion make it
+    superior to standard cmd.
+  </p>
+
+  <h3>Pipes</h3>
+  <p>
+    For me most pain from using cmd comes from absence of Unix-like pipes. Unix
+    pipe is an operator "|" (ASCII 124) and it takes an output of the previous
+    process and treats it as input to the current process. It's a basis of Unix
+    philosophy of composing programs introduced and implemented by Douglas Mcllroy
+    and Ken Thompson around 1973 in Bell Labs. PowerShell got them!
+  </p>
+
+  <Code lang="powershell" theme="dark-plus" code={`ls -Recurse *.txt | Get-Content | Measure -l -w -c`} />
+
+  <p>
+    The example above get a list of all text files from all sub-catalogs, get their
+    content and finally count number of lines, words and characters.
+  </p>
+
+  <h3>Object-based</h3>
+  <p>
+    In traditional shells usual output from program is just text which can be input
+    to another program which will produce another text output and so on. In this
+    environment very common is combination of programs like grep, AWK and sed 
+    to deal with those streams of text.
+  </p>
+
+  <p>
+    PowerShell on contrary is object-based. Output of standard PowerShell utilities
+    are .NET objects. To access object's properties and methods dot notation is
+    used.
+  </p>
+
+  <Code lang="powershell" theme="dark-plus" code={`$fileList = ls
+$file5 = $fileList[5]
+Write-Host "File" $file5.FullName "was created" $file5.CreationTime`} />
+
+  <p>
+    In the above example we've created <code>$fileList</code> (dollar sign have to precede
+    variable name) which is an array of objects representing files. It's not an
+    array of strings. It's an array of actual objects representing files. Next we
+    defined <code>$file5</code> which is an object representing 6th element of <code>ls</code>. Formally
+    <code>$file5</code> is of type <code>FileInfo</code> and have about fifty properties and methods. For
+    example <code>FullName</code> and <code>CreationTime</code> properties which we used to print custom
+    message but also methods like <code>$file5.Open()</code> which returns
+    <code>System.IO.FileStream</code> which is regular .NET object representing a file stream.
+    For C#, F# or VB programmers it's a very good news.
+  </p>
+
+  <Code lang="powershell" theme="dark-plus" code={`ls -Recurse *.go | Where-Object {$_.CreationTime -ge '2020-07-25'}`} />
+
+  <p>
+    Another example displays how expressive it can be. This particular example
+    lists all of files with <code>.go</code> extension from all sub-catalogs which was created
+    after <code>2020-07-25</code>. Notation <code>$_</code> represents current value in the pipeline.
+  </p>
+
+  <h3>Integration with .NET</h3>
+  <p>
+    PowerShell is built on top of .NET thus integration with .NET is natural.
+    Why that matters? For instance we can use C# standard libraries from
+    PowerShell:
+  </p>
+
+  <Code lang="powershell" theme="dark-plus" code={`$rand = [System.Random]::new()
+$rand.Next(10, 100)`} />
+
+  <p>
+    We just used standard C# <code>System.Random.Random</code> object to generate pseudorandom
+    integers. How cool is that? In particular you can use your C# functionalities
+    for scripting! Sometimes that might be useful.
+  </p>
+
+  <p>
+    Another point is that you can define your own PowerShell cmdlets written in C#
+    or F#.
+  </p>
+
+  <h3>Tab completion</h3>
+  <p>
+    PowerShell have a very good tab completion in comparison to cmd.
+  </p>
+
+  <h3>Aliases</h3>
+  <p>
+    PowerShell on default configuration have a very broad set of aliases for native
+    functionalities. We have already seen <code>ls</code> "command". In fact <code>ls</code> is just an
+    alias for <code>Get-ChildItem</code> cmdlet. Besides <code>ls</code> it has predefined other aliases -
+    <code>gci</code> and <code>dir</code>. So both Linux and Windows cmd users won't have trouble to get
+    a list of elements in given location. We can easy add new aliases for
+    existing cmdlets using <code>Set-Alias</code> cmdlet.
+  </p>
+
+  <p>
+    There is one more advantage of having full name cmdlets and their aliases. When
+    you're writing a PowerShell script you can use full name to increase
+    readability and when you're just fooling around in terminal you can just use
+    aliases for compactness and laziness of typing.
+  </p>
+
+  <blockquote>
+    <p>
+      A cmdlet is a lightweight command that is used in the PowerShell environment. 
+      The PowerShell runtime invokes these cmdlets within the context of automation 
+      scripts that are provided at the command line.
+    </p>
+    <footer>— Microsoft Docs</footer>
+  </blockquote>
+
+  <Chapter name="Transition to PowerShell" id="transition-to-powershell" />
+  <p>
+    Transition from Windows Command-line to PowerShell was very easy! Taking into
+    account aliases and rather good (better then cmd) built-in help I've replaced
+    cmd with PowerShell in one day. Without any effort! All of programs I've been
+    using in cmd works without any difference in PowerShell. And what is most
+    important now I feel that Windows is under my control and not the other way.
+    More like on Linux. I very like that.
+  </p>
+
+  <p>
+    I've basically just started my journey with PowerShell but I'm sure that it
+    will continue as long as I'll be forced to use Windows.
+  </p>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    If you're Windows user or you're forced to use Windows and you want to get near
+    Linux-like experience using terminal then go for PowerShell. Transition is
+    effortless and you can easily change horrible default dark blue background
+    color. And final gain is massive, especially if you're already a .NET developer.
+    I think it is already one of my better choices regarding tooling, right after vim
+    and AWK (not mentioning git which is obligatory nowadays).
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://docs.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7">What is PoweShell</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/PowerShell">Wiki</a></li>
+    <li><a href="https://www.youtube.com/watch?v=EY6q5dv_B-o">Brian Kernighan interviews Ken Thompson</a></li>
+    <li><a href="https://docs.microsoft.com/en-us/powershell/scripting/developer/cmdlet/cmdlet-overview?view=powershell-7">Cmdlet overview</a></li>
+  </ol>
+
+</Post>

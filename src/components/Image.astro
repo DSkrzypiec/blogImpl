@@ -1,0 +1,87 @@
+---
+export interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  maxWidth?: string;
+  maxHeight?: string;
+  caption?: string;
+  invertColors?: boolean;
+}
+
+const { 
+  src, 
+  alt, 
+  width, 
+  height, 
+  maxWidth = "100%", 
+  maxHeight = "400px",
+  caption,
+  invertColors = false
+} = Astro.props;
+---
+
+<div class="image-container">
+  <img 
+    src={src} 
+    alt={alt}
+    width={width}
+    height={height}
+    style={`max-width: ${maxWidth}; max-height: ${maxHeight};`}
+    class={invertColors ? "inverted" : ""}
+  />
+  {caption && <p class="image-caption">{caption}</p>}
+</div>
+
+<style>
+  .image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1.5rem 0;
+  }
+
+  .image-container img {
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    object-fit: contain;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .image-container img.inverted {
+    filter: invert(1);
+  }
+
+  .image-caption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #666);
+    font-style: italic;
+    text-align: center;
+    max-width: 600px;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .image-container {
+      margin: 1rem 0;
+    }
+    
+    .image-container img {
+      max-height: 300px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .image-container img {
+      max-height: 250px !important;
+    }
+    
+    .image-caption {
+      font-size: 0.8rem;
+      padding: 0 1rem;
+    }
+  }
+</style>

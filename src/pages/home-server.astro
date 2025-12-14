@@ -1,0 +1,173 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Home Server">
+  <PostTitle
+    title="Home Server"
+    date="2021-06-06"
+  />
+
+  <Image src="/home-server/rpi.jpg" alt="Raspberry Pi" caption="Raspberry Pi" />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    I've finally setup my own server. It's great and I regret I haven't done it
+    earlier. This post will be about my thoughts and experiences on setting up a
+    home server.
+  </p>
+
+  <p>
+    In my case a <strong>server</strong> is just a Raspberry Pi 4B so it's not a typical server
+    with over 40 CPU cores and over 256 GB of RAM but technically it's still a
+    server and it's enough for my use.
+  </p>
+
+  <p>
+    For a while I though to make my <a href="https://dskrzypiec.dev/minipc">PC</a> a home
+    server but Ryzen 3700X definitely needs more power than Raspberry Pi and is
+    probably an overkill for a server used mainly by myself.
+  </p>
+
+  <Chapter name="Architecture" id="architecture" />
+  <p>
+    It is easy enough to buy a Raspberry Pi and set it up in local network but in
+    my opinion it's useless when you cannot connect to it securely outside of your
+    local network. That's why I needed some kind of <em>Virtual Private Network</em> (VPN) for
+    the server and my other devices.
+  </p>
+
+  <p>
+    I choose <a href="https://tailscale.com">tailscale</a>. I don't have much experience in
+    VPN tools but this one is a really good tool. At least two ex-Googlers from Go
+    team (<a href="https://github.com/bradfitz">Brad Fitzpatrick</a>
+    and <a href="https://github.com/crawshaw">David Crawshaw</a>) hacked on this.
+    In my opinion it's good because of the following reasons:
+  </p>
+
+  <ol>
+    <li><em>Just workz</em>, on most operating systems and CPU architectures</li>
+    <li>Minimalistic and lightweight</li>
+    <li>Zero config</li>
+    <li>Provide static IP for each device within the network</li>
+    <li>Free (as in price) for my usage (single user, many devices)</li>
+  </ol>
+
+  <p>
+    So in this architecture I can connect to the home server over SSH from any
+    device which has tailscale installed. All my laptops and PC already had
+    tailscale installed. Furthermore my android smartphone have Termux and
+    tailscale on it, so I can also use the server directly from my smartphone.
+    Which is really cool, even better than
+    <a href="https://dskrzypiec.dev/smartphone">writing blog post on smartphone</a>.
+  </p>
+
+  <Chapter name="Setup" id="setup" />
+  <p>
+    Before my ordered Raspberry Pi arrived I've already installed Ubuntu Server
+    20.04 on a microSD card (default RPi storage). This was my first experience
+    with Ubuntu <strong>Server</strong>. It's just like a regular Ubuntu Desktop but without any
+    unnecessary bloat like UI and default software and GUI programs. So basically
+    you got a Linux terminal with *NIX tools. At this price OS have significantly
+    smaller footprint than regular Ubuntu. Running server version consumes only
+    about <code>200MB</code> of RAM.
+  </p>
+
+  <p>
+    On the day when RPi arrived I've already had prepared OS so I could start with
+    setting up the environment. In just under two hours I manage to:
+  </p>
+
+  <ol>
+    <li>setup basics for Linux like <code>.bashrc</code> with my aliases and <code>.vimrc</code> with my setup</li>
+    <li>install .NET Core 3.1</li>
+    <li>install tailscale</li>
+    <li>install <a href="https://www.tarsnap.com">Tarsnap</a> and configure my private key</li>
+    <li>restore latest backup of the <a href="https://dskrzypiec.dev/home-db">Home DB</a> via Tarsnap</li>
+    <li>clone repo of my Home App and successfully compile the project (RPi is ARM
+      based CPU)</li>
+    <li>adjust configs of Home App and run it in the background</li>
+    <li>test SSH and port forwarding from another devices</li>
+    <li>access Home App from my smartphone via SSH port forwarding inside my VPN</li>
+  </ol>
+
+  <p>
+    I was very surprised that I've manage to pulled it off in just one evening,
+    because I expected some kind of issues or surprises. But everything went great.
+    Another evening and I've setup scripts for automated backups and some utility
+    scripts to my convenience while using the server from mobile devices.
+  </p>
+
+  <Chapter name="Security" id="security" />
+  <p>
+    The server uses two level of security. The first is VPN and another is SSH. As
+    I mentioned before I use tailscale to create a VPN for my devices. For details
+    how tailscale works I recommend
+    <a href="https://tailscale.com/blog/how-tailscale-works/">this</a> article.
+    In order to connect to my server client device have to be authorized by
+    tailscale. To connect within the VPN a device to the server SSH is used.
+  </p>
+
+  <p>
+    So my Home DB still lives only on my <em>local</em> device which happens to be secured
+    server. In order to access Home App I've to use SSH port forwarding from
+    server's <em>localhost</em> port onto SSH client port. Practically that means I still
+    use my Home App in local environment but in help of VPN and SSH protocol I can
+    securely access the app from another devices.
+  </p>
+
+  <p>
+    Regarding secure online backups I still use Tarsnap.
+  </p>
+
+  <Chapter name="Why this instead of the cloud?" id="why-not-cloud" />
+  <p>
+    Why setting up your own server instead of just use one of <em>clouds</em>?
+    Main reason was to keep my Home DB private. In theory I could store my database
+    in encrypted form on the cloud and make Home App to handle decryption.
+    But at this moment I'm not able to do that properly, according to security best
+    practices. Second reason is that I feel less dependent on the others. I don't need
+    the key feature of the cloud infrastructure which is easy scalability. By
+    definition Home App and Home DB will stay local.
+  </p>
+
+  <p>
+    Last but not least electricity and cost of Raspberry Pi is much lower than
+    keeping up virtual machine 24/7/365 for significant period of time.
+  </p>
+
+  <Chapter name="Usage" id="usage" />
+  <p>
+    As I stated before this Home Server serves mainly my Home App and Home DB.
+    But this service is very low request per seconds. I could say it's rather
+    (few) requests per day. That gives a lot of room for other stuff.
+  </p>
+
+  <p>
+    Additionally I store on the server mirrors of my GitHub repos and other side
+    projects. I've set up environment for compiling projects in technologies I use
+    in case I'd need to check something out remotely.
+  </p>
+
+  <p>
+    I feel that possibilities are endless and I just started exploring them.
+  </p>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Overall I'm very satisfied and happy with setting up my own server. I'm
+    feeling comfortable that I can access my Home App from all of my devices from
+    anywhere in secure fashion.
+  </p>
+
+  <p>
+    Another reason I'm happy about is having a place which is running 24/7 where
+    I've prepared development environments and all of kinds config files. In
+    particular I can easily synchronize those on a new device.
+  </p>
+
+</Post>

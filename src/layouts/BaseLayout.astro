@@ -1,0 +1,88 @@
+---
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSkrzypiec Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.16.26/dist/katex.min.css"
+    crossorigin="anonymous"
+  />
+</head>
+<body>
+  <header>
+    <Nav />
+  </header>
+
+  <main>
+    <slot /> <!-- Page content goes here -->
+  </main>
+</body>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Ensure the viewport is fully used */
+  }
+
+  main {
+    padding: 2rem 1rem; /* Add padding for spacing */
+    max-width: 900px; /* Restrict the width */
+    margin: 0 auto; /* Center the content */
+    width: 100%; /* Ensure full width within container */
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+
+  /* Mobile responsive padding */
+  @media (max-width: 768px) {
+    main {
+      padding: 1.5rem 0.75rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    main {
+      padding: 1rem 0.5rem;
+    }
+  }
+
+  section {
+    max-width: 900px; /* Restrict the width */
+    margin: 0 auto;   /* Center the section horizontally */
+    color: var(--text-primary);
+  }
+
+  h1 {
+    color: var(--accent-color); /* Use accent color for headings */
+  }
+
+  p {
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  ul li {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: var(--accent-color);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+</html>

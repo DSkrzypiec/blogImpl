@@ -1,0 +1,277 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Implementing SQLite parser in Scala">
+  <PostTitle
+    title="Implementing SQLite parser in Scala"
+    date="2022-10-26"
+  />
+
+  <Image src="/sqlite-parser/sqliteExprTree.png" alt="SQLite expression tree" caption="SQLite expression grammar tree" />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    About a year ago I've played a bit with <a href="https://dskrzypiec.dev/parsing-tsql">parsing T-SQL</a>. At the time I've used
+    Microsoft library and ANTLR for generating lexer and parser based on predefined T-SQL grammar. Recently I've come back
+    to this topic. I've implemented <a href="https://www.sqlite.org/index.html">SQLite</a> parser almost from scratch (without code
+    generation).
+  </p>
+
+  <Chapter name="..., but why?" id="but-why" />
+  <p>
+    In general I wanted to have a SQL parser in order to build some kind of static analyzer tool for SQL and databases. One
+    might ask why I just haven't taken source code from Postgres parser or SQLite? There are few reasons
+  </p>
+
+  <ul>
+    <li>I didn't want C (or C++) for this particular side project at the time</li>
+    <li>I wanted to try to unify more then one SQL dialect into single project</li>
+    <li>Going through the full parser source code would require a bit too much work for a side project</li>
+  </ul>
+
+  <p>
+    Another question might be why haven't I used <a href="https://dskrzypiec.dev/parsing-tsql">ANTLR</a> or another tool for
+    automatically generate parser source code based on grammar definition. The main reason was that I didn't really like
+    structure of the parse tree and emphasis for visitor pattern. Also I wouldn't easily work to combine few SQL dialects
+    other than defining those separately.
+  </p>
+
+  <p>
+    I once tried to implement a parser from scratch in Go. It was probably the best approach, but it was still a bit too
+    much hassle for a side project to implement most of SQL grammar. But recently, while I was learning Scala, I found
+    <a href="https://github.com/com-lihaoyi/fastparse">fastparse</a> library.
+  </p>
+
+  <Chapter name="fastparse library" id="fastparse-library" />
+  <p>
+    The fastparse library is an implementation of <a href="https://en.wikipedia.org/wiki/Parser_combinator">parser combinators</a>
+    functional approach of writing parsers. Till that point I didn't know about this approach of writing parsers. I
+    instantly liked it. Moreover fastparse provide a set of basic parsers which are very generic, so it's easy to start
+    writing parsers.
+  </p>
+
+  <h3>Example</h3>
+  <p>
+    To get a bit better feeling about fastparse library let's consider the following code snippet.
+  </p>
+
+  <Code lang="scala" theme="dark-plus" code={`def digit[_ : P] = P(CharIn("0-9"))
+def dot[_ : P] = P(".")
+
+// .334
+def decimalFromDot[_ : P]: P[SqliteDoubleLit] = {
+  P(dot ~ digit.rep(1)).!.map {
+    num => SqliteDoubleLit(num.toDouble)
+  }
+}`} />
+
+  <p>
+    There are three Scala generic functions. First two are very simple parsers. The first one - <code>digit</code> parses a single
+    digit or fails. Similar <code>dot</code> parses single dot character or fails. Parser <code>decimalFromDot</code> parses decimal literals
+    which start with dot, like <code>.334</code> and not <code>0.334</code>. Firstly let's notice that this parser is of type <code>SqliteDoubleLit</code>,
+    so in case when parser succeeded then result will be of this type. Now let's untangle this parsers notation a bit
+  </p>
+
+  <ol>
+    <li>First character should be a dot - we are using <code>dot</code> parser</li>
+    <li><code>~</code> means in fastparse "AND", so after the dot the following must occur</li>
+    <li>at least one digit - this is expressed by <code>digit</code> parser and fastparse <code>rep</code> function which repeats given parser</li>
+    <li>Exclamation mark <code>!</code> means that we want to <em>capture</em> result of this parsing in case of success</li>
+    <li>Finally <code>map</code>, in case of success, maps captured text into desired <code>SqliteDoubleLit</code>.</li>
+  </ol>
+
+  <p>
+    So even in this very straightforward example we are combining two other simpler parsers and couple of basic operators
+    and functions from fastparse library. In actual implementation I later used this parser in literal parser which parsers
+    string literals, integer literals and so on. But it's very convenient to have this parser separated. It's very easy to
+    unit test and to use them in other places.
+  </p>
+
+  <p>
+    If you're interested and want explore more about fastparse I'd recommend official
+    <a href="https://com-lihaoyi.github.io/fastparse/">documentation</a>.
+  </p>
+
+  <Chapter name="SQLite expression" id="sqlite-expression" />
+  <p>
+    At this point we're prepared to implement a SQL parser in Scala using fastparse library. We've got tools. Now the main
+    question is where to even start? My first thought was around <code>SELECT</code> statement but I quickly realized that it require
+    many parts to be already parsed. The second one was to start from a leaf of the parse tree. But which one? As I was
+    browsing through SQLite grammar I realized that almost everywhere occurs an expression <code>expr</code>. Column might be defined
+    as expression, in <code>JOIN</code> constrains we got expression, in <code>WHERE</code> clause there is logical expression. In <code>ORDER BY</code>,
+    <code>LIMIT</code> and almost any other component SQLite expression might occur. It's everywhere! After this realization I was
+    convinced that I have to start from implementing parsing <a href="https://www.sqlite.org/lang_expr.html">SQLite expression</a>. The
+    picture on the top presents visual representation of <code>expr</code> grammar and it's not complete!
+  </p>
+
+  <p>
+    As you can see even parsing just an expression is not a trivial task. There are few points that shall be taken into
+    consideration before implementing this parser. That is - operators precedence order, recursive nature of an expression
+    and complexity of possible cases. Nevertheless it should be implemented before anything else. As I expected it was a
+    good decision. Everything after implementing and testing parsing an expression was rather joyful.
+  </p>
+
+  <p>
+    That might be obvious but perhaps it's worth to mention how I represented SQLite expression in Scala. I think the
+    natural way of expressing this kind of objects is through <a href="https://en.wikipedia.org/wiki/Algebraic_data_type">sum type</a>
+    using Scala traits and inheritance.
+  </p>
+
+  <Code lang="scala" theme="dark-plus" code={`sealed trait SqliteToken
+sealed trait SqliteExpr extends SqliteToken
+
+sealed trait SqliteLiteral extends SqliteExpr
+case class SqliteIntegerLit(value: Int) extends SqliteLiteral
+case class SqliteDoubleLit(value: Double) extends SqliteLiteral
+case class SqliteHexLit(input: String, value: Int) extends SqliteLiteral
+case class SqliteStringLit(value: String) extends SqliteLiteral
+case class SqliteBlobLit(value: String) extends SqliteLiteral
+case class SqliteNull() extends SqliteLiteral
+case class SqliteTrue() extends SqliteLiteral
+case class SqliteFalse() extends SqliteLiteral
+case class SqliteCurrentTimestamp() extends SqliteLiteral
+case class SqliteCurrentTime() extends SqliteLiteral
+case class SqliteCurrentDate() extends SqliteLiteral
+case class SqliteLiteralError() extends SqliteLiteral
+
+case class SqliteColumnExpr(
+  schemaName: Option[String] = None,
+  tableName: Option[String] = None,
+  columnName: String
+) extends SqliteExpr
+
+case class SqliteCaseExpr(
+  initalExpr: Option[SqliteExpr] = None,
+  whenThens: List[SqliteCaseWhenThen],
+  elseExpr: Option[SqliteExpr] = None
+) extends SqliteExpr
+
+case class SqliteCaseWhenThen(when: SqliteExpr, then: SqliteExpr)
+
+// and so on ...`} />
+
+  <p>
+    For parsed <code>SqliteExpr</code> object we can pattern match onto concrete representation very easily in Scala.
+  </p>
+
+  <Chapter name="Reflections" id="reflections" />
+  <p>
+    My general reflection after implementing SQLite <code>SELECT</code> parser using fastparse is that, once you're familiar with this
+    library writing parsers is almost as trivial as specifying just a grammar. The overhead is very low but advantages are
+    great in my opinion. I could unit test each little step for each little parsers I've implemented. Lexing part, scanning text
+    into tokens, is entirely omitted and the outcome representation in the parse tree might be a bit different (simpler)
+    than grammar. In ANTLR it's not possible.
+  </p>
+
+  <p>
+    I'm very far of being an expert of fastparse but as far as I know it's not very easy to customize parsing error
+    messages. There are some functionalities to handle it better but for sure it's worse than in case of hand-written
+    parser. Overall I'm very satisfied with the result.
+  </p>
+
+  <Chapter name="Let's format SQL" id="format-sql" />
+  <p>
+    Ok, let's say I'm in the moment when I've implemented and fairly tested SQLite <code>SELECT</code> parser. What can I do with it?
+    I had many ideas even before starting this side project. I've decided to implement formatting SQL queries based on
+    parsed tree. Firstly it's visual appealing. Secondly it touches all nodes of the parse tree, so it's a good overall
+    test.
+  </p>
+
+  <p>
+    Back when I was working in PwC there was a period when I was writing mainly T-SQL daily. I was easily over a million
+    lines of SQL in total over two or three years. After some time I started to format code in the way I thought was the
+    most readable. And I stick to it. Even to this day I have this formatting in my muscle memory. So I knew exactly how I
+    wanted to implement this SQL formatter. There is no need for configuration. I just want to implement my style. Just like
+    <a href="https://pkg.go.dev/cmd/gofmt">go fmt</a> does.
+  </p>
+
+  <p>
+    For example let's take this made up query:
+  </p>
+
+  <Code lang="sql" theme="dark-plus" code={`with tmp1 as (select a, b, a + b * 13 as c from src.table1), tmp2 as (select * from another.table2 where x > 42) select
+t1.a, t1.b, t1.c, t2.crap, x.X from tmp1 t1 left join tmp2 t2 on t1.a > t2.crap inner join ( select col1, X from
+src.crap c inner join dict.crap c2 on c.col1 = c2.col1_dict) as x on t2.crap = x.col1 where t1.a + x.X > -12 LIMIT 10`} />
+
+  <p>
+    It's a single line, almost all lowercase and no indentation. My formatter turn this into the following:
+  </p>
+
+  <Code lang="sql" theme="dark-plus" code={`WITH tmp1 AS (
+    SELECT
+        a,
+        b,
+        a + b * 13 AS c
+    FROM
+        src.table1
+),
+tmp2 AS (
+    SELECT
+        *
+    FROM
+        another.table2
+    WHERE
+        x > 42
+)
+SELECT
+    t1.a,
+    t1.b,
+    t1.c,
+    t2.crap,
+    x.X
+FROM
+    tmp1 AS t1
+LEFT JOIN
+    tmp2 AS t2 ON t1.a > t2.crap
+INNER JOIN
+    (
+        SELECT
+            col1,
+            X
+        FROM
+            src.crap AS c
+        INNER JOIN
+            dict.crap AS c2 ON c.col1 = c2.col1_dict
+    ) AS x ON t2.crap = x.col1
+WHERE
+    t1.a + x.X > -12
+LIMIT
+    10`} />
+
+  <p>
+    As you can see the formatter work properly in case of recursion (sub-query). In this case it adds another level of
+    indentation. All keywords and clauses are now uppercase. Indentation is consistent. Once you have a parse tree
+    implementing this formatter was done in single evening. It was straightforward.
+  </p>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Overall that was a very good experience. I'm very happy about it. I'm glad that I found fastparse library. Without this
+    library I probably wouldn't decide to implement hand-written SQL parser on the side. Development process was very swift.
+    I'm a bit concerned about parsing error handling. And because of that I'm not yet sure if I would use this library to
+    implement production ready and complex parser. In the case when parser would be the foundation to another tools I'd
+    probably go with hand-written version. But even in this case I think I'd try to use parser combinators approach to do
+    so.
+  </p>
+
+  <p>
+    <strong>PS.</strong> I haven't implemented full SQLite parser. Just <code>SELECT</code>, but that should cover most common queries.
+  </p>
+
+  <p>
+    <strong>PS2.</strong> This parser is not yet open sourced. If that happen I'll put link here.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://github.com/com-lihaoyi/fastparse">fastparse</a></li>
+    <li><a href="https://com-lihaoyi.github.io/fastparse/">fastparse docs</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Parser_combinator">parser combinators</a></li>
+  </ol>
+
+</Post>

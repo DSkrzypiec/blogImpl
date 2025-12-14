@@ -1,0 +1,489 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Implementing cron">
+  <PostTitle
+    title="Implementing cron"
+    date="2024-04-29"
+  />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    Recently, I have been documenting <a href="https://ppacer.org/internals/schedules/">ppacer schedules</a>
+    and in that moment I thought I should have probably implemented cron
+    schedule for ppacer. Before I explain why, let's take one step back to give
+    you a bit of context about ppacer schedules. Schedules in ppacer are
+    covered by generic and simple interface
+
+    <Code lang="go" theme="dark-plus" code={
+`type Schedule interface {
+    Start() time.Time
+    Next(current time.Time, prevSched *time.Time) time.Time
+    String() string
+}`} />
+
+  </p>
+
+  <p>
+    Initially I've provided the simplest possible regular schedule which satisfies
+    that interface - <code>schedule.Fixed</code> which starts at given time and ticks each
+    given <code>time.Duration</code> (e.g. <code>10*time.Minute</code>). See documentation
+    <a href="https://pkg.go.dev/github.com/ppacer/core/dag/schedule#Fixed">[here]</a>.
+    That was definitely good enough for the first ppacer backed versions and tests.
+  </p>
+
+  <p>
+    I thought having a generic interface for schedules and providing simple
+    concrete implementation would be enough for the MVP ppacer version, but then
+    when I was writing docs on this topic I thought it would be great to also cover
+    cron. Why? There are few reasons. Cron is classic and influential scheduler
+    from *-UNIX world. Cron expressions became so common that they are popping out
+    not only in modern schedulers but also in business applications. I felt
+    obligated, to support cron expressions, since I'm implementing my own
+    scheduler. Also I thought it might be quick and interesting tangent to my
+    project. It wasn't really quick, but it was interesting.
+  </p>
+
+  <Chapter name="cron 101" id="cron101" />
+  <p>
+    Let me start by quickly introducing cron. Cron is a command-line program on
+    Unix-like systems for scheduling jobs. Cron job can be added, listed or deleted
+    using <code>crontab</code> program. Usually when we want to add new job, we need to
+    specify a schedule for that job and what action needs to be performed. This
+    definition looks like this (lines starting with <code>#</code> are comments):
+  </p>
+
+  <Code lang="bash" theme="dark-plus" code={
+`# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7)
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+17 * * * *      root    cd / && run-parts --report /etc/cron.hourly
+`} />
+
+  <p>
+    In the example above we can see that there is only one cron job defined. It
+    runs on schedule <code>17 * * * *</code> (at 17th minute of every hour, every day),
+    should be performed as user <code>root</code> and should execute bash command
+  </p>
+
+  <Code lang="bash" theme="dark-plus" code={`cd / && run-parts --report /etc/cron.hourly`} />
+
+  <p>
+    We can say that cron is a Linux (daemon) process which runs in the background,
+    wakes up once a minute, reads its database (<code>crontab</code> file), checks if given
+    jobs should be executed based on current time and job cron expression, if
+    that's the case it executes job's command or script.
+  </p>
+
+  <p>
+    Cron is still used nowadays mainly because it's available on every *-UNIX OS
+    I've ever touched and it's very easy to setup. If you need to run rather simple
+    task on a schedule and you're on Linux, it might be good choice. There's also a
+    downside. It's so simple that it lacks monitoring and alerting for cases when
+    job fails.
+  </p>
+
+  <Chapter name="cron history" id="history" />
+  <p>
+    Cron has been introduced as command utility program in Version 7 UNIX in 1979.
+    That version was implemented by Ken Thompson. Initially it was just <code>cron</code>
+    program without, mentioned earlier, <code>crontab</code>. Jobs by default were stored in
+    <code>/usr/lib/crontab</code>.
+  </p>
+
+  </p>
+  <p>
+    When it comes to Linux, most distribution uses cron implementation done by Paul
+    Vixie or their own version created based on "Vixie cron". That cron version was
+    implemented by Paul in 1988 with another releases in 1990, 1993 and 1994.
+  </p>
+
+  <p>
+    Over the last two decades cron and cron expressions for schedules became a
+    standard for expressing regular intervals using just a few characters. Most (if
+    not every) mainstream programming languages has at least one library which
+    helps parsing cron expressions and use it in your application. Few examples of
+    such libraries:
+
+    <ul>
+      <li>
+        <a href="https://github.com/kiorky/croniter">croniter</a> - Python library which
+        provides iterator for the datetime object with a cron like format. Apache
+        Airflow uses this library.
+      </li>
+      <li>
+        <a href="https://www.npmjs.com/package/node-cron">node-cron</a> - JavaScript
+        module which implements tiny task scheduler supporting crontab syntax.
+      </li>
+      <li>
+        <a href="https://github.com/atifaziz/NCrontab">NCrontab</a> - C# library
+        for parsing crontab expressions and calculating schedule based on those expressions.
+      </li>
+      <li>
+        <a href="https://docs.rs/cron/latest/cron/">cron</a> Rust crate - "A cron expression
+        parser and schedule explorer".
+      </li>
+    </ul>
+  </p>
+
+  <p>
+    There's even classic <a href="https://crontab.guru">crontab.guru</a> which can help
+    learning cron expressions syntax or just help to prepare syntax for desired
+    schedule, so you can forget about it few minutes later.
+  </p>
+
+  <p>
+    What I meant presenting those examples is the fact that cron and crontab
+    expressions has gone mainstream for over 20-30 years regarding defining simple,
+    yet effective schedules, not only in cron itself.
+  </p>
+
+  <Chapter name="Preparing for the implementation" id="impl-prep" />
+
+  <p>
+    My cron schedule implementation for ppacer is something different, than
+    original cron's. In cron there is no need to know when the next schedule entry
+    should be. Cron basically at given time checks whenever there's a job with
+    crontab expression matching the current time. This is much simpler, than for
+    given time and crontab expression calculate when the next schedule entry should
+    be.
+  </p>
+
+  <p>
+    Since original cron source code wasn't helpful I tried to look into few
+    libraries which implements similar thing, before I started working on my
+    implementation. Few of them used approach which roughly goes as "increment
+    time, check if new point in time matches schedule definition and if not, keep
+    doing it". I didn't like it. When I look at crontab expression and a timestamp
+    I can immediately tell when the next one should be. Based on my intuition, I
+    thought my algorithm for calculation next timestamp in a cron schedule should
+    run in constant time <code>O(1)</code>.
+  </p>
+
+  <p>
+    Before I go into details and thoughts on my implementation, let me tell you
+    what I have found out about crontab expressions that I didn't know before
+    start working on it.
+  </p>
+
+  <p>
+    Just out of curiosity I looked into the Vixie cron implementation and I found
+    the following comment:
+  </p>
+
+  <Code lang="c" theme="dark-plus" code={
+`/* the dom/dow situation is odd.  '* * 1,15 * Sun' will run on the
+ * first and fifteenth AND every Sunday;  '* * * * Sun' will run *only*
+ * on Sundays;  '* * 1,15 * *' will run *only* the 1st and 15th.  this
+ * is why we keep 'e->dow_star' and 'e->dom_star'.  yes, it's bizarre.
+ * like many bizarre things, it's the standard.
+ */`} />
+
+  <p>
+    I didn't know about that! So when you have <code>0 10 13 * 1</code> crontab
+    expression for your schedule, it should run at 10:00AM on 13th day of a month
+    and on every Monday at 10:00AM. Naturally I thought it would mean that job
+    should run at 10:00AM on 13th day of a month but only when it's Monday.
+    Wrong! Though I've never used such schedule in my life, it's good to know
+    that this part is a bit inconsistent. There is logical <code>AND</code> between all
+    parts of crontab expression parts, except the case when day of month and
+    weekday is set, in this case we have logical <code>OR</code>. Exactly like Paul said,
+    "yes, it's bizarre".
+  </p>
+
+  <p>
+    Another one comes from <code>crontab(5)</code> Linux man page, section <code>BUGS</code>:
+  </p>
+
+  <Code lang="plain" theme="dark-plus" code={
+`If you are in one of the 70-odd countries that observe Daylight Savings Time,
+jobs scheduled during the rollback or advance will be affected. In general, it
+is not a good idea to schedule jobs during this period.` } />
+
+  <p>
+    That's unfortunate. So when you use cron in timezone with DST and you specified
+    <code>0 2 * * *</code> schedule for your job, depending in which way time is changed,
+    might not run at all or run twice at the same day, even though you expect it to
+    run once a day at 2:00AM. Another question in this case is when the next
+    schedule point should be "correctly" calculated? We'll talk a bit about it in
+    the next chapter.
+  </p>
+
+  <Chapter name="Implementation" id="implementation" />
+  <p>
+    I started my implementation by designing a structure for crontab expressions.
+  </p>
+
+<Code lang="go" theme="dark-plus" code={
+`type Cron struct {
+    start      time.Time
+    minute     []int
+    hour       []int
+    dayOfMonth []int
+    month      []int
+    dayOfWeek  []int
+}
+`} />
+
+  <p>
+    No matter how we would get those number (either parsing a string or setting
+    those manually, or using another API), eventually, crontab expression can be
+    boiled down to a list of values for each part. Assuming that empty array means
+    <code>*</code> (a start). Field <code>start</code> is just for <code>Schedule</code>
+    interface <code>Start()</code> method.
+  </p>
+
+  <p>
+    I started slow by trying to support only <code>minute</code> and <code>hour</code> cases. That was
+    rather easy. In default crontab expression when we have starts when we just set
+    the next minute. Easy. Next is the case when we have at least one value
+    <code>minute</code> field. Let's say we have <code>15,50 * * * *</code> schedule, that means
+    <code>minute</code> is a slice with two values <code>[]int{15, 50}</code> (we can assume is sorted).
+    In this case, for given <code>time.Time</code> we need to check the next value in <code>minute</code>
+    which is greater than a minute from that time. If given time is <code>2024-04-25
+    12:19:00</code> then the next one should be at <code>12:50:00</code>. When we are already at
+    <code>12:51:10</code>, there is no "next" minute in <code>minute</code> field, so we know that the
+    next schedule point will be in the next hour and at <code>minute[0]</code> minute. Easy.
+  </p>
+
+  <p>
+    As you can probably see, the same reasoning applies to hours. So far so good.
+    We can correctly determine the next schedule point using just few <code>if</code>s,
+    integer comparisons and great Go standard <a href="https://pkg.go.dev/time">time package</a>,
+    especially <a href="https://pkg.go.dev/time#Time.Add">Add method</a>.
+  </p>
+
+  <p>The above looks in code like this:</p>
+
+  <Code lang="go" theme="dark-plus" code={
+`func (c *Cron) setMinutes(t time.Time) time.Time {
+    minutesSet, nextMinute := findNextInt(c.minute, t.Minute(), false)
+    if !minutesSet {
+        // regular * case
+        return t.Add(time.Minute)
+    }
+    if nextMinute > 0 {
+        // Another minute in the current hour
+        return setMinute(t, nextMinute)
+    }
+    // in this case we need to increase hour and set minutes
+    return setMinute(t.Add(time.Hour), c.minute[0])
+}` } />
+
+  <p>
+    For hours part implementation looks almost the same. That's also true for
+    "months" part of crontab expression.
+  </p>
+
+  <p>
+    A bit different approach is needed in case of day of month part. We cannot
+    apply the same logic in here. Let me, once again, start by providing an
+    example. Let's say we have cron schedule <code>0 12 31 * *</code> - expected runs should
+    be at noon on 31st day of a month. For this schedule let's consider several
+    pairs of timestamps and correspondent next schedule points:
+  </p>
+
+  <ul>
+    <li><code>next(2024-01-15 13:15) = 2024-01-31 12:00</code></li>
+    <li><code>next(2024-01-31 13:15) = 2024-03-31 12:00</code></li>
+    <li><code>next(2024-02-01 20:15) = 2024-03-31 12:00</code></li>
+  </ul>
+
+  <p>
+    As we can see, we cannot simply set a day from <code>Cron.dayOfMonth</code> field, because
+    it might be invalid date! In the above example <code>2024-02-31 12:00</code> would be
+    invalid date. Another example, even more extreme would be <code>0 12 29 2 *</code>
+    schedule which should run at noon on February 29th, that's valid only on leap
+    years! So for <code>2024-02-29 12:01</code>, the next schedule point should be on
+    <code>2028-02-29 12:00</code> - four years later! That already sounds more complex
+    than handling minute or hour parts and we don't even yet included weekdays! I
+    won't put implementation details in here, but as you might expect we cannot get
+    away without a loop in this case. Fortunately there are finite and small upper
+    limit of all possible iterations (&lt;100), so we still should have <code>O(1)</code>
+    complexity, just with a bit larger constant for those cases.
+  </p>
+
+  <p>
+    The last part we need to cover is weekday part. As we already mentioned earlier
+    this part is a bit tricky, because it behaves differently than other parts.
+    Because of the fact that we either need to set a day of month or a
+    weekday, depending on a schedule and which case is closer to the current date,
+    there is no other way but include that logic in a function responsible for
+    determining setting up next day date. If only day of month in crontab is set,
+    it's easy. If only weekday in crontab is set, that's also rather
+    straightforward. In case when both parts are set, we need to calculate which of
+    those two options would happen first. It's not difficult either, but there are a
+    couple of cases we need to get right.
+  </p>
+
+  <p>
+    At the end, on high level, function <code>Next</code> for <code>Cron</code> looks like this:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={
+`func (c *Cron) Next(currentTime time.Time, _ *time.Time) time.Time {
+    next := zeroSecondsAndSubs(currentTime)
+    next = c.setMinutes(next)
+    next = c.setHours(next)
+    next = c.setDayOfMonth(next) // This also includes weekdays
+    next = c.setMonth(next)
+    return next
+}` } />
+
+  <p>
+    At the end implementing <code>Next</code> for cron schedule was a bit annoying. It wasn't
+    hard, but I needed to get every case right and there were a lot of cases to
+    cover. Looking back, should I've chosen a simpler path and just iterate over
+    dates and check if it's right? Perhaps it would be simpler to implement and
+    easier to maintain, but it would be probably a bit slower. Maintenance isn't
+    really the issue. There is nothing to maintain in here. It's one of things that
+    need to be implemented correctly and won't be changed probably ever. It's
+    rather small and closed (regarding specs) feature. Given that I implemented it
+    correctly I still think I did the right thing and being a bit more annoying for
+    me to implement is rather small price to pay in the long term perspective.
+  </p>
+
+  <Chapter name="To parse or not to parse" id="parse" />
+  <p>
+    As I mentioned in the intro, my cron schedule implementation is primarily, to
+    be used as ppacer schedule. That means it will be used within a Go project. How
+    users would like to define cron schedule in ppacer? Besides mentioned <code>Cron</code>
+    structure I started with basic default constructor:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={
+`// NewCron initialize new default Cron which is "* * * * *"
+// and starts at 1970-01-01.
+func NewCron() *Cron {
+    return &Cron{start: time.Unix(0, 0)}
+}` } />
+
+  <p>
+    Usually user would like to define also other cron schedules. I thought perhaps
+    it would be convenient and readable if we would have fluent API to set
+    particular parts of crontab expression? Let see, for example if we would like
+    to set minute parts we could use the following methods:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={
+`func (c *Cron) AtMinute(m int) *Cron {
+    c.minute = []int{m % 60}
+    return c
+}
+
+func (c *Cron) AtMinutes(minutes ...int) *Cron {
+    m := make([]int, len(minutes))
+    for idx, minute := range minutes {
+        m[idx] = minute % 60
+    }
+    sort.Ints(m)
+    c.minute = m
+    return c
+}` } />
+
+  <p>
+    Similarly we could provide methods for hour, day of month, month and weekday
+    crontab expression parts. Then we could conveniently define our cron schedule
+    like this:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`sched := NewCron().AtMinute(5).AtHours(8, 16).OnWeekday(time.Monday)`} />
+
+  <p>
+    Which would be equivalent to <code>5 8,16 * * 1</code> crontab expression. All is good,
+    life is sweet, but in this setup we lose notion of classic crontab expression
+    strings.
+  </p>
+
+  <p>
+    On the other hand if we would like to use crontab expression format strings we
+    should introduce a function with the following signature
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func ParseCron(string) (*Cron, error) {
+    ...
+}` } />
+
+  <p>
+    In other words there is a chance that parsing given string might fail. Maybe
+    there is a typo in our schedule cron string or we put one character too many.
+    Who knows. Even when we have perfectly good crontab expression string, we still
+    shall check if <code>err != nil</code>. Whereas using fluent API we don't need to do it.
+    At least not in this case.
+  </p>
+
+  <p>
+    Currently I decided to support only fluent API to define cron schedules in
+    ppacer. Though we can implement <code>ParseCron(string) (*Cron, error)</code> function
+    anytime without breaking package backward compatibility. That might be a good
+    exercise for non-lazy reader of this post (PRs are welcome!).
+  </p>
+
+  <Chapter name="Performance benchmarks" id="benchmarks" />
+  <p>
+    I've prepared basic benchmarks in Go using <code>*testing.B</code>, to have rough idea how
+    fast <code>Next</code> method for my implementation of cron schedule is.
+  </p>
+
+  <ul>
+    <li>Default <code>* * * * *</code> schedule case - 93.43 ns/op (0 B/op, 0 allocs/op)</li>
+    <li>Schedule with minute and hour set - 218.5 ns/op (0 B/op, 0 allocs/op)</li>
+    <li>All parts set except minute and hour - 580.1 ns/op (24 B/op, 2 allocs/op)</li>
+    <li>All parts set - 695.4 ns/op (24 B/op, 2 allocs/op)</li>
+    <li>February 29th case - 1860 ns/op (432 B/op, 18 allocs/op)</li>
+  </ul>
+
+  <p>
+    It sounds fast enough for me, at least for alpha version. Though I didn't
+    compare it to other mentioned earlier libraries from other programming
+    languages. That sounds like fun exercise for long winter evening.
+  </p>
+
+  <Chapter name="Links" id="links" />
+  <p>
+    I haven't still mentioned <strong>where</strong> you can find my implementation of cron
+    schedules for ppacer. Here it is:
+  </p>
+
+  <ul>
+    <li><a href="https://github.com/ppacer/core/blob/main/dag/schedule/cron.go">Source code</a></li>
+    <li><a href="https://pkg.go.dev/github.com/ppacer/core/dag/schedule#Cron">API reference</a></li>
+    <li><a href="https://ppacer.org/internals/schedules">Docs</a></li>
+  </ul>
+
+  <p>You can install this Go package using <code>go get</code>:</p>
+
+  <Code lang="bash" theme="dark-plus" code={`go get -u github.com/ppacer/core/dag/schedule@latest`} />
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Overall implementing cron was very interesting tangent to my main project. I'm
+    glad that I read Vixie cron source code and get to know cron history better. As
+    it turned out I also didn't know all details about crontab expression before I
+    started working on it. Even though it was annoyingly hard to get right and
+    cover all corner cases I'm glad I did it.     It took much longer than I initially
+    thought (2-3 evenings tops) it was definitely worth it.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://en.wikipedia.org/wiki/Cron">Cron Wikipedia</a></li>
+    <li><a href="https://github.com/v7unix/v7unix/blob/a19130f05356581fe12d635a4cce4d8556a33171/v7/usr/src/cmd/cron.c">Version 7 UNIX (mirror) cron</a></li>
+    <li><a href="https://salsa.debian.org/debian/cron/-/blob/master/cron.c?ref_type=heads">Paul Vixie cron in Debian</a></li>
+    <li><a href="https://www.quora.com/What-is-the-etymology-of-cron/answer/Kah-Seng-Tay">Quora post with screenshot of email from Brian Kernighan</a></li>
+    <li><a href="https://manpages.ubuntu.com/manpages/focal/en/man5/crontab.5.html">crontab(5) man pages</a></li>
+    <li><a href="https://pkg.go.dev/github.com/ppacer/core/dag/schedule#Cron">ppacer/dag/schedule docs</a></li>
+    <li><a href="https://ppacer.org/internals/schedules/">ppacer schedules</a></li>
+  </ol>
+
+</Post>
+

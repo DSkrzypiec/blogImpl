@@ -1,0 +1,385 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Mocking a file system in Go">
+  <PostTitle
+    title="Mocking a file system in Go"
+    date="2020-10-03"
+  />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    In this post we'll try to mock some features of a file system in Go. We'll
+    focus mainly on file tree structure instead on IO operations on files itself.
+    If you are interested in full abstract file system for Go check out
+    <a href="https://github.com/spf13/afero">afero</a> package.
+  </p>
+
+  <p>
+    If your application uses a file system (<em>FS</em>) a bit beyond just reading a single file
+    then you should probably want to mock a <em>FS</em> in order to test it. Without
+    mocking it only way to write unit tests is to actually create files, performs
+    tests and clean up afterwards. It's slow (reaching to hard drive) and
+    ineffective.
+  </p>
+
+  <p>
+    Let's say we want to implement reading a file tree structure. For me natural
+    representation of such a tree is the following:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`type Dir struct {
+    Path    string,
+    Files   []os.FileInfo,
+    SubDirs map[string]Dir
+}`} />
+
+  <p>
+    Structure <code>Dir</code> have a <code>Path</code> path to root catalog, <code>Files</code> which is a list of meta
+    information of files and a dictionary which maps a sub catalog name into actual
+    sub catalog - another <code>Dir</code>. Which gives us recursive tree-like structure
+    representing a file tree. I called it "natural" representation because it's
+    usually the case shown in file explorers. Current catalog with files and other
+    sub catalogs. Another representation could be just an array of <code>os.FileInfo</code>
+    extended by full path but it less natural for most people. It's more natural
+    for computers though.
+  </p>
+
+  <p>
+    Now I'd like to have some functionality which scans actual OS file system to
+    provide <code>Dir</code> representation. On other hand I want to prepare mock <em>FS</em> in
+    order to test that functionality without manual manipulation of actual <em>FS</em>.
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func Scan(...) (Dir, error) {
+    ...
+}`} />
+
+  <Chapter name="Interface" id="interface" />
+  <p>
+    I have not stated <code>Scan</code> function arguments yet. I'd like to use this function
+    both on actual <em>FS</em> and also on mocked <em>FS</em>, so what should be an argument for
+    that function? Yep, an interface. We should define minimal interface which
+    would let us write recursive algorithm for scanning file tree.
+  </p>
+
+  <p>
+    For given directory this interface should have functionalities to give us a
+    list of files and sub directories, path of current location and something to
+    reproduce or move itself for sub catalogs.
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`type DirReader interface {
+    DirPath() string
+    Readdir() ([]os.FileInfo, error)
+    New(string) DirReader
+}`} />
+
+  <p>
+    The <code>DirReader</code> interface is my proposition to meet those requirements. It's
+    composed of three methods - <code>DirPath</code> returns current location, <code>Readdir</code>
+    reads content of current catalog and <code>New</code> produce another <code>DirReader</code>
+    (assumable) for sub catalogs. Furthermore let's also note that type <code>os.FileInfo</code>
+    from the standard library is an interface. Details can be found
+    <a href="https://golang.org/pkg/os/#FileInfo">here</a>.
+  </p>
+
+  <p>
+    Now we can finally pronounce signature of <code>Scan</code> function
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func Scan(reader DirReader) (Dir, error) {
+    ...
+}`} />
+
+  <p>
+    At this point we could even provide a full implementation of <code>Scan</code> function
+    using only <code>DirReader</code> interface definition. I'll leave this implementation in
+    the Appendix to not distract us from main goal which is mocking a <em>FS</em>.
+  </p>
+
+  <p>
+    In the next two sections we'll focus on implementing <code>DirReader</code> interface for actual
+    OS file system using cross-platform <a href="https://golang.org/pkg/os/">os package</a>
+    and for mocked in-memory Go objects. This pattern, having an interface
+    depending on interface rather then concrete type, is very broadly used despite
+    particular programming language. I believe it originated in Simula with virtual
+    functions and was later adopted by Bjarne Stroustrup in C++ in early 1980s. In
+    C++ we could define abstract base class with methods similar to <code>DirReader</code>.
+  </p>
+
+  <Chapter name="Actual implementation" id="actual-implementation" />
+  <p>
+    The actual implementation of <code>DirReader</code> which would use an actual OS file system
+    is rather straightforward. Let's start from defining a new type which will
+    represent single (non-recursive) directory - <code>FlatDir</code>.
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`type FlatDir struct {
+    Path string
+}`} />
+
+  <p>
+    To satisfy <code>DirReader</code> interface we've got to implement required methods.
+    Getting directory's path and create a new <code>FlatDir</code> are trivial methods in this
+    case:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func (fd FlatDir) DirPath() string {
+    return fd.Path
+}
+
+func (fd FlatDir) New(path string) DirReader {
+    return FlatDir{Path: path}
+}`} />
+
+  <p>
+    All of the work is done in <code>Readdir</code> method. We'll use functionalities from Go
+    <code>os</code> package to implement reading content of OS file system directory.
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func (fd FlatDir) Readdir() ([]os.FileInfo, error) {
+    currentDir, err := os.Open(fd.Path)
+    if err != nil {
+        return nil, err
+    }
+    fileInfos, err := currentDir.Readdir(-1)
+    if err != nil {
+        return nil, err
+    }
+    return fileInfos, nil
+}`} />
+
+  <p>
+    That method is really just a wrapper on
+    <a href="https://golang.org/pkg/os/#File.Readdir">Readdir</a> method which is
+    cross-platform and do the heavy lifting for us.
+  </p>
+
+  <p>
+    After that type <code>FlatDir</code> satisfies <code>DirReader</code> interface. Now, in order to
+    scan file tree for given root path, we could run <code>tree, err := Scan(FlatDir&#123;path&#125;)</code>.
+  </p>
+
+  <Chapter name="Mock" id="mock" />
+  <p>
+    In order to prepare a mock for a file system we have to define an object which
+    behaves like a file system and at the same time satisfies <code>DirReader</code> interface.
+    As I stated at the beginning <code>Dir</code> is natural representation of a file system
+    for me. Because of that my mock object will be very similar to <code>Dir</code>:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`type MockDir struct {
+    Path    string
+    Files   []os.FileInfo
+    SubDirs map[string]*MockDir
+}`} />
+
+  <p>
+    Defined <code>MockDir</code> represents our mock <em>FS</em>. Using <code>map[string]*MockDir</code>
+    instead of <code>map[string]MockDir</code> is just for my convenience while building mock
+    trees. In this version I can modify sub trees of the tree which was already
+    initialized.
+  </p>
+
+  <p>
+    To satisfy <code>DirReader</code> interface we, once again, have to provide implementation
+    of methods <code>DirPath</code>, <code>Readdir</code> and <code>New</code>. The first one in this case also just
+    returns <code>MockDir.Path</code>. Method <code>Readdir</code> returns all files from <code>MockDir.Files</code>
+    and based on <code>SubDirs</code> keys - sub catalog names also list of catalogs as
+    <code>[]os.FileInfo</code>. Method <code>New</code> is a bit tricky in context of the
+    mock object. This method suppose to return a new <code>DirReader</code> for a given path.
+    In this case we can do that only for sub catalogs of current tree, because
+    there isn't any other valid path outside sub trees. Implementation of those
+    three methods can be found in the Appendix.
+  </p>
+
+  <p>
+    Wait but what about <code>MockDir.Files</code>? As we saw earlier <code>os.FileInfo</code> is an
+    interface from Go standard library. We also have to mock this interface in
+    order to produce <code>MockDir</code> objects. Let's define <code>MockFileInfo</code> type which
+    would satisfy <code>os.FileInfo</code> interface:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`type MockFileInfo struct {
+    FileName    string
+    IsDirectory bool
+}
+
+func (mfi MockFileInfo) Name() string       { return mfi.FileName }
+func (mfi MockFileInfo) Size() int64        { return int64(8) }
+func (mfi MockFileInfo) Mode() os.FileMode  { return os.ModePerm }
+func (mfi MockFileInfo) ModTime() time.Time { return time.Now() }
+func (mfi MockFileInfo) IsDir() bool        { return mfi.IsDirectory }
+func (mfi MockFileInfo) Sys() interface{}   { return nil }`} />
+
+  <p>
+    The actual object contains only information about file name and flag stating
+    whenever this file is a catalog. In this particular case I don't need other
+    file information like size or last modification date.
+  </p>
+
+  <p>
+    Up to this point we've defined function <code>Scan</code> which scans a file tree based on
+    <code>DirReader</code> interface. We've got implementation of <code>DirReader</code> for actual OS
+    file system and also implementation of mock <code>DirReader</code>. Hence we can use both
+    <code>FlatDir</code> and <code>MockDir</code> in <code>Scan</code> function.
+  </p>
+
+  <p>
+    One last piece left is convenient building <code>MockDir</code> object for unit testing.
+    I've found very useful to have a
+    <a href="https://gobyexample.com/variadic-functions">variadic function</a> to produce my
+    mock file trees. In this situation we have a plenty of options but my first
+    attempt was implement a helper function with the following signature
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`func NewMockDir(rootPath string, files ...string) MockDir {
+    ...
+}`} />
+
+  <p>
+    This function have an assumption about <code>files</code>. If single file name contains
+    <code>_</code> then it would be put inside sub catalog. For example
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`mockTree := NewMockDir("~/Downloads/", "f1.go", "f2.cpp", 
+                       "sub1_g.txt", "sub2_h.html")`} />
+
+  <p>
+    would create a file tree which looks like
+  </p>
+
+  <Code lang="plaintext" theme="dark-plus" code={`~/Downloads/
+├── f1.go
+├── f2.cpp
+├── sub1/
+│   └── g.txt
+└── sub2/
+    └── h.html`} />
+
+  <p>
+    In case when I need deeper trees I would use <code>NewMockDir</code> functions to create
+    sub catalogs (and sub catalogs of sub catalogs...).
+  </p>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Created <code>mockTree</code> is of type <code>MockDir</code> which satisfies <code>DirReader</code> interface.
+    Hence we could use <code>Scan(mockTree)</code>, to produce actual file tree representation - <code>Dir</code>.
+    That means now we are able to test every functionality which depends
+    on <code>Dir</code> object. And that's great! We can easily and safely test manipulations
+    of a file system. In praticular now we can setup scenarios which could be very
+    difficult to create on actual OS file system like creating <code>1 &lt;&lt; 30</code> files or
+    tree with very large depth.
+  </p>
+
+  <p>
+    The idea of mocking a file system using an "interface" can be used in most of
+    programming languages. What Go saves us is having already defined interface 
+    <code>os.FileInfo</code> representing meta file information. In other languages we usually
+    have to wrap it to abstract class or an interface and mock these afterwards.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://github.com/spf13/afero">Afero</a></li>
+    <li><a href="https://golang.org/pkg/os/">Go 'os' package</a></li>
+    <li><a href="https://github.com/dskrzypiec/dorg/">dorg</a></li>
+  </ol>
+
+  <Chapter name="Appendix" id="appendix" />
+  <h3>Source code of <code>Scan</code> function:</h3>
+  <Code lang="go" theme="dark-plus" code={`func Scan(reader DirReader) (Dir, error) {
+    fileInfos, err := reader.Readdir()
+    if err != nil {
+        return Dir{}, err
+    }
+
+    dir := New(reader.DirPath(), 100) // Produces a new empty Dir
+
+    for _, fileInfo := range fileInfos {
+        name := fileInfo.Name()
+        if !fileInfo.IsDir() {
+            dir.Files = append(dir.Files, fileInfo)
+            continue
+        }
+
+        newPath := filepath.Join(reader.DirPath(), name)
+        newReader := reader.New(newPath)
+        subDir, err := Scan(newReader)
+        if err != nil {
+            return Dir{}, err
+        }
+
+        dir.SubDirs[name] = subDir
+    }
+
+    return dir, nil
+}`} />
+
+  <h3><code>MockDir</code> methods</h3>
+  <Code lang="go" theme="dark-plus" code={`func (md MockDir) DirPath() string {
+    return md.Path
+}
+
+func (md MockDir) Readdir() ([]os.FileInfo, error) {
+    files := make([]os.FileInfo, 0, 10)
+    for _, file := range md.Files {
+        files = append(files, file)
+    }
+    for dirName := range md.SubDirs {
+        files = append(files, NewMockFileInfo(dirName, true))
+    }
+    return files, nil
+}
+
+func (md MockDir) New(path string) DirReader {
+    for _, dir := range md.SubDirs {
+        if dir.Path == path {
+            return dir
+        }
+    }
+    emptyDirs := make(map[string]*MockDir)
+    return MockDir{path, make([]os.FileInfo, 0), emptyDirs}
+}`} />
+
+  <h3><code>MockFileInfo</code></h3>
+  <Code lang="go" theme="dark-plus" code={`func NewMockFileInfo(name string, isDir bool) MockFileInfo {
+    return MockFileInfo{
+        FileName:    name,
+        IsDirectory: isDir,
+    }
+}`} />
+
+  <h3><code>NewMockDir</code></h3>
+  <Code lang="go" theme="dark-plus" code={`func NewMockDir(rootPath string, files ...string) MockDir {
+    topFiles := make([]os.FileInfo, 0, 10)
+    subDirs := make(map[string]*MockDir)
+
+    for _, file := range files {
+        if strings.Contains(file, "_") {
+            parts := strings.Split(file, "_")
+            dirName := parts[0]
+            subFile := NewMockFileInfo(parts[1], false)
+
+            if _, exist := subDirs[dirName]; exist {
+                (*subDirs[dirName]).Files = append((*subDirs[dirName]).Files, subFile)
+                continue
+            }
+
+            subDirs[dirName] = &MockDir{filepath.Join(rootPath, dirName), []os.FileInfo{subFile}, nil}
+            continue
+        }
+
+        topFiles = append(topFiles, NewMockFileInfo(file, false))
+    }
+
+    return MockDir{rootPath, topFiles, subDirs}
+}`} />
+
+</Post>

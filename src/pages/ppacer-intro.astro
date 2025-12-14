@@ -1,0 +1,174 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Introducing ppacer: yet another DAG scheduler which I prefer">
+  <PostTitle
+    title="Introducing ppacer: yet another DAG scheduler which I prefer"
+    date="2024-04-18"
+  />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    As I mentioned in <a href="https://dskrzypiec.dev/new-scheduler">New Scheduler</a>, in the
+    second half of 2023 I started working on implementing new scheduler in Go. In
+    this post I wanted to share with you the current status of the project, next
+    steps and few links.
+  </p>
+
+  <Chapter name="The name: ppacer" id="name" />
+  <p>
+    At the end of the previous year I was already working already for 4-5 months on
+    this project but still I didn't have a name for it. On my local disk it lived
+    in <code>gosched</code> catalog for those couple of months. It was to this point, that I
+    even setup a <a href="https://dskrzypiec.dev/year2023/#goals-for-2024">goal for 2024</a>,
+    to come up with a name for the project.
+  </p>
+
+  <p>
+    Around mid January 2024 I finally came up with the name - <code>ppacer</code>. The part
+    'pacer' comes from running. In marathons or other races a pacer is a runner who
+    helps to set the pace for other runners. The initial "p" comes from a word
+    "process". So it's a loose analogy to something that sets the pace for your
+    processes. At the same time it uses the same name convention as other famous
+    tool - <a href="https://github.com/google/pprof">pprof</a>, which I think sounds really
+    good.
+  </p>
+
+  <p>
+    There it is, I have the name! I was really happy. That enabled me to buy a
+    domain and create an organization on GitHub.
+  </p>
+
+  <Chapter name="Current status" id="status" />
+  <p>
+    At the moment <code>ppacer</code> is a set of Go libraries which can be used, to define
+    and build a DAG which would run on a schedule, a scheduler and an executor. All
+    those components can be compiled into single statically linked binary, or there
+    might be single scheduler program and multiple executors placed on separate
+    machines. Anyway, very basic version of the backend is ready. It doesn't yet
+    have MPV coverage regarding features, but it's good enough to be used in some
+    setups.
+  </p>
+
+  <p>
+    Currently I'm using ppacer to do backups of my
+    <a href="https://dskrzypiec.dev/home-app-go/">Home Database</a> and refresh TLS
+    certificates for my applications.
+  </p>
+
+  <p>
+    There is no frontend yet at all. If you're fine with checking logs or DAG runs
+    information in SQLite or any other Go sql-compatible database, feel free to
+    play with it.
+  </p>
+
+  <Chapter name="ppacer links" id="links" />
+  <p>
+    There are few links you might be interested in, if this project sounds
+    interesting to you. There is <a href="https://github.com/ppacer">github.com/ppacer</a>
+    organization on GitHub. There you can find
+  </p>
+
+  <ul>
+    <li>
+      Project with ppacer core Go libraries -
+      <a href="https://github.com/ppacer/core">github.com/ppacer/core</a>
+    </li>
+    <li>
+      Repository with usage examples -
+      <a href="https://github.com/ppacer/examples">github.com/ppacer/examples</a>
+    </li>
+    <li>
+      Repository with generic ppacer <code>Tasks</code> -
+      <a href="https://github.com/ppacer/tasks">github.com/ppacer/tasks</a>
+    </li>
+  </ul>
+
+  <p>
+    Standard Go packages documentation (API reference) can be found in here:
+  </p>
+
+  <ul>
+    <li><a href="https://pkg.go.dev/github.com/ppacer/core">pkg.go.dev/github.com/ppacer/core</a></li>
+  </ul>
+
+  <p>
+    Last but not least, ppacer main page for high-level documentation, examples and
+    other information is here:
+  </p>
+
+  <ul>
+    <li><a href="https://ppacer.org">ppacer.org</a></li>
+  </ul>
+
+  <Chapter name="Documentation" id="documentation" />
+  <p>
+    As I mentioned ppacer backed is working for arbitrary minimal set of selected
+    features. I'd like to focus now on the frontend part, but before I do, I
+    decided to write down a bit of documentation. One part is Go libraries public
+    API documentation. That was mostly written during the development, so it needed
+    to be just polished a bit. The other part is documenting high-level design,
+    instructions on how to use ppacer, how to extend it, how to implement your own
+    schedules and so on.
+  </p>
+
+  <p>
+    There are few reasons why I want to do it. One is to show potential users or
+    interested developers how to even start and run "hello world" example. The
+    other reason is for me in the future, when I'll be back from frontend
+    development, to remember what I was thinking months ago and why I choose to
+    implement it this and not the other way. Another reason was a bit surprising.
+    Writing down documentation helped me a lot, to make libraries API better and
+    more consistent. Being a single developer on the project should already give a
+    lot of consistency but even in this case I saw small differences in naming or
+    conventions over the time. Writing it down in documentation helped me see it. I
+    wish I had done it earlier in the project.
+  </p>
+
+  <p>
+    A friend recommended me <a href="https://starlight.astro.build">Astro starlight</a>, to
+    build documentation web page. It's great! It's really easy to setup, it's
+    rather flexible and looks gorgeous in my opinion - lean, fast and modern.
+  </p>
+
+  <Chapter name="Next steps" id="next-steps" />
+  <p>
+    The next steps for the project are as follows:
+  </p>
+
+  <ol>
+    <li>Finish writing documentation for existing backend</li>
+    <li>Start working on frontend PoC (probably HTMX + tmpl)</li>
+    <li>Design the logo</li>
+    <li>Write first version of ppacer frontend</li>
+    <li>Go back to add few more features on the backed</li>
+    <li>Prepare ppacer MVP version</li>
+    <li>...</li>
+    <li>Profit?</li>
+  </ol>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    That's it for now. It's not really yet "introducing ppacer" it's rather
+    introducing the name and give you the current status, but hey I liked that
+    title. By the way the title of this post was inspired by Maxwell calling his
+    work on theory of electromagnetism "another theory of electricity which I
+    prefer". You can read about this very interesting story in <a href="https://www.damtp.cam.ac.uk/user/tong/em/dyson.pdf">this
+    essay</a>.
+  </p>
+
+  <p>
+    If you're interested in the project already, you can find the "hello world"
+    example in here: <a href="https://ppacer.org/start/intro/">ppacer.org/start/intro/</a>.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://www.damtp.cam.ac.uk/user/tong/em/dyson.pdf">Why is Maxwell's Theory so hard to understand?</a></li>
+  </ol>
+
+</Post>

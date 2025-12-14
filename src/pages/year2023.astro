@@ -1,0 +1,194 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+---
+
+<Post title="Summary of 2023">
+  <PostTitle
+    title="Summary of 2023"
+    date="2023-12-30"
+  />
+
+  <Chapter name="Continuation of 2022" id="continuation-2022" />
+  <p>
+    I would like to start by mentioning the things I continued doing in 2023, beginning with sports. I maintained my
+    running routine, pursued table tennis training, and practiced fundamental calisthenics, including pull-ups, push-ups,
+    and dips. However, I decided to discontinue my Russian language studies, mostly due to lack of time. As for my MacBook
+    Air M1 from 2020, it's still in pretty decent condition, even after nearly three years of heavy usage. The battery life
+    is around 7-8 hours at this point.
+  </p>
+
+  <Chapter name="I've left TCL and joined Point72" id="left-tcl-joined-point72" />
+  <p>
+    At the end of January 2023, I left TCL Research Europe, where I had been working as a Senior Cloud Engineer. Shortly
+    afterward, on February 2nd, I joined the Risk Technology team at Point72 (Warsaw office) as a Software Engineer. Before
+    I delve into why I changed my job, let me summarize my experiences and reflections from working at TCL, as I haven't
+    done so in a separate post, unlike when <a href="https://dskrzypiec.dev/leaving-pwc/">I left PwC</a> or <a href="https://dskrzypiec.dev/allegropay/">Allegro
+    Pay</a>.
+  </p>
+
+  <p>
+    The first thing that struck me at TCL was the culture shock. As a primarily Chinese company, it was quite unusual to
+    receive over 90% of emails written in simplified Chinese without an English translation. The language barrier was
+    rather high overall. Very few people outside of the Warsaw office spoke communicative verbal English. This reached a
+    point where meetings were conducted in Chinese, and a colleague in the Warsaw office, who is fluent in both Chinese and
+    English, had to translate communication both ways. Fortunately, such meetings were rare, but it was still quite
+    surprising. Another interesting fact was that Chinese colleagues used <a href="https://www.wechat.com">WeChat</a> for corporate
+    communication. They used WeChat personally, much like how people in Europe or the US use Messenger or WhatsApp, but
+    they also used the same account for corporate communication. For everyday communication in the Warsaw office, we used
+    Slack, but when we needed to contact developers from the Chinese office, we had to use WeChat.
+  </p>
+
+  <p>
+    I was part of the team responsible for building an overseas big data platform – a data analytics platform for all
+    offices outside of Asia. The work involved mostly data engineering with BI and reporting layers. Interestingly, the
+    entire platform was built on AWS, existing purely in the cloud. This meant that we had development and test
+    environments also on AWS. Pipelines in repositories were usually creating pieces of infrastructure needed for the
+    related part of the platform, including personal environments, end-to-end test environments, and so on, all across
+    seven or eight AWS regions. This was quite impressive and already set up when I joined. In those pipelines, we used
+    <a href="https://aws.amazon.com/cdk/">AWS CDK</a>. Practically every part of the platform, besides the actual source code for the
+    service or functionality, had a corresponding AWS CDK project dedicated to defining related infrastructure on AWS.
+    During my time at TCL, I used Scala (mostly for Spark in the form of AWS Glue jobs), Python for other services, and
+    TypeScript for writing AWS CDK projects for the infrastructure. It was fascinating to see how a few people could build
+    a complex data platform leveraging AWS and its tools.
+  </p>
+
+  <p>
+    Even though I was only at TCL for six months, I really enjoyed learning and contributing to the project. It was
+    definitely a new experience for me, and I'm glad to have had the opportunity to approach software building in this
+    manner. Of course, it wasn't perfect. I think the cost of building everything on AWS is quite high, and using many AWS
+    services creates challenges in terms of system observability. Nevertheless, it was a great opportunity to work in a
+    different way.
+  </p>
+
+  <p>
+    Why did I quit? I'd say it was a stroke of luck. Around December 2022, my team in Warsaw started to notice changes at
+    TCL. We lost one of our main projects (not the platform) unexpectedly and observed a few other signs of potential
+    budget optimization. Perhaps this was due to the economic situation in Asia post-COVID pandemic; I'm not entirely sure,
+    but we certainly felt the impact. Around the same time, I received an offer from Point72. I didn't want to leave my
+    team after just six months, but given the uncertainty of my team's future at TCL and the fact that the role and
+    responsibilities in the offer from Point72 were a great match for me, I decided to leave. It wasn't an easy decision.
+  </p>
+
+  <p>
+    That's how, since February 2023, I have been building a new scalable computation and analytics platform for the Risk
+    team at Point72. As we are also using AWS here, my previous experiences at TCL are proving valuable for both me and my
+    current team.
+  </p>
+
+  <Chapter name="Running" id="running" />
+  <p>
+    This year I continued my practice of running. At this point I enjoy running quite a lot. I try to go for a run at
+    least 3 times a week. I try to do two runs on weekdays within distance range 7.5-11.5km (4.6-7.2 miles) and one
+    longer run on weekends. In March I've run my first half marathon in over two and a half hours (2:34). In September I've
+    run my second half marathon. This time I've done it in two hours and eleven minutes.
+  </p>
+
+  <Image src="/year2023/hmds202309.jpg" alt="Half marathon results" caption="Half marathon results from September 2023 - 2:11 finish time" />
+
+  <p>
+    I'm very happy with the progress! I'm planning to run another one in March 2024 and the goal is to break two hours.
+    This year I've also run another <a href="https://www.runmageddon.pl">Runmageddon</a>. This time I choose <em>classic</em> version which
+    is around 12km distance and over 50 obstacles to overcome. That was a goal from 2022. I'm glad I did it.
+  </p>
+
+  <p>
+    My running trainings summary over the last two years:
+  </p>
+
+  <Image src="/year2023/runningannualsummary.jpg" alt="Running annual summary" caption="Running training summary showing progress over two years" />
+
+  <p>
+    I'm very happy to see, that my average run duration increased to almost 50 minutes and pace declined to around 6
+    minutes per kilometer. My current pace average is around 5'37" per kilometer on 10km runs, so I hope to get much better
+    results in 2024.
+  </p>
+
+  <Chapter name="Started working on implementing New Scheduler" id="new-scheduler" />
+  <p>
+    In August 2023 I started working on my version of a scheduler. I wrote a post on this in here - <a href="https://dskrzypiec.dev/new-scheduler/">New
+    Scheduler</a>. Goal for 2024 is implementing most of fundamental functionalities,
+    including the UI.
+  </p>
+
+  <p>
+    In general progress is pretty slow, since I'm spending around 8-10 hours per week on this project, but it is nice to
+    have solid long term project. I enjoy working on it.
+  </p>
+
+  <Chapter name="HomeApp v2" id="homeapp-v2" />
+  <p>
+    Over a year ago I've <a href="https://dskrzypiec.dev/home-app-go/">rewritten Home App in Go</a> and moved it onto AWS. That was
+    great decision! We (me and my wife) use HomeApp on regular basis. Corresponding Home Database grew to 1 GB in size,
+    over 300 digitalized documents, over 40 e-books and around 8500 bank transactions. Having HomeApp open publicly (not
+    behind private VPN) made it much more accessible.
+  </p>
+
+  <p>
+    In 2023 I've added two new features. One is mentioned uploading/downloading of e-books. The other one is Financial
+    explorer which basically aggregates all financial transactions which contains given phrase in a description on month
+    level. It looks like this:
+  </p>
+
+  <Image src="/year2023/financialexplorer.png" alt="Financial explorer feature" caption="HomeApp Financial Explorer - aggregating expenses by phrase on monthly basis" />
+
+  <p>
+    It's rather simple but still very effective regarding looking into trends of our expenses.
+  </p>
+
+  <Chapter name="Learned about HTTPS, TLS and cryptography" id="https-tls-cryptography" />
+  <p>
+    Around October or November 2023 I've received significantly bigger, then usually bill from AWS. As it turned out my
+    first 12 months on AWS has passed and at the same time my discount on EC2 and elastic load balancing. I've been using
+    the second smallest EC2 instance, so that wasn't the main part of the bill. It was ELB. Why I used ELB in the first
+    place? I didn't have multiple EC2s to load balance traffic. I've set it up, because on AWS it's the easiest way to
+    setup HTTPS via trivial load balancer and target groups. In this setup I can use certificate from AWS. That was the
+    only reason.
+  </p>
+
+  <p>
+    In that moment I decided it's the time to learn about <code>S</code> in HTTPS. It wasn't because of money. I treated is as
+    reminder that this is the high time to pay technical debt of not learning those things before I publish HomeApp on AWS.
+  </p>
+
+  <p>
+    I could probably take another shortcut and use ChatGPT, to setup HTTPS for HomeApp without using AWS Load Balancer and
+    certificate from AWS. I didn't want to do it. I wanted to actually learn about those concepts. So I did. I learned
+    about certificates, chain of trust, how those are generated, signed and verified. Next I learned about asymmetric and
+    symmetric encryption. About <a href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)">RSA</a> and
+    <a href="https://en.wikipedia.org/wiki/Diffie–Hellman_key_exchange">Diffie-Hellman</a>. I looked into mathematics behind those
+    algorithms and systems. It turned out that cryptography is very interesting and very elegant in many aspects. I really
+    enjoyed it. On high level I learned also about SSL and TLS protocols which combines most of the above concepts.
+  </p>
+
+  <p>
+    Eventually I've setup HTTPS for HomeApp using certificate generated by <a href="https://letsencrypt.org">Let's Encrypt</a> and
+    getting rid of AWS LB. I ended up with simpler infrastructure for HomeApp, lower AWS bill, and obtained very
+    interesting and useful knowledge on cryptography.
+  </p>
+
+  <Chapter name="Goals for 2024" id="goals-2024" />
+  <p>
+    Starting from now on I'll try to include goals for the next year in those annual summary posts. Goals for upcoming year
+    2024 are as follows:
+  </p>
+
+  <ul>
+    <li>Run half marathon in under two hours.</li>
+    <li>Run my first full marathon (in ~4:30?).</li>
+    <li>Continue working on New Scheduler.</li>
+    <li>Come up with the name for New Scheduler.</li>
+    <li>Got better in writing frontends (Go + tmpl + HTMX?).</li>
+    <li>Read a textbook on quantum mechanics.</li>
+  </ul>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Overall I think it was a very good year for me! I made progress in running, changed a job, learned few things and
+    started my first serious side project. I'm looking forward to 2024 and my next goals!
+  </p>
+
+</Post>
+

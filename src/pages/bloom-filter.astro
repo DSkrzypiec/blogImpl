@@ -1,0 +1,262 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Latex from "../components/Latex.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Bloom filter">
+  <PostTitle
+    title="Bloom filter"
+    date="2021-10-08"
+  />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    At one of mine job interviews I was asked how would I check if there is a
+    user name in continues stream of data without possibility of storing data on the
+    disc. I had a good intuition but I didn't expected that probabilistic answer
+    would be sufficient and I haven't ever heard about Bloom filters to that point.
+  </p>
+
+  <p>
+    Bloom filter is a data structure. It exists to help answer the question "Does
+    this element (probably) exist in the set?" or "Does this element surely not
+    exist in the set?". Especially when the search set is very large, because it is
+    very space efficient. Also it is a probabilistic data structure - more about it
+    later.
+  </p>
+
+  <p>
+    I found this data structure very interesting. The main idea is brilliant.
+    In this blog post I'm sharing description of the Bloom filter, an algorithms of
+    basic operations and finally some maths behind probabilistic nature of the
+    filter.
+  </p>
+
+  <p>
+    Often code expresses more then hundred words, therefore I'll decorate
+    descriptions with C# code.
+  </p>
+
+  <Chapter name="Bloom filter" id="bloom-filter" />
+  <p>
+    Basic Bloom filter implementation would be a data structure that satisfy the
+    following contract
+  </p>
+
+  <Code lang="csharp" theme="dark-plus" code={`public interface IBloomFilter<T>
+{
+    void Add(T item);
+    bool ProbablyContains(T item);
+}`} />
+
+  <p>
+    Nothing fancy yet. One could easily write a wrapper for an array or hash set
+    that would meet this interface. What is different with Bloom filter is that it
+    can store much more data in the query set because it doesn't really store items
+    itself. Just to clarify - if <code>ProbablyContains</code> method return <code>false</code> we know
+    <strong>for sure</strong> that given <code>item</code> does not exists in the set. The probabilistic
+    part lays in another case, then we can only say that it <strong>could</strong> be in the set
+    but not certainly.
+  </p>
+
+  <p>
+    How is it done? Let's take a look into the algorithm.
+  </p>
+
+  <h3>Implementation</h3>
+  <p>
+    Implementation starts from a bit (I'll use bytes in C# codes) array and a bunch
+    of hash functions.
+  </p>
+
+  <Code lang="csharp" theme="dark-plus" code={`public class BloomFilter<T> : IBloomFilter<T>
+{
+    private byte[] _bitset;
+    private IList<Func<byte[], byte[]>> _hashFunctions;
+    ...
+}`} />
+
+  <p>
+    That's all regarding the state of Bloom filter. The filter is initially
+    constructed with all elements of <code>_bitset</code> set to <code>0</code> but more about
+    <code>BloomFilter&lt;T&gt;</code> constructor later, including size of <code>_bitset</code> and number of
+    <code>_hashFunctions</code>.
+  </p>
+
+  <p>
+    The essence of the algorithms lays in the implementation of <code>Add</code> and
+    <code>ProbablyContains</code> methods.
+  </p>
+
+  <h4>Add method</h4>
+  <p>
+    For given <code>T item</code> method <code>Add</code> do the following:
+  </p>
+
+  <ol>
+    <li>Calculate all hashes of <code>item</code> using hash functions from <code>_hashFunctions</code></li>
+    <li>Transform calculated hashes into <code>_bitset</code> indices</li>
+    <li>For obtained indices set values of <code>_bitset</code> to <code>1</code></li>
+  </ol>
+
+  <p>
+    Basic C# version can be implemented as follows
+  </p>
+
+  <Code lang="csharp" theme="dark-plus" code={`public void Add(T item)
+{
+    var bytes = ObjectToByteArray(item);
+
+    for (var i = 0; i < _hashFuncs.Count; i++) {
+        var idx = GetIdFromHash(_hashFuncs[i](bytes));
+
+        if (_bitset[idx] == 0) {
+            _bitset[idx] = 1;
+        }
+    }
+}`} />
+
+  <p>
+    OK, so we start from zeroed array and within another <code>Add</code>s more bits will be
+    set to one. Ones are cumulated and couldn't be set to zero. At least in the
+    original Bloom Filter version. In another words - we cannot delete items from
+    the set.
+  </p>
+
+  <p>
+    Adding elements seems to be rather trivial but on the other hand displays
+    the main idea behind Bloom Filter. Instead of storing objects itself in the
+    data structure we'll just flip few bits in constant-size-array based on
+    the results of independent hash functions called on the object.
+  </p>
+
+  <h4>ProbablyContains method</h4>
+  <p>
+    For given <code>T item</code> method <code>ProbablyContains</code> do the following:
+  </p>
+
+  <ol>
+    <li>Calculate all hashes of <code>item</code> using hash functions from <code>_hashFunctions</code></li>
+    <li>Transform calculated hashes into <code>_bitset</code> indices</li>
+    <li>If at least one value based on calculated indices is zero then <code>false</code> is
+      returned and <code>true</code> otherwise</li>
+  </ol>
+
+  <p>
+    C# version can looks like this
+  </p>
+
+  <Code lang="csharp" theme="dark-plus" code={`public bool ProbablyContains(T item)
+{
+    var bytes = ObjectToByteArray(item);
+
+    for (var i = 0; i < _hashFuncs.Count; i++) {
+        var idx = GetIdFromHash(_hashFuncs[i](bytes));
+
+        if (_bitset[idx] == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}`} />
+
+  <p>
+    Once again an algorithm is straightforward but why does it work and why is it
+    probabilistic?
+  </p>
+
+  <p>
+    Let's focus on negative case. We've calculated all of the hashes for given item
+    and transformed those into indices. We found out that for one of indices value
+    in <code>_bitset</code> is zero. This means that all elements that were added to Bloom
+    Filter and all of their hashed-deduced indices never hit this spot. So this
+    must be a new element. Therefore we have got proof by contradiction.
+  </p>
+
+  <p>
+    On the other hand when all values of <code>_bitset</code> for hash-deduced indices are set
+    to one we still cannot say for sure that given element exists in the Bloom
+    Filter. Why is that? The most probable case for false-positive is when parts of
+    hit bits were set based on <code>item_n</code> and the rest of the bits were set based on
+    <code>item_m</code>. Still all required bits are ones but we cannot say that those bits
+    were activated by single object.
+  </p>
+
+  <Chapter name="Maths" id="maths" />
+  <p>
+    At this point we know why the answer is probabilistic but it's not merely
+    enough. I'd like to know what is the probability of false positive and how it
+    is related with <code>_bitset</code> size. Let's find out.
+  </p>
+
+  <p>
+    False positive in this context means that <code>ProbablyContains(x) == true</code> and <code>x</code>
+    is not contained in the search set which is equivalent to the fact that at
+    least one bit checked for <code>x</code> wasn't set to one by <code>x</code>.
+    Using assumption about uniform distribution of hash functions and independence
+    of hash function we can determine probability of described event
+  </p>
+
+  <Latex formula={`P(A) = \\left( 1 - \\frac{1}{m} \\right)^{k}`} displayMode={true} />
+
+  <p>
+    Where <code>A</code> is an event of that particular bit is not set to one by any of <code>k</code>
+    hash functions and <code>m</code> is size of <code>_bitset</code>. Once again, by independence, event
+    <code>B</code> which is the same as <code>A</code> but after <code>n</code> inserts can be expressed as
+  </p>
+
+  <Latex formula={`P(B) = \\left( 1 - \\frac{1}{m} \\right)^{k \\cdot n}`} displayMode={true} />
+
+  <p>
+    Finally we can write approximation for a probability of false positives
+  </p>
+
+  <Latex formula={`P(FP) = \\left( 1 - \\left( 1 - \\frac{1}{m} \\right)^{m \\cdot \\frac{k \\cdot n}{m}} \\right)^{k} \\approx \\left( 1 - e^{-\\frac{k \\cdot n}{m}} \\right)^{k}`} displayMode={true} />
+
+  <p>
+    The above approximation says that the probability of false positives
+  </p>
+
+  <ol>
+    <li>decreases with growth of <code>_bitset</code> size</li>
+    <li>increases with number of insertions</li>
+    <li>decreases with number of hash functions, but requires more computations</li>
+  </ol>
+
+  <p>
+    The probability function for false positives can be perceived as functions of
+    <strong>k</strong> (number of hash functions) assuming that <strong>m</strong> and <strong>n</strong> are given
+    constants. In this case we can easily calculate optimal number of hash
+    functions by minimizing false positives function. It's a
+    differentiable function so we can use standard methods from calculus.
+    The number of hash functions that minimizes false positives is
+  </p>
+
+  <Latex formula={`k_{opt} = \\frac{m}{n} \\ln 2`} displayMode={true} />
+
+  <p>
+    That's cool! We can a priori choose number of hash functions by estimating
+    <code>_bitset</code> size and number of insertions.
+  </p>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    There are <a href="https://www.dca.fee.unicamp.br/~chesteve/pubs/bloom-filter-ieee-survey-preprint.pdf">many variations</a>
+    of Bloom filters including ones with deletion capibilities but the most
+    fascinating to me was the original idea. Very clever usage of properties of
+    hash functions to significantly reducees memory usage and disk reads.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://www.cs.princeton.edu/courses/archive/spr05/cos598E/bib/p422-bloom.pdf">Original paper</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Bloom_filter">Wiki</a></li>
+    <li><a href="https://github.com/dskrzypiec/bloom-filter">Basic implementation</a></li>
+    <li><a href="https://www.dca.fee.unicamp.br/~chesteve/pubs/bloom-filter-ieee-survey-preprint.pdf">Variations of Bloom filters</a></li>
+  </ol>
+
+</Post>

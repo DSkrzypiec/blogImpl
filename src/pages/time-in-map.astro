@@ -1,0 +1,143 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Be Cautious When Using time.Time as Keys in Go Maps">
+    <PostTitle
+        title="Be Cautious When Using time.Time as Keys in Go Maps"
+        date="2024-08-13"
+    />
+
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    Recently, I encountered a strange bug in <a href="https://ppacer.org">ppacer</a>. The
+    scheduler had a bug that only appeared on Linux, which was particularly
+    concerning since it directly affected ppacer's core functionality: scheduling.
+  </p>
+  <p>
+    Before we dive into the details, I want to mention that throughout the
+    development of ppacer, I rarely encountered issues that took more than a few
+    minutes to debug. However, this particular bug took me 4-5 hours to track down.
+    That’s why I thought that this behavior might not be obvious to others as well.
+    So, I’d like to share what I’ve learned.
+  </p>
+  <p>
+    I'll try to focus on the bug and solution in abstraction, without getting into
+    details of ppacer internal types and logic.
+  </p>
+
+  <Chapter name="Symptoms" id="symptoms" />
+  <p>
+    Using ppacer, I wanted to schedule and execute a process which, after the first
+    task, had another two concurrent tasks to be scheduled. The first task was
+    scheduled and executed successfully, but then its children never got scheduled.
+    No errors, nothing. They simply wouldn't schedule.
+  </p>
+  <p>
+    This issue occurred on a relatively modest EC2 instance (2GB RAM, 2 vCPU) running Linux.
+    Strangely, the exact same program ran perfectly on Windows and macOS (MacBook Air M1).
+    That was puzzling. For context, ppacer is built with Go 1.22, and its only dependency
+    is a driver for SQLite.
+  </p>
+
+  <Chapter name="Debugging" id="debugging" />
+  <p>
+    Initially, I thought the issue might be due to the limited resources on the EC2 instance.
+    However, ppacer generally doesn’t consume much in terms of resources, and the particular
+    example in question was relatively simple, so that didn’t seem to be the case.
+  </p>
+  <p>
+    After enabling `DEBUG` level logging, I discovered that child tasks weren’t getting scheduled
+    because the parent task’s status in the cache was <code>SCHEDULED</code> rather than <code>SUCCESS</code>.
+  </p>
+  <p>
+    I couldn’t figure out how this was possible. The logs clearly showed that the correct <code>SUCCESS</code>
+    status was stored in the cache, but when another goroutine retrieved the value from the cache for
+    the same key, it returned <code>SCHEDULED</code> instead. That made no sense!
+  </p>
+  <p>
+    Looking deeper into the cache itself, I noticed two identical-looking keys with different values.
+    This pointed me towards an issue with using <code>time.Time</code> as map keys.
+  </p>
+
+  <Chapter name="time.Time in Go map keys" id="time-time-map-keys" />
+  <p>
+    The root cause of the issue is that <code>time.Time</code> contains both a "wall clock" time and
+    a monotonic clock value. While two <code>time.Time</code> values might look identical when printed,
+    they can have different monotonic clock values, causing them to be treated as distinct keys in a map.
+  </p>
+  <p>
+    Additionally, monotonic clock values are system-dependent, and they are not preserved when
+    <code>time.Time</code> is serialized. This explains why the bug only appeared when running on Linux.
+  </p>
+
+  <Chapter name="Reproducible example" id="reproducible-example" />
+  <p>
+    Consider the following simple Go program:
+  </p>
+  <Code lang="go" theme="dark-plus" code={`package main
+
+import (
+    "fmt"
+    "time"
+)
+
+type Key struct {
+    Name      string
+    Timestamp time.Time
+}
+
+func main() {
+    cache := make(map[Key]int)
+
+    now := time.Date(2024, 8, 12, 16, 5, 0, 0, time.Local)
+    k1 := Key{Name: "Damian", Timestamp: now}
+    cache[k1] = 42
+
+    nowStr := now.Format("2006-01-02T15:04:05.999999MST-07:00")
+    now2, _ := time.Parse("2006-01-02T15:04:05.999999MST-07:00", nowStr)
+    k2 := Key{Name: "Damian", Timestamp: now2}
+    cache[k2] = -123
+
+    for k, v := range cache {
+        fmt.Printf("  -%v: %d\n", k, v)
+    }
+}`} />
+
+  <p>
+    Running this on macOS outputs:
+  </p>
+  <Code lang="plaintext" code={`  -{Damian 2024-08-12 16:05:00 +0200 CEST}: -123`} />
+  <p>
+    But on Debian, it outputs:
+  </p>
+  <Code lang="plaintext" code={`  -{Damian 2024-08-12 16:05:00 +0000 UTC}: 42
+  -{Damian 2024-08-12 16:05:00 +0000 UTC}: -123`} />
+  <p>
+    The two entries look the same but are different due to the hidden monotonic clock values.
+  </p>
+
+  <Chapter name="Solution" id="solution" />
+  <p>
+    The fix was straightforward: use a serialized timestamp string instead of <code>time.Time</code> in cache keys.
+  </p>
+  <Code lang="go" theme="dark-plus" code={`type DRTBase struct {
+    DagId  string
+    AtTime string // Changed from time.Time
+    TaskId string
+}`} />
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Be cautious when using <code>time.Time</code> as keys in Go maps. While it can be useful, always
+    be aware of the monotonic clock values and how they might impact key uniqueness.
+  </p>
+  <p>
+    For more details, check out the official Go documentation on
+    <a href="https://pkg.go.dev/time#hdr-Monotonic_Clocks">monotonic clocks</a>.
+  </p>
+</Post>

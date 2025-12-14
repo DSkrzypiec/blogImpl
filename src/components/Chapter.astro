@@ -1,0 +1,29 @@
+---
+export interface Props {
+  name: string;
+  id: string;
+}
+
+const { name, id } = Astro.props;
+---
+
+<h2 id={id} class="chapter">
+  <a href={`#${id}`}>{name}</a>
+</h2>
+
+<style>
+  .chapter {
+    font-size: 2rem;
+    margin-top: 2rem;
+    color: var(--accent-color);
+  }
+
+  .chapter a {
+    color: var(--accent-color);
+    text-decoration: none;
+  }
+
+  .chapter a:hover {
+    text-decoration: underline;
+  }
+</style>

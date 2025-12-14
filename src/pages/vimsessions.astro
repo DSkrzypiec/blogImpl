@@ -1,0 +1,130 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Vim sessions">
+  <PostTitle
+    title="Vim sessions"
+    date="2021-04-27"
+  />
+
+  <Image src="/vimsessions/vimSession.gif" alt="Vim session demonstration" caption="Vim session demonstration" />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    I wanted to share with you my experience with Vim sessions. The concept and
+    usage are really simple but I didn't know about it for a long time using Vim.
+    In a nutshell you can save current state of your Vim environment as a
+    <em>session</em>. Once it's saved it can be reopened.
+  </p>
+
+  <p>
+    Have you ever been debugging (not necessarily in Vim) for few hours with bunch of
+    files opened in particular order to wrap your head around the problem? Finally
+    you built up enough understanding to solve the bug and with relief you close
+    those dozens of tabs and windows. Few months passes and another bug have
+    occurred in this area. What now? In best case you <em>remember</em> logic and order of
+    execution in this particular area from fixing a bug few months back and it's not
+    a problem now. From my experience this is very rare case especially on large
+    projects and more common case is that you start analyzing this area once again
+    from the top. It might be a bit faster this time but still takes time and
+    what most important takes a lot of brain power and focus.
+  </p>
+
+  <p>
+    My answer to this are Vim sessions.
+  </p>
+
+  <Chapter name="Vim sessions" id="vim-sessions" />
+  <p>
+    Creating a session is rather straightforward by using single ex command:
+  </p>
+
+  <Code lang="vim" theme="dark-plus" code={`:mks[ession][!] sessionFileName.vim`} />
+
+  <p>
+    This command should be called at the moment when you want to capture your
+    current vim state. Version with exclamation mark overrides given file.
+    Sessions keeps track of many things but most important to me are
+  </p>
+
+  <ul>
+    <li>Order of tabs and windows</li>
+    <li>All mappings and macros</li>
+    <li>Buffers</li>
+  </ul>
+
+  <p>
+    More details can be found in <code>:help mks</code>.
+    Vim session can be restored using <code>:source</code> ex command:
+  </p>
+
+  <Code lang="vim" theme="dark-plus" code={`:so[urce] sessionFileName.vim`} />
+
+  <p>
+    Usually I have a single catalog per project with vim sessions. After a while on
+    new project I can very fast recreate development or debug environment for
+    particular areas of the project.
+  </p>
+
+  <p>
+    The following screen cast presents example of loading saved session twice.
+  </p>
+
+  <div class="asciinema-container">
+    <a href="https://asciinema.org/a/E3S18mOqyrD74SdHhJAtjubVu">
+      <img src="https://asciinema.org/a/E3S18mOqyrD74SdHhJAtjubVu.svg" alt="asciicast demo" />
+    </a>
+  </div>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Opening last session is a default in probably all IDEs nowadays but saving session
+    to a file is no so common. For me it was a huge help, especially on a large
+    projects. Keeping vim sessions saved let me power through the project in no
+    time. I don't waste time to think about which files should I open, then find
+    files and finally open. I just pick right session saved from my catalog and
+    start from there. It seems like a little thing (and in fact it is) but it
+    improved my daily workflow significantly.
+  </p>
+
+</Post>
+
+<style>
+  .asciinema-container {
+    max-width: 100%;
+    margin: 1.5rem auto;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .asciinema-container a {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .asciinema-container img {
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+    width: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    .asciinema-container img {
+      max-height: 300px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .asciinema-container img {
+      max-height: 250px;
+    }
+  }
+</style>

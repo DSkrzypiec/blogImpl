@@ -1,0 +1,94 @@
+---
+const menuItems = [
+  { name: "Posts", link: "/" },
+  { name: "About", link: "/about" },
+  { name: "Resume", link: "/resume.html" }
+];
+
+const currentPath = Astro.url.pathname; // Get current page path
+---
+
+<nav>
+  <ul>
+    {menuItems.map((item) => (
+      <li class={currentPath === item.link ? "active" : ""}>
+        <a href={item.link}>{item.name}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  nav {
+    padding: 1rem 0;
+    text-align: center;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+  }
+
+  /* Mobile responsive navigation */
+  @media (max-width: 480px) {
+    ul {
+      gap: 1rem;
+    }
+    
+    a {
+      font-size: 1rem;
+      padding: 0.4rem 0.8rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    ul {
+      gap: 0.5rem;
+    }
+    
+    a {
+      font-size: 0.9rem;
+      padding: 0.3rem 0.6rem;
+    }
+  }
+
+  li {
+    display: inline;
+  }
+
+  a {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    transition: all 0.3s ease-in-out;
+  }
+
+  a:hover {
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    color: var(--accent-color);
+  }
+
+  .active a {
+    color: var(--accent-color);
+    font-weight: bold;
+    border-bottom: 2px solid var(--accent-color);
+  }
+
+  hr {
+    margin-top: 1rem;
+    border: none;
+    height: 2px;
+    background: var(--text-secondary);
+    width: 90%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>

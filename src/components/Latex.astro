@@ -1,0 +1,68 @@
+---
+import katex from 'katex';
+
+const { formula = '', displayMode = false } = Astro.props;
+
+if (!formula) {
+  return null;
+}
+
+const html = katex.renderToString(formula, {
+  throwOnError: false,
+  displayMode: displayMode,
+  strict: false
+});
+---
+
+{displayMode ? (
+  <div class="latex-container latex-display">
+    <span set:html={html}></span>
+  </div>
+) : (
+  <span class="latex-container latex-inline">
+    <span set:html={html}></span>
+  </span>
+)}
+
+<style>
+  .latex-container {
+    overflow-x: auto;
+  }
+
+  /* Display mode (block) */
+  .latex-display {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  /* Inline mode */
+  .latex-inline {
+    display: inline;
+    margin: 0;
+    vertical-align: baseline;
+  }
+
+  /* Ensure proper spacing and styling */
+  .latex-container :global(.katex) {
+    font-size: 1.1em;
+    display: inline-block;
+  }
+
+  .latex-container :global(.katex-display) {
+    margin: 1.5rem 0;
+    display: block;
+  }
+
+  /* Hide MathML annotation that contains the original LaTeX formula */
+  .latex-container :global(.katex-mathml) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>

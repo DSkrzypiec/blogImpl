@@ -1,0 +1,181 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Copying data between distributed systems">
+  <PostTitle
+    title="Copying data between distributed systems"
+    date="2022-06-05"
+  />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    Transforming data from one form into another is the primary task of every
+    programmer. For data engineers very common task is to move or copy data
+    between two or more data sources with
+    <a href="https://en.wikipedia.org/wiki/Extract,_transform,_load">ETL</a> or
+    <a href="https://en.wikipedia.org/wiki/Extract,_load,_transform">ELT</a> processes.
+    Usually implementation of those processes are very high level. Glueing few
+    libraries into a script, or some
+    <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts/operators.html">operators</a>
+    into a DAG in Python. Although not always. There are more interesting cases.
+    Recently I've had one and I wanted to write a bit about this particular
+    problem and possible solutions.
+  </p>
+
+  <Chapter name="The problem" id="the-problem" />
+  <p>
+    The main problem was to copy rather large amount of data from very legacy
+    database (Apache Cassandra 2.1) located on premise data center into
+    cloud-based <a href="https://www.snowflake.com">Snowflake</a>.
+  </p>
+
+  <Chapter name="Constrains" id="constrains" />
+  <p>
+    The table which shall be copied doesn't have any event time stamps or dates.
+    Partition is based on <code>user_id</code> column and clustering on UUID column. Table is
+    rather big (surely > 1TB) but I don't know exactly because <code>SELECT COUNT(*)
+    FROM ...</code> on Cassandra haven't succeeded in few hours. Therefore using builtin
+    Cassandra's <code>COPY TO</code> is a bit risky in terms of capacity of local storage. Also
+    it cannot be deterministically resumed once it's halted. Also data format
+    should be suitable for Snowflake. This should be one time migration. It will
+    not be a cyclical process. We must not oversaturate Cassandra cluster.
+  </p>
+
+  <Chapter name="High level solution" id="high-level-solution" />
+  <p>
+    In consideration to the above constrains I decided to sketch custom copying
+    program in Go which would connect to Cassandra (using <code>gocql</code> library), connect
+    to Snowflake and somehow efficiently copy the data with extra schema
+    validation.
+  </p>
+
+  <p>
+    After initial testing it was clear that Cassandra responses very quickly and
+    consistently for queries of the form
+  </p>
+
+  <Code lang="sql" theme="dark-plus" code={`SELECT * FROM ... WHERE user_id = $id`} />
+
+  <p>
+    That's great, because we already have (in Snowflake) a set of all existing
+    <code>user_id</code> values. The upside of this approach is that we can stop and resume
+    copying as we like because we know what <code>user_ids</code> have been already copied.
+    Also this program doesn't require much disk space (just for the binary) and RAM
+    (configurable by copying parameters).
+  </p>
+
+  <p>
+    The downside is possible many rather small requests to Cassandra which in
+    general could be (and almost always is) slower than using native <code>COPY TO</code>. But
+    in light of the constrains it is a necessary cost that we have to pay.
+  </p>
+
+  <p>
+    Let's outline high level phases of the algorithm:
+  </p>
+
+  <ol>
+    <li>Get a set of <code>user_id</code> values that shall be copied</li>
+    <li>Send a bunch of concurrent calls to Cassandra, one for each <code>user_id</code></li>
+    <li>Asynchronously deserialize data and put it in a shared collection</li>
+    <li>Start sending batched <code>INSERT INTO</code> statements into Snowflake concurrently</li>
+    <li>Wait before another batch of aync calls to Cassandra only when number of
+        goroutines responsible for sending data to Snowflake reaches its limit</li>
+    <li>Repeat</li>
+  </ol>
+
+  <p>
+    One can notice that there are two degrees of concurrency in this algorithm. In
+    order to provide efficient solution those degrees have to be set appropriately.
+  </p>
+
+  <Chapter name="Concurrency optimization" id="concurrency-optimization" />
+  <p>
+    Naturally we should start our optimization with exploration of reasonable limits
+    of the load that our end systems, Cassandra and Snowflake, could take including
+    the constrains. On the Cassandra end few tests was enough to determine how many
+    concurrent requests per seconds could be sent to not oversaturate the cluster.
+    On the Snowflake end one of limitations was limit of queued queries for
+    particular <a href="https://docs.snowflake.com/en/user-guide/warehouses-overview.html">warehouse</a>.
+    Also number of rows in <code>VALUES</code> in <code>INSERT INTO</code> statement has its upper bound.
+    Since single batched <code>INSERT INTO</code> takes around 1-5 seconds in my case and there
+    is upper bound for queued queries I could easily estimate inserting data into
+    Snowflake safely and near maximum efficiency.
+  </p>
+
+  <p>
+    Now we're getting into the most interesting part of the problem. How to
+    integrate dynamics of two systems? For example let's say we would send to
+    Cassandra as many as possible concurrent requests (including the constrains).
+    It might turned out that inserting the data, which will be sent from Cassandra,
+    to Snowflake would take significantly longer than Cassandra response. In this
+    case traffic on the Cassandra clusters would be like: spike, long flat, spike,
+    long flat, etc. It also requires much more memory for the program which is
+    performing this copying in order to keep buffers for Cassandra response data.
+  </p>
+
+  <p>
+    We could get the same (or better) efficiency with fewer concurrent requests to
+    Cassandra if we minimize pauses between Snowflake's reaching its set limit and
+    next batch of requests to Cassandra. This optimization is a bit familiar to
+    classic <a href="https://en.wikipedia.org/wiki/Lotka–Volterra_equations">Lotka-Volterra equations</a>.
+  </p>
+
+  <p>
+    In general rate of generating outputs by the producer to rate of transforming
+    and inserting data by consumer is a crucial statistics to optimize.
+  </p>
+
+  <Chapter name="Go implementation" id="go-implementation" />
+  <p>
+    I wrote a program which implemented above algorithm in Go. It took around one
+    office day (few hours really) including implementation and tests for
+    concurrency optimization. That was really smooth! Mostly because of Go easy
+    concurrency model (goroutines and channels) and Go standard library <a href="https://pkg.go.dev/sync">sync</a> for
+    providing basic synchronization primitives.
+  </p>
+
+  <p>
+    I cannot include code examples this time. What is the most important is a fact
+    that it was very easy to write general patterns like:
+  </p>
+
+  <ul>
+    <li>send this <code>N</code> request concurrently</li>
+    <li>in the meantime results are sent over the channel</li>
+    <li>concurrently results are taken from channel and batched <code>INSERT INTO</code> are
+      produced</li>
+    <li>start sending asynchronous <code>INSERT</code>s into Snowflake</li>
+    <li>if number of concurrent writers are reached its max than we wait</li>
+  </ul>
+
+  <p>
+    It was really easy to write correct concurrent algorithm based just on high
+    level plan using Go.
+  </p>
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    Copying data usually is not very excited task. In this particular case the
+    constrains of the whole task and optimization aspect was rather interesting in
+    my opinion. There are many Cassandra caveats and possible networking
+    issues that was not mentioned here which also might be interesting.
+  </p>
+
+  <p>
+    Also if you got a bit less restrictive constrains you should use Cassandra
+    native <code>COPY TO</code> instead of writing custom concurrent program for moving data.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://en.wikipedia.org/wiki/Extract,_transform,_load">ETL</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Extract,_load,_transform">ELT</a></li>
+    <li><a href="https://github.com/gocql/gocql">gocql</a></li>
+  </ol>
+
+</Post>

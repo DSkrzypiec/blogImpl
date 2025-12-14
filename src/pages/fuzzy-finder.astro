@@ -1,0 +1,201 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Fuzzy Finder">
+  <PostTitle
+    title="Fuzzy Finder"
+    date="2021-11-01"
+  />
+
+  <Image src="/fuzzy-finder/top.png" alt="Fuzzy finder top image" caption="Fuzzy finder" />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    I'll start by stating that I don't like fuzziness. It's the main reason I
+    didn't stick to machine learning and data science at the beginning of my
+    career. Instead I've transitioned to programming and data engineering.
+  </p>
+
+  <p>
+    And here I am writing about <em>fuzzy</em> finder in Vim. That's because of
+    <a href="https://github.com/junegunn/fzf.vim">fzf.vim</a> Vim package. It has some very
+    convenient feature that I have been looking for. More on this later in the
+    post. I still believe you should know (at least try to know) file tree
+    structure of a project your working on. Fuzzy finders might pull you away from
+    this practice very quickly. And I do think it's a bad idea.
+  </p>
+
+  <p>
+    However let's assume you have a firm grasp of your project's structure tree but
+    it's large project with very deep tree. In this case, when you know what you
+    are looking for, it might saves you time for typing long file paths.
+  </p>
+
+  <p>
+    Before I jump to <em>fzf.vim</em> package let's discuss <a href="https://github.com/junegunn/fzf">fzf</a>
+    first.
+  </p>
+
+  <Chapter name="fzf" id="fzf" />
+  <p>
+    Fuzzy finders in general helps you to look for a file or directory, usually in
+    an interactive manner, by just taking search phrases. They are usually search
+    down the tree of files recursively beginning from current catalog.
+  </p>
+
+  <p>
+    At I stated before I try to know the file tree. But in case I want to open file
+    in <code>./this/very/deep/file/path/location/project/sub/MyFile.cs</code> it is really
+    convenient to feed <code>MyFile</code> phrase to fuzzy finder to quickly go to that
+    location.
+  </p>
+
+  <p>
+    In case of <em>fzf</em> I mostly use two aliases which uses <em>fzf</em> to fuzzy find file
+    and open it in Vim and the other one is for jumping to found directory.
+  </p>
+
+  <Code lang="bash" theme="dark-plus" code={`alias vf='vim $(fzf --height 40%)'
+alias cdf='cd $(find . -type directory | fzf --height 60%)'`} />
+
+  <p>
+    A little demo of the those aliases:
+  </p>
+
+  <div class="asciinema-container">
+    <a href="https://asciinema.org/a/hTYFpnEqIekVYmTV7c1xS9PCk">
+      <img src="https://asciinema.org/a/hTYFpnEqIekVYmTV7c1xS9PCk.svg" alt="asciicast demo" />
+    </a>
+  </div>
+
+  <Chapter name="fzf.vim" id="fzf-vim" />
+  <p>
+    As the name suggests <em>fzf.vim</em> is a Vim package which wraps <em>fzf</em> in very comfy
+    form. It takes advantage of Vim pop-up windows to run <em>fzf</em>. It can perform
+    fuzzy search on files, git commits, Vim help, snippets and many more.
+    But what was the most crucial feature for me was integration of <em>fzf</em> with
+    <a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>.
+  </p>
+
+  <p>
+    For years I've been using the following mapping for using grep while working in
+    Vim (I used spaces instead of <code>&lt;space&gt;</code> for readability) to grep the word under
+    the cursor
+  </p>
+
+  <Code lang="vim" theme="dark-plus" code={`noremap <leader>f :!grep --color=always -iran <C-r><C-w> .<CR>`} />
+
+  <p>
+    Once I've glanced over the grep result I had to manually open the desired file.
+    It was a bit tedious.
+  </p>
+
+  <p>
+    Using <em>fzf.vim</em> I can use <code>:Rg</code> command to use <code>ripgrep</code> interactively and
+    preview fragment of files for matched results. Because of great performance of
+    both <em>ripgrep</em> and <em>fzf</em> browsing through results is extremely smooth.
+    Once you find a result you can open it in new tab (<code>Ctrl + t</code>), new split
+    (<code>Ctrl + x</code>) or vertical split (<code>Ctrl + v</code>).
+  </p>
+
+  <p>
+    The following cast should express more than few paragraphs.
+  </p>
+
+  <div class="asciinema-container">
+    <a href="https://asciinema.org/a/9qVzlU7SRLzvipfivYANQjZB7">
+      <img src="https://asciinema.org/a/9qVzlU7SRLzvipfivYANQjZB7.svg" alt="asciicast demo" />
+    </a>
+  </div>
+
+  <p>
+    There is one technical caveat in <code>:Rg</code> command. The ripgrep query is performed
+    once at the beginning and all filters on results are done by <em>fzf</em>. Therefore
+    you might think that using regular expressions doesn't work. Fortunately author
+    gives <a href="https://github.com/junegunn/fzf.vim#example-advanced-ripgrep-integration">an
+    example</a>
+    how to fire up <em>ripgrep</em> on every query change. I have set this under <code>:RB</code>
+    command.
+  </p>
+
+  <Chapter name="My settings" id="my-settings" />
+  <p>
+    Make sure you have <em>fzf</em> and <em>ripgrep</em> installed before setting up Vim plugins.
+  </p>
+
+  <Code lang="vim" theme="dark-plus" code={`Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+...
+
+let g:fzf_preview_window = ['down:40%', 'ctrl-/']
+
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --line-number --no-heading --color=always -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)`} />
+
+  <Chapter name="Summary" id="summary" />
+  <p>
+    In a very long time I have not been this excited about Vim plugin. Regular
+    fuzzy finder for files via <em>fzf.vim</em> is a pleasant feature but if it would be
+    the only feature of this plugin I would stick with standard Vim's <code>find</code>.
+  </p>
+
+  <p>
+    But using this smooth usage of <em>ripgrep</em> inside Vim has really light a spark of
+    joy for me. That is it. It is the main reason for this post.
+  </p>
+
+  <Chapter name="References" id="references" />
+  <ol>
+    <li><a href="https://github.com/junegunn/fzf">fzf</a></li>
+    <li><a href="https://github.com/junegunn/fzf.vim">fzf.vim</a></li>
+    <li><a href="https://github.com/BurntSushi/ripgrep">ripgrep</a></li>
+  </ol>
+
+</Post>
+
+<style>
+  .asciinema-container {
+    max-width: 100%;
+    margin: 1.5rem auto;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .asciinema-container a {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .asciinema-container img {
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+    width: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    .asciinema-container img {
+      max-height: 300px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .asciinema-container img {
+      max-height: 250px;
+    }
+  }
+</style>
