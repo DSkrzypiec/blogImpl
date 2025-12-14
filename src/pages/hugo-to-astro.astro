@@ -1,0 +1,86 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import SubChapter from "../components/SubChapter.astro";
+import Image from "../components/Image.astro";
+---
+
+<Post title="Hugo to Astro Migration">
+  <PostTitle
+    title="Hugo to Astro Migration"
+    date="2025-12-14"
+  />
+
+    <Image src="/hugo-to-astro/hugo_last.png"
+        alt="Screenshot of old Hugo version of the blog"
+        caption="Screenshot of old Hugo version of the blog" />
+
+    <Chapter name="Init" id="init"/>
+    <p>
+        The initial version of this blog was built using
+        <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a>,
+
+        a popular static site generator written in Go. It was a good fit at the time, mainly to its simplicity and
+        performance.
+    </p>
+
+    <p>
+        However, as time went on, I found myself wanting a bit more flexibility, especially regarding styling and
+        introducing potentially my own components. Though both are possible in Hugo, I found that I don't really want
+        to go through a theme source code and modify it to achieve what I want. Also I don't use that much of CSS and JS,
+        to start setting up my own theme in Hugo.
+    </p>
+
+    <p>
+        For my next version of the blog I wanted something that satisfies the following:
+
+        <ul>
+            <li>Still blog as a static site</li>
+            <li>A bit closer to HTTML/CSS/JS so that I can easily customize the look and feel</li>
+            <li>Though not purely HTML, to allow some components to be created and reused</li>
+            <li>Good performance (not too much JS overhead for a simple blog)</li>
+            <li>I don't mind writing posts in HTML instead of Markdown</li>
+        </ul>
+
+        This change was always rather low priority for me, so I didn't really rush into it. But when I was writing down
+        docs for <a href="https://ppacer.org/" target="_blank" rel="noopener noreferrer">ppacer</a> using
+        <a herf="https://docs.astro.build/en/getting-started/" target="_blank" rel="noopener noreferrer">Astro Docs</a>,
+        I realized that Astro might be a good fit for my blog as well.
+    </p>
+
+    <Chapter name="New prototype" id="new"/>
+    <p>
+        So I started sketching a new prototype using actual Astro (no Astro Docs). I've built the initial components
+        like, the header, list of posts, post layout, title, etc. Then I've migrated two or three posts to see how it
+        would look like in my new prototype. It kind of worked out well.
+    </p>
+
+    <p>
+        It's not the final version yet, but I'm happy with the initial sketch and I do have a plan about upcoming
+        modifications and customizations. What's most important is that I can easily create and modify components as I want.
+        I feel like I have much more control over the look and feel of the blog now, compared to Hugo.
+    </p>
+
+    <Chapter name="Migration" id="migration"/>
+    <p>
+        Since joining a start-up in September 2024, I've had little time to write blog posts, and even less to work on
+        the new version of the blog and migrate the existing ones. However during my summer vacation in August 2025
+        I've sketched the initial version of the new blog using Astro and was ready to migrate the existing posts.
+        During the vacation I migrated 5-10 posts, but after returning to work, I had little time to continue the
+        migration.
+    </p>
+
+    <p>
+        At the end of October 2025 I wanted to write down my thoughts on the 19th Chopin Competition and I decided to
+        write it up using only the new version of the blog. Also November was pretty close to the end of the year when
+        I usually write my annual summary post. So I decided to fully switch to the new version of the blog and finish
+        the migration of the remaining posts.
+    </p>
+
+    <p>
+        Migration of markdown posts to Astro components was a perfect task for LLM agents. It helped me significantly.
+        In the end migration of almost 40 posts took me only 2 or 3 evenings (for 1-2h each). When LLM agents were
+        migrating the next post I've been reading and fixing the previous one. It went pretty smoothly.
+    </p>
+</Post>
