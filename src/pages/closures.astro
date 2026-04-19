@@ -1,0 +1,235 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Subchapter from "../components/Subchapter.astro";
+import Image from "../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="Closures in Go">
+  <PostTitle
+    title="Closures in Go"
+    date="2026-01-29"
+  />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    Closures are a powerful and, in my opinion, underutilized feature in Go.
+    Personally I love the combination of strong and static typing with functions
+    begin a first-class citizens in the language. In this post I want to show
+    example usages in Go standard library, some examples convinient from my
+    perspective and finally discuss closures in APIs design.
+  </p>
+
+  <p>
+      Let's start with what a closure is. A closure is a function which can
+      reference things from outside its body. Let's do the simplest example:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={`// int -> (int -> int)
+func adder(base int) func(int) int {
+  return func(i int) int { return base + i }
+}
+
+func main() {
+  add5 := adder(5)
+  fmt.Println(add5(3)) // prints 8
+}`} />
+
+  <p>
+    In the example above we define a function <code>adder</code> which takes an
+    integer <code>base</code> and returns a function which takes another
+    integer and adds it to <code>base</code>. Function <code>adder</code>
+    returns a closure which captures the variable <code>base</code> from its
+    surrounding context - parent function parameter.
+  </p>
+
+  <p>
+    It's a toy example, but it shows how in Go we can return a function
+    <code>func(int) int</code> as return type and that function can
+    reference variable <code>base</code> from outside its body.
+  </p>
+
+
+  <Chapter name="Classics" id="classics" />
+
+  <p>
+    Let's take a look at some classic examples of closures in Go standard
+    library.
+  </p>
+
+  <Subchapter name="sort.Slice" id="sort" />
+
+  <p>
+    Probably the most known example is <a
+      href="https://pkg.go.dev/sort#Slice">sort.Slice</a> function with the
+    following signature:
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={
+    `func Slice(slice interface{}, less func(i, j int) bool)`
+  }/>
+
+  <p>
+    It takes a slice of data (as empty interface) and a closure
+    <code>less</code> which compares two elements in the slice by their
+    indices. This way we can sort any slice of data by providing our own
+    comparison logic. This fuction was in the standard library long before Go
+    had generics. This is also an example why Go chose to not have generics
+    from the beginning. With the built-in generic data containers like slices
+    <code>[]T</code> and maps <code>map[K]V</code>, we can use closures to
+    provide custom logic for operations like sorting, filtering, and
+    transforming data without needing to define new types or interfaces. It
+    wasn't the replacement for generics, but a way to achieve similar goals
+    before generics were introduced.
+  </p>
+
+  <Code lang="go" theme="dark-plus" code={
+`sort.Slice(users, func(i, j int) bool {
+  return users[i].Age < users[j].Age
+})`}/>
+
+  <p>
+    As we can see in the above example, the caller provides
+    <strong>how</strong> to sort the slice of users by providing a closure
+    which compares two users by their age. The <code>sort.Slice</code> function
+    doesn't even know that it was given a slice of users. It's an example how
+    we can use closures, to delegate some logic to the caller, without forcing
+    them to implement some interface or define a new type.
+  </p>
+
+
+  <Subchapter name="http.HandlerFunc" id="http-handler"/>
+
+  If you ever implemented a HTTP server in Go, you probably used <a
+    href="https://pkg.go.dev/net/http#HandleFunc">http.HandleFunc</a> function,
+  to register new HTTP endpoints. It has the following signature:
+
+  <Code lang="go" theme="dark-plus" code={
+`func HandleFunc(pattern string, handler func(ResponseWriter, *Request))`
+  }/>
+
+  <p>
+    It takes a URL pattern and a closure <code>handler</code> which is called
+    whenever a request matches the given pattern. This way we can define our
+    HTTP handlers as closures, capturing any variables from the surrounding
+    context. This is also a good example, to present that those closures can be
+    methods. Let's consider the following example:
+  </p>
+
+<Code lang="go" theme="dark-plus" code={
+`import (
+  "database/sql"
+  "net/http"
+)
+
+type MyService struct {
+  dbConn *sql.DB
+}
+
+func (ms *MyService) getUser() (User, error) {
+  ...
+}
+
+func (ms *MyService) GetUserHandler(
+  w http.ResponseWriter, r *http.Request,
+) {
+  user, uErr := ms.getUser()
+  if uErr != nil {
+      http.Error(w, "User not found", http.StatusNotFound)
+      return
+  }
+  if err := encode(w, http.StatusOK, user); err != nil {
+      http.Error(
+          w, "cannot get user from DB", http.StatusInternalServerError,
+      )
+      return
+  }
+}
+
+func main() {
+  svc := &MyService{dbConn: initDBConnection()}
+  http.HandleFunc("/user", svc.GetUserHandler)
+  http.ListenAndServe(":8080", nil)
+}`}/>
+
+  <p>
+    In the example above HTTP handler for getting user is defined as a method
+    on a type which keeps a database connection. This is often more convenient,
+    than using <a
+      href="https://pkg.go.dev/net/http#Handle"><code>http.Handle</code></a>
+    function, which takes an <code>http.Handler</code> interface as a
+    parameter. In the latter case we would need to define a new type which
+    implements <code>ServeHTTP</code> method and then create an instance of
+    that type to register the handler. In case of <code>http.HandleFunc</code>
+    we can have multiple methods on the same type for multiple HTTP endpoints.
+  </p>
+
+
+  <Subchapter name="context" id="context" />
+
+  <p>
+    Package <code>context</code> is a Go standard library which:
+  </p>
+
+  <blockquote>
+    <p>
+      [...] defines the Context type, which carries deadlines,
+      cancellation signals, and other request-scoped values across API
+      boundaries and between processes.
+    </p>
+  </blockquote>
+
+  <p>
+    Let's consider the following sample program:
+  </p>
+
+<Code lang="go" theme="dark-plus" code={
+`package main
+
+import (
+  "context"
+  "fmt"
+  "math/rand"
+  "time"
+)
+
+func genNumbers(ctx context.Context, delay time.Duration) {
+  for {
+    select {
+    case <-ctx.Done():
+        return
+    default:
+    }
+    fmt.Println(rand.Intn(100))
+    time.Sleep(delay)
+  }
+}
+
+func main() {
+  ctx, cancel := context.WithCancel(context.Background())
+  go genNumbers(ctx, 300*time.Millisecond)
+
+  var input string
+  fmt.Scanln(&input)
+  if input == "x" {
+    cancel()
+    fmt.Println("Stopped printing random numbers.")
+  }
+}`}/>
+
+  <p>
+    Function <code>context.WithCancel</code> creates a new context which can be
+    cancelled by calling the returned <code>cancel</code> function (a closure
+    really). In the program above we pass that context to the
+    <code>genNumbers</code> function which prints random numbers every 300
+    milliseconds until the context is cancelled. We call <code>cancel</code>
+    function when user input from stdin is "x". This is a very common pattern
+    in Go in general, but here in particulary a good example how closures can
+    be used to pack internal logic about sending a signal and doing a cleanup.
+    For caller, it's very simple - they just got a function without any
+    arguments and return values, just a "call" mechanism.
+  </p>
+
+</Post>
