@@ -247,6 +247,26 @@
             font-size: 0.78rem;
         }
 
+        /* ─────────────── MOBILE ─────────────── */
+        @media (max-width: 680px) {
+            body { padding: 1rem 0.75rem; }
+
+            .cv-header {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-block {
+                text-align: left;
+            }
+
+            .cv-body {
+                grid-template-columns: 1fr;
+            }
+
+            .main   { order: 1; }
+            .sidebar { order: 2; margin-top: 1.5rem; }
+        }
+
         /* ─────────────── PRINT ─────────────── */
         @media print {
             @page {
