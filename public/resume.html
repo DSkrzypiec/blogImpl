@@ -248,7 +248,7 @@
         }
 
         /* ─────────────── MOBILE ─────────────── */
-        @media (max-width: 680px) {
+        @media screen and (max-width: 680px) {
             body { padding: 1rem 0.75rem; }
 
             .cv-header {
@@ -271,7 +271,7 @@
         @media print {
             @page {
                 size: A4;
-                margin: 14mm 14mm 14mm 14mm;
+                margin: 10mm;
             }
 
             :root {
@@ -289,7 +289,7 @@
             body {
                 background: #fff;
                 color: #1a1a1a;
-                padding: 0;
+                padding: 4mm 10mm 4mm 4mm;
             }
 
             code, .mono {
@@ -345,7 +345,7 @@
 
             <div class="skill-group">
                 <div class="skill-group-label">Hobby</div>
-                <div class="skill-group-items">C++ · F#<br>Machine Learning</div>
+                <div class="skill-group-items">C++ · Piano · <br>Machine Learning</div>
             </div>
 
             <div class="section-heading">Education</div>
@@ -401,6 +401,9 @@
                             <li>Design and implementation of REST API endpoints</li>
                             <li>Developing core product features: Optimization Guides, Business Goal resolution (DAG-based), Dashboards, and a cron-based Workflow scheduler</li>
                             <li>Implementing permissions system, org plan management, and <code>Auth0</code> M2M public API</li>
+                            <li>Designing and implementing AI agents directly in <code>Go</code> backend </li>
+                            <li>Designing and implementing retrieval-augmented generation (RAG)
+                                        subsystems in the backend, including vector database integration (<code>pgvector</code>) </li>
                             <li>Integrations with AI agents</li>
                         </ul>
                     </li>
@@ -416,13 +419,11 @@
                             <li>Day-0 sync process, catalog sync, and Query History sync pipeline</li>
                             <li>Event-driven Events Processor on <code>AWS Lambda</code> + <code>SQS</code> with progress tracking</li>
                             <li>Virtual Objects/Columns detection and cross-workspace enrichment copying</li>
+                            <li>Implementation of parsing SQL queries (<code>Python</code> and <code>sqlglot</code>) and use it to
+                                        build a graph of database object relationships based on historical queries</li>
                         </ul>
                     </li>
-                    <li>Infrastructure using <code>AWS CDK</code>
-                        <ul>
-                            <li>Migration of <code>Aurora PostgreSQL</code> clusters to encrypted instances using <code>DMS</code> and <code>pg_restore</code></li>
-                            <li>Setup and maintenance of <code>ECS</code> services, <code>Lambda</code> functions, <code>SES</code>, and bastion hosts</li>
-                        </ul>
+                            <li>Design, build and maintain infrastructure on <code>AWS</code> using <code>AWS CDK</code>
                     </li>
                 </ul>
             </div>
