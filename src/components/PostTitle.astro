@@ -5,13 +5,16 @@ export interface Props {
 }
 
 const { title, date } = Astro.props;
+
+const lang = Astro.currentLocale === "pl" ? "pl" : "en";
+const publishLabel = lang === "pl" ? "Data publikacji:" : "Publish date:";
 ---
 
 <div class="post-title">
   <h1>{title}</h1>
     {date && (
     <p class="post-date">
-      <span class="publish-label">Publish date:</span> {date}
+      <span class="publish-label">{publishLabel}</span> {date}
     </p>
     )}
 </div>
