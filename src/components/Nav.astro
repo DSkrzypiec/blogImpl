@@ -1,11 +1,38 @@
 ---
+export interface Props {
+  /**
+   * URL of the current page in the *other* language.
+   * Set this on bilingual posts (e.g. "/pl/beer" on the English page).
+   * When omitted, the toggle's other-language half is dimmed and falls
+   * back to that language's home.
+   */
+  altLocaleUrl?: string;
+}
+
+const { altLocaleUrl } = Astro.props;
+
+const locale = Astro.currentLocale === "pl" ? "pl" : "en";
+
+const strings = {
+  en: { posts: "Posts", about: "About", resume: "Resume" },
+  pl: { posts: "Posty", about: "O mnie", resume: "CV" },
+} as const;
+const t = strings[locale];
+
+const prefix = locale === "pl" ? "/pl" : "";
 const menuItems = [
-  { name: "Posts", link: "/" },
-  { name: "About", link: "/about" },
-  { name: "Resume", link: "/resume.html" }
+  { name: t.posts, link: `${prefix}/` },
+  { name: t.about, link: `${prefix}/about` },
+  { name: t.resume, link: "/resume.html" },
 ];
 
 const currentPath = Astro.url.pathname; // Get current page path
+
+// Language toggle: the active half is the current locale, the other half
+// links to its counterpart (or falls back to that locale's home).
+const enUrl = locale === "en" ? null : (altLocaleUrl ?? "/");
+const plUrl = locale === "pl" ? null : (altLocaleUrl ?? "/pl/");
+const hasAlt = altLocaleUrl != null;
 ---
 
 <nav>
@@ -16,12 +43,30 @@ const currentPath = Astro.url.pathname; // Get current page path
       </li>
     ))}
   </ul>
+
+  <div class="lang-toggle" role="group" aria-label="Language">
+    {enUrl === null ? (
+      <span class="lang current">EN</span>
+    ) : (
+      <a class={`lang${hasAlt ? "" : " dimmed"}`} href={enUrl}
+         title={hasAlt ? "Read in English" : "No English version of this page"}>EN</a>
+    )}
+    {plUrl === null ? (
+      <span class="lang current">PL</span>
+    ) : (
+      <a class={`lang${hasAlt ? "" : " dimmed"}`} href={plUrl}
+         title={hasAlt ? "Czytaj po polsku" : "Brak polskiej wersji tej strony"}>PL</a>
+    )}
+  </div>
 </nav>
 
 <style>
   nav {
     padding: 1rem 0;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
   }
 
   ul {
@@ -34,12 +79,48 @@ const currentPath = Astro.url.pathname; // Get current page path
     flex-wrap: wrap; /* Allow wrapping on small screens */
   }
 
+  /* Language toggle: styled like the main nav links — plain text,
+     active language underlined in the accent color. Pinned right and
+     vertically centered with the menu on wide screens. */
+  .lang-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .lang {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-decoration: none;
+    padding: 0.2rem 0.3rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease-in-out;
+  }
+
+  a.lang:hover {
+    color: var(--accent-color);
+  }
+
+  .lang.current {
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
+  }
+
+  .lang.dimmed {
+    opacity: 0.4;
+  }
+
   /* Mobile responsive navigation */
   @media (max-width: 480px) {
     ul {
       gap: 1rem;
     }
-    
+
     a {
       font-size: 1rem;
       padding: 0.4rem 0.8rem;
@@ -50,10 +131,22 @@ const currentPath = Astro.url.pathname; // Get current page path
     ul {
       gap: 0.5rem;
     }
-    
+
     a {
       font-size: 0.9rem;
       padding: 0.3rem 0.6rem;
+    }
+  }
+
+  /* On small screens the toggle flows below the menu instead of overlapping. */
+  @media (max-width: 768px) {
+    nav {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .lang-toggle {
+      position: static;
     }
   }
 
@@ -69,7 +162,7 @@ const currentPath = Astro.url.pathname; // Get current page path
     transition: all 0.3s ease-in-out;
   }
 
-  a:hover {
+  ul a:hover {
     border: 1px solid var(--accent-color);
     border-radius: 4px;
     color: var(--accent-color);
