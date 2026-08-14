@@ -23,8 +23,8 @@ const {
 ---
 
 <div class="image-container">
-  <img 
-    src={src} 
+  <img
+    src={src}
     alt={alt}
     width={width}
     height={height}
@@ -32,7 +32,23 @@ const {
     class={invertColors ? "inverted" : ""}
   />
   {caption && <p class="image-caption">{caption}</p>}
+  <dialog class="lightbox">
+    <img src={src} alt={alt} class={invertColors ? "inverted" : ""} />
+    {caption && <p class="lightbox-caption">{caption}</p>}
+  </dialog>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".image-container").forEach((container) => {
+      const img = container.querySelector(":scope > img");
+      const dialog = container.querySelector("dialog");
+      if (!img || !dialog) return;
+      img.addEventListener("click", () => dialog.showModal());
+      dialog.addEventListener("click", () => dialog.close());
+    });
+  });
+</script>
 
 <style>
   .image-container {
@@ -42,16 +58,49 @@ const {
     margin: 1.5rem 0;
   }
 
-  .image-container img {
+  .image-container > img {
     width: auto;
     height: auto;
     border-radius: 8px;
     object-fit: contain;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: zoom-in;
   }
 
   .image-container img.inverted {
     filter: invert(1);
+  }
+
+  .lightbox {
+    border: none;
+    padding: 0;
+    background: transparent;
+    max-width: none;
+    max-height: none;
+    outline: none;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .lightbox img {
+    display: block;
+    max-width: 90vw !important;
+    max-height: 90vh !important;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    cursor: zoom-out;
+  }
+
+  .lightbox-caption {
+    margin: 0.5rem auto 0;
+    font-size: 0.9rem;
+    color: var(--text-primary, #ffe9c6);
+    font-style: italic;
+    text-align: center;
+    max-width: 90vw;
   }
 
   .image-caption {
@@ -69,13 +118,13 @@ const {
       margin: 1rem 0;
     }
     
-    .image-container img {
+    .image-container > img {
       max-height: 300px !important;
     }
   }
 
   @media (max-width: 480px) {
-    .image-container img {
+    .image-container > img {
       max-height: 250px !important;
     }
     
