@@ -1,0 +1,279 @@
+---
+import Post from "../layouts/Post.astro";
+import PostTitle from "../components/PostTitle.astro";
+import Chapter from "../components/Chapter.astro";
+import Image from "../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="The CLI we need" altLocaleUrl="/pl/dst">
+  <PostTitle
+    title="The CLI we need"
+    date="2026-08-18"
+  />
+
+  <Image src="/dst/dst.png" alt="dst help" caption="Current commands in dst" />
+
+  <Chapter name="Intro" id="intro" />
+  <p>
+    For a long time I've wanted to consolidate my practices and methods around
+    working with data and designing database schemas from the backend
+    perspective, but back then I didn't know yet in what form I'd like to
+    materialize it. Should it be a library, a methodology, a CLI, or maybe a
+    full platform with a graphical or web interface? Each of those options had
+    its own set of pros and cons. At that time I didn't have a concrete vision
+    yet, just a general feeling and desire, so it ended up going nowhere.
+  </p>
+
+  <p>
+    In the first months at ConnectyAI I faced the problem of designing and
+    implementing an interface which would let the application backend connect
+    to a given set of data sources, such as Postgres, BigQuery, Snowflake,
+    Redshift, etc. That interface and the corresponding implementations
+    supported functionalities like schema inspection, query execution, listing
+    query history, and so on. After this experience my aforementioned feeling
+    only got stronger. Moreover, I gained an intuition on to what extent a
+    consistent interface for many data sources is possible and useful.
+  </p>
+
+  <p>
+    Another important event was the moment when the agentic approach to LLMs
+    became very useful in practice (since the times of Claude Code and improved
+    LLM models).
+  </p>
+
+
+  <Chapter name="So what do we need?" id="what" />
+  <p>
+    So far I haven't said anything concrete. That's because I wanted to
+    structure this post according to the chronological order of my experiences
+    and actions.
+  </p>
+
+  <p>
+    So what do we need (in this context)? We need software which:
+    <ul>
+      <li>reflects my practices and methods for working with data</li>
+      <li>enables LLM agents to work according to the previous point</li>
+      <li>supports many different data sources and is open for extensions</li>
+    </ul>
+  </p>
+
+  <p>
+    The beginning, of course, was writing specialized agents and skills in
+    Claude Code, which would reflect my most common tasks around data. It was
+    an improvement, but maintaining and evolving those entities turned out
+    rather mediocre. Moreover, passing data sources and potentially secrets
+    could be done comfortably only in non-production environments. So I
+    abandoned this approach.
+  </p>
+
+  <p>
+    As it turned out very quickly, the agentic approach to LLMs benefits a lot
+    from using CLI tools. Well-known CLIs/SDKs are obviously baked into the
+    models, but even in case of niche or new programs, agents are able to
+    quickly scan the documentation and build up the context. Locally, programs
+    allow for a very fast feedback loop, which converges to agents
+    understanding the given tool.
+  </p>
+
+  <p>
+    At this point I decided that a CLI program is the perfect form for my tool
+    for working with data. <strong>A deterministic program which allows
+      fundamental operations on many data sources through a consistent
+      abstract interface</strong> with rich documentation will be a perfect
+    foundation for LLM agents. Something that once would be a rather awkward
+    CLI interface, which most programmers wouldn't use willingly, now becomes a
+    layer which agents use without any problem, based on a high-level task.
+  </p>
+
+  <p>
+    Moreover, having the mentioned CLI between a human and LLM agents lets us
+    introduce safety measures which wouldn't be possible when using agents
+    directly. One example is access to data sources. In this case they are
+    always defined by a human and secrets are never available to the agent. It
+    can only use specific CLI commands and build solutions or analyses on top
+    of them. What's more, the agent will never be able to delete
+    (<code>DROP</code>) or modify (<code>UPDATE</code>) data which lives under
+    the given connection (<code>dst conns</code>). The CLI simply doesn't
+    support such operations, which is a limitation, but on the other hand it
+    provides safety. It's my preference and a conscious tradeoff.
+  </p>
+
+  <p>
+    Yet another advantage of a CLI is the fact that I don't have to spend time
+    on designing and implementing intermediate graphical or web interfaces,
+    which is usually a hard and time-consuming task, if we want to do it
+    properly. So I can focus on designing and implementing the essential
+    functionalities.
+  </p>
+
+  <Chapter name="We?" id="we" />
+  <p>
+    We? Meaning who? By "we" I mean myself and LLM agents that will be using this CLI.
+  </p>
+
+  <p>
+    It might turn out that, by accident, this tool will be useful also for
+    others, but in the near future I don't plan to publish it. I use the
+    mentioned CLI actively and even at the current early stage it's very
+    useful, but it's not yet close to the scope of functionality I have
+    planned.
+  </p>
+
+  <Chapter name="dst" id="dst" />
+  <p>
+    As you can see on the screenshot, I named the CLI <code>dst</code>, which
+    stands for <code>Damian Skrzypiec Tool</code>. This requires a bit of
+    explanation. My name is there not because I'm the author and I want to
+    remind users who created the tool, but for two reasons. The most important
+    one is the fact that I didn't have any other idea, and the second one is
+    to emphasize that it's a tool which reflects my preferences and
+    conventions.
+  </p>
+
+  <p>
+    After some time <code>dst</code> became just a three-letter word, an
+    alias, which doesn't need to have any other meaning than a reference to
+    the tool. Just like <code>git</code>. The origin of the name doesn't
+    matter here, neither does its expansion.
+  </p>
+
+  <Chapter name="Current features" id="current"/>
+  <p>
+
+    Currently <code>dst</code> supports the following families of commands:
+    <ul>
+      <li>
+        <code>dst conns</code> - for creating and managing connections to data
+        sources. At the moment <code>Postgres, BigQuery, Snowflake, SQLite,
+          CloudWatchLogs</code> are supported. Connection secrets are stored
+        in the system keyring, thanks to the <a
+          href="https://github.com/zalando/go-keyring">go-keyring</a> library.
+      </li>
+
+      <li>
+        <code>dst ex</code> - for exploring data sources. It allows schema
+        inspection, listing objects (tables, views, etc.), columns, data
+        types, and so on.
+      </li>
+
+      <li>
+        <code>dst query</code> - for executing, exporting, and other
+        functionalities related to queries. It also includes computing
+        statistics for a given set of columns of a given object.
+      </li>
+    </ul>
+  </p>
+
+  <Chapter name="Current usage" id="current-use"/>
+  <p>
+    Currently I use <code>dst</code> mainly as a <code>tool</code> in Claude
+    Code (CC), where additionally I have a <code>CC SKILL</code> which
+    contains my preferences regarding formatting SQL queries and a high-level
+    strategy of using <code>dst</code> (the details of <code>dst</code> the
+    agent takes directly from the documentation).
+  </p>
+
+  <p>
+
+    My current main scenarios of using <code>dst</code> in cooperation with LLM agents are:
+
+    <ul>
+      <li>
+        <strong>Ad-hoc text-to-SQL</strong> - the simplest usage.
+        <code>dst</code> alone enables deeper context of object metadata and
+        statistics of key columns. Based on this context the agent can
+        generate better SQL queries. Moreover, the fact that <code>dst</code>
+        supports many different data sources allows the agent to generate SQL
+        queries for many data sources in a single session. An example might be
+        an analytical query on both test and production environments, where
+        schemas might slightly differ (because there was no deployment yet).
+      </li>
+      <li>
+        <strong>Developing data models</strong> - in this scenario I usually
+        have a data model defined in a repository. Extending existing models
+        or adding new ones would be possible just through cooperation with an
+        LLM agent. In practice, however, it's worth confronting the designed
+        entities with the actual data. An agent using <code>dst</code> can
+        perform such tests on a set of given connections and aggregate the
+        results in the form of a report. That in turn is an input for the next
+        iteration of improving extensions in the data model. Based on my
+        experience I can say that it brought a lot of value and saved a lot of
+        (human) time.
+      </li>
+      <li>
+        <strong>Developing and debugging backends</strong> - very often
+        backend services are, in some part, a layer of abstraction over shared
+        and durable application state, which is quite often represented by a
+        database. In such a setup it's natural that an LLM agent working on
+        backend problems (in a session and backend repository) would benefit a
+        lot from the additional context of those databases. One example is
+        developing the schema of an operational database and generating
+        migration scripts between versions. Another very useful application,
+        especially if the backend is a distributed system, is the ability to
+        debug problems where the LLM agent can correlate the source code with
+        the actual data in the database. What's more, we can enrich our
+        context with operational logs of processes (<code>dst</code> supports
+        AWS CloudWatch as <code>dst conns</code>). In such a situation the
+        agent (and the programmer) have at their disposal everything that's
+        needed to understand the problem and solve it.
+      </li>
+
+      <li>
+        <strong>Easy operations on many data sources</strong> - it doesn't
+        sound like something hard and in fact it isn't, but in practice it's
+        often quite irritating. For example, I have <code>N</code> clients,
+        each one in BigQuery, but in a separate project, each with an
+        identical or very similar data schema. I'd like to run an analysis
+        across all clients. In the past that would require at least writing a
+        script, handling many secrets, then executing queries and summarizing
+        the results. Using <code>dst</code>, an agent can inspect schemas for
+        each client on its own, execute appropriate queries, and then
+        aggregate the results in the form of a report. In practice it's very
+        useful and saves a lot of time.
+      </li>
+    </ul>
+  </p>
+
+  <Chapter name="Planned features" id="future"/>
+  <p>
+    As you can see on the initial screenshot, I've already planned adding the
+    <code>dst migr</code> command, which will be used for planning, executing,
+    and tracking data migrations between two data sources defined as
+    <code>dst conns</code>. The idea is as follows. We create a migration plan
+    - a list of objects together with various properties regarding the
+    migration (how the data should be split into smaller chunks, how much we
+    can parallelize reading, etc.). The default plan will be generated
+    automatically, based on the source and target schemas. Then, however, a
+    human or an agent will be able to analyze the default proposal and
+    introduce improvements. In the world of data things can vary a lot, so I
+    want to be prepared for possibly high flexibility of the process. Based on
+    the plan, the planned "chunks" of data will be prepared for each of the
+    objects. All this metadata will be stored in a local SQLite. This will
+    give us the ability to track migration progress and to eventually stop and
+    resume the process at any moment.
+  </p>
+
+  <p>
+    Planned, but not yet implemented, is the functionality for listing and
+    searching historical queries for a given connection. It's a much smaller
+    feature than migrations, but very useful in practice. It should be added
+    soon.
+  </p>
+
+  <Chapter name="Summary" id="summary"/>
+  <p>
+    Despite the early stage of development, <code>dst</code> is already very
+    useful. I plan to keep developing it, so that it supports the vast
+    majority of my work around data and systems operating on data. Over time
+    I will certainly try to add support for more data sources. I'd like
+    <code>dst</code> to aggregate my knowledge about a given data source and
+    its characteristics through the implementation of a shared interface,
+    properly covering possible differences and peculiarities.
+  </p>
+
+  <p>
+    Regarding publishing <code>dst</code>, I can't promise anything. The future will tell.
+  </p>
+</Post>

@@ -1,0 +1,283 @@
+---
+import Post from "../../layouts/Post.astro";
+import PostTitle from "../../components/PostTitle.astro";
+import Chapter from "../../components/Chapter.astro";
+import Image from "../../components/Image.astro";
+import { Code } from 'astro:components';
+---
+
+<Post title="CLI, którego potrzebujemy" altLocaleUrl="/dst">
+  <PostTitle
+  title="CLI, którego potrzebujemy"
+    date="2026-08-18"
+  />
+
+  <Image src="/dst/dst.png" alt="dst help" caption="Aktualne komendy w dst" />
+
+  <Chapter name="Wstęp" id="intro" />
+  <p>
+    Od dawna chciałem skonsolidować moje praktyki i metody w ramach pracy nad
+    danymi lub projektowaniem schematów baz danych z perspektywy backendu, ale
+    nie wiedziałem wtedy jeszcze, w jakiej formie chciałbym to
+    zmaterializować. Czy powinna być to biblioteka, metodologia, CLI czy
+    może pełna platforma z interfejsem graficznym lub webowym? Każde z tych
+    rozwiązań miało zestaw swoich wad i zalet. Wtedy nie miałem jeszcze
+    konkretnej wizji, tylko ogólne poczucie i chęci, więc skończyło się na
+    niczym.
+  </p>
+
+  <p>
+    W pierwszych miesiącach ConnectyAI stałem przed problemem zaprojektowania i
+    zaimplementowania interfejsu, który pozwoliłby backendowi aplikacji łączyć
+    się ze wskazanym zestawem źródeł danych, takich jak Postgres, BigQuery,
+    Snowflake, Redshift, itp. Wspomniany interfejs i odpowiadające
+    implementacje wspierały funkcjonalności takie jak inspekcja schematu,
+    egzekucja kwerend, listowanie historii zapytań itp. Po tym doświadczeniu
+    moje wspomniane odczucie się tylko wzmocniło. Ponadto nabrałem intuicji, do
+    jakiego stopnia spójny interfejs dla wielu źródeł danych jest możliwy i
+    użyteczny.
+  </p>
+
+  <p>
+    Istotnym zdarzeniem był również moment, kiedy agentowe podejście do LLMów stało
+    się bardzo praktycznie użyteczne (od czasów Claude Code oraz ulepszonych modeli
+    LLMowych).
+  </p>
+
+
+  <Chapter name="Czyli czego potrzebujemy?" id="czego" />
+  <p>
+    Do tej pory nie powiedziałem niczego konkretnego. Wynika to z tego, że
+    chciałem ustrukturyzować ten post zgodnie z chronologicznym porządkiem
+    moich doświadczeń i akcji.
+  </p>
+
+  <p>
+    A więc czego potrzebujemy (w tym kontekście)? Potrzebujemy oprogramowania, które:
+    <ul>
+      <li>odwzorowuje moje praktyki i metody w pracy z danymi</li>
+      <li>umożliwia pracę agentów LLM odnośnie do poprzedniego punktu</li>
+      <li>wspiera wiele różnych źródeł danych oraz jest otwarte na rozszerzenia</li>
+    </ul>
+  </p>
+
+  <p>
+    Początkiem oczywiście było pisanie specjalistycznych agentów oraz skilli w
+    Claude Code, które by odzwierciedlały moje najczęstsze zadania wokół
+    danych. Było to usprawnienie, ale utrzymanie i rozwijanie tych bytów wyszło
+    średnio. Ponadto przekazywanie źródeł danych oraz potencjalnie sekretów mogło
+    być komfortowo zrealizowane tylko w nieprodukcyjnych środowiskach. Porzuciłem więc to podejście.
+  </p>
+
+  <p>
+    Jak się okazało bardzo szybko, agentowe podejście do LLMów bardzo zyskuje na
+    używaniu narzędzi CLI. Znane CLI/SDK są oczywiście zanurzone w modelach, ale
+    nawet w przypadku niszowych lub nowych programów agenci są w stanie szybko
+    przeskanować dokumentację i zbudować kontekst. Lokalnie programy pozwalają
+    na bardzo szybki feedback loop, który zbiega do zrozumienia danego
+    narzędzia przez agentów.
+  </p>
+
+  <p>
+    W tym momencie zdecydowałem, że program CLI to idealna forma na moje
+    narzędzie do pracy z danymi. <strong>Deterministyczny program, który
+      pozwala na fundamentalne operacje na wielu źródłach danych poprzez spójny
+      abstrakcyjny interfejs</strong> z rozwiniętą dokumentacją będzie idealną
+    podstawą dla agentów LLMowych. Coś, co kiedyś byłoby dosyć niezręcznym
+    interfejsem CLI, którego większość programistów by nie używała z chęcią,
+    teraz staje się warstwą, której agenci bez problemu używają na podstawie
+    wysokopoziomowego zadania.
+  </p>
+
+  <p>
+    Ponadto posiadanie wspomnianego CLI pomiędzy człowiekiem a agentami LLM,
+    pozwala nam na wprowadzenie środków bezpieczeństwa, które nie byłyby możliwe
+    w przypadku użycia agentów bezpośrednio. Jednym z przykładów jest dostęp do
+    źródeł danych. W tym przypadku są one zdefiniowane zawsze przez człowieka
+    i sekrety nigdy nie są dostępne dla agenta. Może on tylko używać
+    określonych komend CLI i na ich podstawie budować rozwiązania lub analizy.
+    Co więcej, agent nigdy nie będzie mógł usunąć (<code>DROP</code>) lub
+    zmodyfikować (<code>UPDATE</code>) danych, które żyją pod wskazanym
+    połączeniem (<code>dst conns</code>). CLI nie umożliwia takich operacji, co
+    jest pewnym ograniczeniem, ale z drugiej strony zapewnia bezpieczeństwo.
+    Jest to moja preferencja i świadomy kompromis.
+  </p>
+
+  <p>
+    Kolejną jeszcze zaletą CLI jest fakt, że nie muszę poświęcać czasu na
+    projektowanie i implementowanie pośrednich interfejsów graficznych lub
+    webowych, co zazwyczaj jest trudnym i czasochłonnym zadaniem, jeśli chcemy
+    to zrobić porządnie. Zatem mogę się skupić na projektowaniu i implementacji
+    zasadniczych funkcjonalności.
+  </p>
+
+  <Chapter name="My?" id="my" />
+  <p>
+    My? Czyli kto? Mówiąc "my" mam na myśli siebie oraz agentów LLMowych, którzy będą używać tego CLI.
+  </p>
+
+  <p>
+    Może wyjść na to, że przypadkowo to narzędzie będzie użyteczne również dla
+    innych, natomiast w najbliższej przyszłości nie planuję jego publikacji.
+    Wspomniane CLI używam aktywnie i już na aktualnym wstępnym etapie jest
+    bardzo użyteczne, lecz nie jest jeszcze blisko zakresu funkcjonalności,
+    który planuję.
+  </p>
+
+  <Chapter name="dst" id="dst" />
+  <p>
+    Jak widać na screenshocie nazwałem owo CLI <code>dst</code>, co jest
+    skrótem od <code>Damian Skrzypiec Tool</code>. Wymaga to lekkiego
+    wyjaśnienia. Moje imię i nazwisko znajdują się tam nie przez to, że jestem
+    autorem i chcę przypominać użytkownikom, kto stworzył owo narzędzie, lecz z
+    dwóch powodów. Najważniejsze to fakt, że nie miałem innego pomysłu, a
+    drugie to akcent, że jest to narzędzie, które reflektuje moje upodobania i
+    konwencje.
+  </p>
+
+  <p>
+    Po pewnym czasie <code>dst</code> stało się po prostu trzyliterowym
+    słowem, aliasem, który nie potrzebuje mieć innego znaczenia niż referencja
+    do owego narzędzia. Podobnie jak <code>git</code>. Geneza nazwy nie ma tu
+    znaczenia, jak również jej rozszerzenie.
+  </p>
+
+  <Chapter name="Aktualne funkcjonalności" id="current"/>
+  <p>
+
+    Aktualnie <code>dst</code> wspiera następujące rodziny komend:
+    <ul>
+      <li>
+        <code>dst conns</code> - do tworzenia oraz zarządzania połączeniami do
+        źródeł danych. Na ten moment wspierane są <code>Postgres, BigQuery,
+          Snowflake, SQLite, CloudWatchLogs</code>. Sekrety połączeń są
+        przechowywane w systemowym keyringu, dzięki użyciu biblioteki <a
+          href="https://github.com/zalando/go-keyring">go-keyring</a>.
+      </li>
+
+      <li>
+        <code>dst ex</code> - do eksploracji źródeł danych. Pozwala na
+        inspekcję schematu, listowanie obiektów (tabel, widoków itp.), kolumn,
+        typów danych itp.
+      </li>
+
+      <li>
+        <code>dst query</code> - do wykonywania, eksportowania oraz innych
+        funkcjonalności związanych z kwerendami. Uwzględnia też liczenie
+        statystyk dla podanego zestawu kolumn danego obiektu.
+      </li>
+    </ul>
+  </p>
+
+  <Chapter name="Aktualne użycie" id="current-use"/>
+  <p>
+    Aktualnie używam <code>dst</code> głównie jako narzędzie
+    (<code>tool</code>) w Claude Code (CC), gdzie dodatkowo mam <code>CC
+    SKILL</code>, który zawiera moje preferencje co do formatowania zapytań
+    SQLowych jak i wysokopoziomowej strategii użycia <code>dst</code>
+    (detale <code>dst</code> agent bierze z dokumentacji bezpośrednio).
+  </p>
+
+  <p>
+
+    Moje aktualne główne scenariusze użycia <code>dst</code> we współpracy z agentami LLMowymi to:
+
+    <ul>
+      <li>
+        <strong>Ad-hoc text-to-SQL</strong> - najprostsze użycie. Samo
+        <code>dst</code> umożliwia głębszy kontekst metadanych obiektów oraz
+        statystyk kluczowych kolumn. Agent na podstawie tego kontekstu może
+        generować lepsze zapytania SQLowe. Ponadto fakt, że <code>dst</code>
+        wspiera wiele różnych źródeł danych pozwala agentowi na generowanie
+        zapytań SQLowych dla wielu źródeł danych w jednej sesji. Przykładem
+        może być kwerenda analityczna na środowisku testowym oraz produkcyjnym,
+        gdzie schematy mogą się lekko różnić (bo nie było jeszcze wdrożenia).
+      </li>
+      <li>
+        <strong>Rozwijanie modeli danych</strong> - w tym scenariuszu zazwyczaj
+        mam model danych zdefiniowany w repozytorium. Samo rozszerzenie
+        istniejących modeli lub dodanie nowych byłoby możliwe przez współpracę
+        z agentem LLMowym. Praktycznie jednak warto zderzyć zaprojektowane
+        encje z faktycznymi danymi. Agent używając <code>dst</code> może
+        przeprowadzić takie testy na zestawie wskazanych połączeń i zagregować
+        wyniki w formie raportu. To natomiast jest wkładem do kolejnej iteracji
+        ulepszania rozszerzeń w modelu danych. Na podstawie moich doświadczeń mogę
+        powiedzieć, że dało to bardzo dużą wartość i zaoszczędziło sporo
+        (ludzkiego) czasu.
+      </li>
+      <li>
+        <strong>Rozwijanie i debugowanie backendu</strong> - bardzo często
+        serwisy backendowe stanowią w pewnej części warstwę abstrakcji nad
+        współdzielonym i trwałym stanem aplikacji, który nierzadko jest
+        reprezentowany poprzez bazę danych. W takim ustawieniu naturalnym jest,
+        że agent LLMowy pracujący nad problemami backendowymi (w sesji i
+        repozytorium backendowym) bardzo skorzystałby na dodatkowym kontekście
+        tychże baz danych. Jednym z przykładów jest rozwijanie schematu
+        operacyjnej bazy danych oraz generowanie skryptów migracyjnych pomiędzy
+        wersjami. Innym bardzo użytecznym zastosowaniem, szczególnie jeśli
+        backend jest systemem rozproszonym, jest możliwość debugowania
+        problemów, gdzie agent LLMowy może skorelować kod źródłowy z faktycznymi
+        danymi w bazie danych. Co więcej, możemy wzbogacić nasz kontekst o
+        operacyjne logi (<code>dst</code> wspiera AWS CloudWatch jako <code>dst
+          conns</code>) procesów. W takiej sytuacji agent (oraz programista)
+        mają do dyspozycji wszystko, co jest potrzebne do zrozumienia problemu i
+        jego rozwiązania.
+      </li>
+
+      <li>
+        <strong>Łatwe operowanie na wielu źródłach danych</strong> - to nie
+        brzmi jak coś trudnego i faktycznie nie jest, ale w praktyce często
+        jest to dosyć irytujące. Dla przykładu mam <code>N</code> klientów,
+        każdy w BigQuery, ale w osobnym projekcie, każdy ma identyczny lub
+        bardzo podobny schemat danych. Chciałbym zrobić analizę na wszystkich
+        klientach. Kiedyś wymagałoby to co najmniej napisania skryptu,
+        obsłużenia wielu sekretów, a następnie egzekucji kwerend i podsumowania
+        wyników. Przy użyciu <code>dst</code> agent może sam przeprowadzić
+        inspekcję schematów dla każdego klienta oraz wykonać odpowiednie
+        zapytania, a następnie zagregować wyniki w formie raportu. W praktyce
+        jest to bardzo użyteczne i oszczędza sporo czasu.
+      </li>
+    </ul>
+  </p>
+
+  <Chapter name="Planowane funkcjonalności" id="future"/>
+  <p>
+    Jak widać na inicjalnym screenshocie mam już zaplanowane dodanie komendy
+    <code>dst migr</code>, która będzie służyła do planowania, wykonywania i
+    śledzenia migracji danych pomiędzy dwoma źródłami danych zdefiniowanymi
+    jako <code>dst conns</code>. Idea jest następująca. Tworzymy plan migracji
+    - lista obiektów wraz z różnymi własnościami dotyczącymi migracji (jak
+    powinny być dane dzielone na mniejsze kawałki, jak bardzo możemy
+    zrównoleglić czytanie itp.). Domyślny plan będzie generowany automatycznie
+    na podstawie schematów źródłowych i docelowych. Następnie jednak człowiek
+    lub agent będzie mógł przeanalizować domyślną propozycję i wprowadzić
+    ulepszenia. W świecie danych bywa różnie, więc chcę się przygotować na
+    możliwie dużą elastyczność procesu. Na podstawie planu będą przygotowane
+    planowane "części" danych dla każdego z obiektów. Wszystkie te metadane
+    będą zapisane w lokalnym SQLite. Zapewni nam to możliwość śledzenia postępu
+    migracji oraz ewentualnego przerwania i kontynuowania procesu w dowolnym
+    momencie.
+  </p>
+
+  <p>
+    Zaplanowana, ale jeszcze niezaimplementowana jest funkcjonalność do
+    listowania i przeszukiwania kwerend historycznych dla wskazanego
+    połączenia. To jest dużo mniejsza funkcjonalność niż migracje, ale w
+    praktyce bardzo użyteczna. Powinna zostać dodana niebawem.
+  </p>
+
+  <Chapter name="Podsumowanie" id="summary"/>
+  <p>
+    Pomimo wczesnego etapu rozwoju <code>dst</code> jest już teraz bardzo
+    użyteczne. Planuję rozwijać je ciągle, tak aby wspierało dużą większość
+    mojej pracy wokół danych oraz systemów operujących na danych. Z czasem na
+    pewno będę się starał dodawać wsparcie dla kolejnych źródeł danych.
+    Chciałbym, aby <code>dst</code> agregowało moją wiedzę o danym źródle
+    danych i jego charakterystykach poprzez implementację współdzielonego
+    interfejsu, odpowiednio przykrywając ewentualne różnice czy osobliwości.
+  </p>
+
+  <p>
+    Odnośnie do publikacji <code>dst</code> nie mogę nic obiecać. Przyszłość pokaże.
+  </p>
+</Post>
