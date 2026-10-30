@@ -4,15 +4,17 @@ export interface Props {
   date: string;
   tags?: string[];
   href: string;
+  /** Draft posts are only listed in dev, where they get a badge. */
+  draft?: boolean;
 }
 
-const { title, date, tags, href } = Astro.props;
+const { title, date, tags, href, draft } = Astro.props;
 ---
 
 <a href={href} class="post-link">
   <div class="post-content">
     <h2>{title}</h2>
-    <p class="post-date">{date}</p>
+    <p class="post-date">{date}{draft && <span class="draft-badge">Draft</span>}</p>
     {tags && (
       <ul class="post-tags">
         {tags.map((tag) => (
@@ -78,6 +80,15 @@ const { title, date, tags, href } = Astro.props;
   .post-date {
     font-size: 0.9rem;
     color: var(--text-secondary);
+  }
+
+  .draft-badge {
+    margin-left: 0.5rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
   }
 
   .post-tags {

@@ -7,10 +7,21 @@ export interface Props {
   title?: string;
   /** URL of this post in the other language, for the Nav toggle. */
   altLocaleUrl?: string;
+  /**
+   * Marks the post as a draft; the value is its access code.
+   * In dev drafts render as usual. In a build they only render when the
+   * URL carries `?code=<draft>`, otherwise they redirect to the home page.
+   */
+  draft?: string;
 }
 
-const { title, altLocaleUrl } = Astro.props;
+const { title, altLocaleUrl, draft } = Astro.props;
 const lang = Astro.currentLocale === "pl" ? "pl" : "en";
+const home = lang === "pl" ? "/pl/" : "/";
+const gated = draft != null && import.meta.env.PROD;
+
+// Carry the code over the language toggle, so a draft's counterpart opens too.
+const navAltLocaleUrl = draft && altLocaleUrl ? `${altLocaleUrl}?code=${draft}` : altLocaleUrl;
 ---
 
 <html lang={lang}>
@@ -23,10 +34,19 @@ const lang = Astro.currentLocale === "pl" ? "pl" : "en";
       href="https://cdn.jsdelivr.net/npm/katex@0.16.26/dist/katex.min.css"
       crossorigin="anonymous"
     />
+    {draft && <meta name="robots" content="noindex, nofollow" />}
+    {gated && (
+      <script is:inline define:vars={{ draft, home }}>
+        if (new URLSearchParams(location.search).get("code") !== draft) {
+          document.documentElement.style.display = "none";
+          location.replace(home);
+        }
+      </script>
+    )}
   </head>
   <body>
     <header>
-      <Nav altLocaleUrl={altLocaleUrl} />
+      <Nav altLocaleUrl={navAltLocaleUrl} />
     </header>
 
     <!-- 

@@ -4,19 +4,23 @@ import PostLink from "../components/PostLink.astro";
 
 const posts = [
   {
+    "title": "Start-up journey",
+    "date": "2026-10-28",
+    "tags": ["Software Engineering"],
+    "href": "startup"
+  },
+  {
     "title": "The CLI we need",
     "date": "2026-08-18",
     "tags": ["Software Engineering", "Data Engineering"],
     "href": "dst"
   },
-  /*
   {
     "title": "Closures in Go",
     "date": "2026-01-29",
     "tags": ["Go"],
     "href": "closures"
   },
-  */
   {
     "title": "Brewing beer vs. software engineering",
     "date": "2026-06-28",
@@ -270,11 +274,19 @@ const posts = [
     "href": "quantiles"
   }
 ]
+
+// A post is a draft when its page passes draft="…" to <Post>.
+// Drafts are listed in dev only; deployed builds hide them.
+const sources = import.meta.glob<string>("./*.astro", { query: "?raw", import: "default", eager: true });
+const isDraft = (href: string) => /<Post[^>]*\sdraft=/.test(sources[`./${href}.astro`] ?? "");
+const visiblePosts = posts
+  .map((post) => ({ ...post, draft: isDraft(post.href) }))
+  .filter((post) => import.meta.env.DEV || !post.draft);
 ---
 
 <BaseLayout>
   <section class="post-list">
-    {posts.map((post) => (
+    {visiblePosts.map((post) => (
       <PostLink {...post} />
     ))}
   </section>

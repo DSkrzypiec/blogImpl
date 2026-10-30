@@ -5,6 +5,12 @@ import PostLink from "../../components/PostLink.astro";
 // Only posts that have a Polish version are listed here.
 const posts = [
   {
+    "title": "Przygoda w start-up'ie",
+    "date": "2026-10-25",
+    "tags": [],
+    "href": "/pl/startup"
+  },
+  {
     "title": "CLI, którego potrzebujemy",
     "date": "2026-08-18",
     "tags": ["Inżynieria oprogramowania", "Inżynieria danych"],
@@ -17,11 +23,20 @@ const posts = [
     "href": "/pl/beer"
   }
 ];
+
+// A post is a draft when its page passes draft="…" to <Post>.
+// Drafts are listed in dev only; deployed builds hide them.
+const sources = import.meta.glob<string>("./*.astro", { query: "?raw", import: "default", eager: true });
+const isDraft = (href: string) =>
+  /<Post[^>]*\sdraft=/.test(sources[href.replace(/^\/pl\//, "./") + ".astro"] ?? "");
+const visiblePosts = posts
+  .map((post) => ({ ...post, draft: isDraft(post.href) }))
+  .filter((post) => import.meta.env.DEV || !post.draft);
 ---
 
 <BaseLayout altLocaleUrl="/">
   <section class="post-list">
-    {posts.map((post) => (
+    {visiblePosts.map((post) => (
       <PostLink {...post} />
     ))}
   </section>
